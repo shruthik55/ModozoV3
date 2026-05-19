@@ -67,7 +67,7 @@ export default function HeroSection() {
               {/* Seamlessly Integrated Visual */}
               <div className="relative z-10 w-full flex justify-center items-center overflow-visible">
                 <Image
-                  src="/photo50.png"
+                  src="/photo45.png"
                   alt="Modozo Immersive Fashion Tech Interface"
                   width={1800}
                   height={1800}
