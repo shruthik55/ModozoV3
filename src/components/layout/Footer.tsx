@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Video, Globe, MessageCircle, Send, ArrowRight, Sparkles } from "lucide-react";
+import Image from "next/image";
 
 /* ─── Data ─── */
 const footerLinks = {
@@ -157,10 +158,9 @@ export default function Footer() {
 
   return (
     <footer
-      className="relative overflow-hidden"
+      className="relative overflow-hidden bg-transparent"
       id="footer"
       ref={ref}
-      style={{ background: "linear-gradient(180deg, #07111F 0%, #040B14 50%, #020710 100%)" }}
     >
       {/* ── Ambient Layer ── */}
       <AmbientParticles />
@@ -195,9 +195,9 @@ export default function Footer() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-teal-accent/20 bg-teal-accent/[0.06] mb-6">
-            <Sparkles size={13} className="text-teal-accent" />
-            <span className="text-[11px] font-semibold text-teal-accent uppercase tracking-[0.2em]">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-red-500/20 bg-red-500/[0.06] mb-6">
+            <Sparkles size={13} className="text-[#ff8a8a]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.2em] bg-gradient-to-r from-[#ff8a8a] to-[#ffb3b3] bg-clip-text text-transparent">
               Connected Operations
             </span>
           </div>
@@ -205,7 +205,7 @@ export default function Footer() {
           <h3 className="text-3xl md:text-4xl lg:text-[44px] font-bold text-white tracking-tight leading-[1.15] mb-5">
             The future of fashion
             <br />
-            <span className="bg-gradient-to-r from-teal-accent via-cyan-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#ebd07e] via-[#f5e6b8] to-[#ebd07e] bg-clip-text text-transparent">
               starts here.
             </span>
           </h3>
@@ -235,12 +235,12 @@ export default function Footer() {
                 onChange={(e) => setEmail(e.target.value)}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                className="flex-1 bg-transparent text-white text-sm placeholder:text-slate-500 py-3 focus:outline-none"
+                className="flex-1 bg-transparent text-white text-sm placeholder:text-slate-400 placeholder:font-semibold py-3 focus:outline-none"
               />
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 bg-teal-accent text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-teal-accent/90 transition-colors shadow-lg shadow-teal-accent/20"
+                className="flex items-center gap-2 bg-gradient-to-r from-[#e05555] to-[#ff7b7b] text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:from-[#d04a4a] hover:to-[#f06e6e] transition-all shadow-lg shadow-red-500/20"
               >
                 <span className="hidden sm:inline">Get Started</span>
                 <ArrowRight size={16} />
@@ -259,6 +259,10 @@ export default function Footer() {
         {/*  LINKS + SOCIAL + BOTTOM BAR      */}
         {/* ══════════════════════════════════ */}
         <div className="pt-14">
+          {/* Logo */}
+          <div className="flex justify-center mb-10">
+            <Image src="/logo4.png" alt="Modozo" width={240} height={72} className="h-16 w-auto opacity-80" />
+          </div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -267,7 +271,7 @@ export default function Footer() {
           >
             {Object.entries(footerLinks).map(([category, links], catIdx) => (
               <div key={category}>
-                <h4 className="text-[11px] font-bold text-white/50 uppercase tracking-[0.25em] mb-6">
+                <h4 className="text-[13px] font-bold text-white/50 uppercase tracking-[0.25em] mb-6">
                   {category}
                 </h4>
                 <ul className="space-y-3.5">
@@ -278,7 +282,7 @@ export default function Footer() {
                         initial={{ opacity: 0, x: -8 }}
                         animate={isInView ? { opacity: 1, x: 0 } : {}}
                         transition={{ duration: 0.4, delay: 0.35 + catIdx * 0.05 + linkIdx * 0.03 }}
-                        className="text-slate-text text-[13px] hover:text-white transition-all duration-300 inline-block group relative"
+                        className="text-slate-text text-[15px] hover:text-white transition-all duration-300 inline-block group relative"
                       >
                         {link.label}
                         <span className="absolute -bottom-0.5 left-0 w-0 h-[1px] bg-gradient-to-r from-teal-accent to-cyan-400 transition-all duration-300 group-hover:w-full" />
@@ -302,7 +306,7 @@ export default function Footer() {
             >
               {/* Left: copyright + legal */}
               <div className="flex flex-col md:flex-row items-center gap-3 md:gap-8">
-                <span className="text-[13px] text-slate-text/60 font-medium">
+                <span className="text-[15px] text-slate-text/60 font-medium">
                   © {new Date().getFullYear()} Modozo Inc.
                 </span>
                 <div className="flex items-center gap-6">
@@ -310,7 +314,7 @@ export default function Footer() {
                     <a
                       key={item}
                       href="#"
-                      className="text-[11px] text-slate-text/30 hover:text-white/70 transition-colors duration-300 uppercase tracking-[0.12em] font-medium"
+                      className="text-[13px] text-slate-text/30 hover:text-white/70 transition-colors duration-300 uppercase tracking-[0.12em] font-medium"
                     >
                       {item}
                     </a>
