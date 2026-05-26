@@ -21,15 +21,15 @@ export default function HeroSection() {
               transition={{ duration: 0.7 }}
               className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05]"
             >
-              Supercharge Your <br />
-              <span className="text-gradient">Fashion Supply Chain</span>
+              <span className="text-[#bd9128]">Supercharge Your</span> <br />
+              <span className="text-white">Fashion Supply Chain</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-lg md:text-xl text-slate-text leading-relaxed max-w-xl"
+              className="text-lg md:text-xl text-white leading-relaxed max-w-xl"
             >
               The operating system for fashion brands. Seamlessly connect your product data, teams, and manufacturers on one high-fidelity platform.
             </motion.p>
@@ -40,7 +40,7 @@ export default function HeroSection() {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <Button variant="primary" size="lg" href="#demo" className="!bg-teal-accent hover:!bg-teal-accent/90 px-10" id="hero-cta-demo">
+              <Button variant="primary" size="lg" href="#demo" className="!bg-[hsl(12,60%,46%)] !border !border-[hsl(12,60%,38%)] text-white hover:!bg-[hsl(12,60%,40%)] hover:shadow-[0_0_20px_rgba(192,70,50,0.4)] px-10" id="hero-cta-demo">
                 Get a demo
                 <ArrowRight size={18} />
               </Button>

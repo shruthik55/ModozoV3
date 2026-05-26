@@ -33,7 +33,7 @@ export default function InteractiveWorkflowSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight"
+          className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#5eb1ff] mb-6 tracking-tight"
         >
           Built for Fashion Teams <br className="hidden md:block" /> That Move Fast
         </motion.h2>
@@ -42,7 +42,7 @@ export default function InteractiveWorkflowSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="text-lg text-slate-text leading-relaxed max-w-2xl mx-auto"
+          className="text-lg text-white leading-relaxed max-w-2xl mx-auto"
         >
           Modozo connects design, approvals, vendors, sampling, and production into one unified workflow — helping teams eliminate delays, reduce miscommunication, and launch collections faster.
         </motion.p>
@@ -56,26 +56,26 @@ export default function InteractiveWorkflowSection() {
             onMouseEnter={() => setActiveIndex(index)}
             onClick={() => setActiveIndex(index)}
             className={`cursor-pointer p-6 rounded-[2rem] transition-all duration-500 relative overflow-hidden group border ${activeIndex === index
-              ? "bg-white/[0.05] border-teal-accent/40 shadow-[0_0_40px_rgba(0,163,150,0.1)]"
-              : "bg-white/[0.02] border-white/5 hover:bg-white/[0.04] hover:border-white/10"
+              ? "bg-gradient-to-br from-[#e8d08a] to-[#d4a94e] border-[#d8b86d] shadow-[0_0_40px_rgba(216,184,109,0.2)]"
+              : "bg-gradient-to-br from-[#d8b86d]/10 to-[#c9a545]/10 border-white/5 hover:from-[#d8b86d]/18 hover:to-[#c9a545]/18 hover:border-[#d8b86d]/30"
               }`}
           >
             {/* Active Glow */}
-            <div className={`absolute -inset-10 bg-teal-accent/10 blur-[60px] rounded-full transition-opacity duration-700 ${activeIndex === index ? "opacity-100" : "opacity-0"}`} />
+            <div className={`absolute -inset-10 bg-[#d8b86d]/10 blur-[60px] rounded-full transition-opacity duration-700 ${activeIndex === index ? "opacity-100" : "opacity-0"}`} />
 
             <div className="relative z-10 h-full flex flex-col justify-center pt-2">
-              <h3 className={`text-xl font-bold mb-3 transition-all duration-500 ${activeIndex === index ? "text-white translate-x-1" : "text-white/60"}`}>
+              <h3 className={`text-xl font-bold mb-3 transition-all duration-500 ${activeIndex === index ? "text-[#06101F] translate-x-1" : "text-white/60"}`}>
                 {item.title}
               </h3>
 
-              <p className={`text-sm leading-relaxed transition-all duration-500 ${activeIndex === index ? "text-slate-text" : "text-white/30"}`}>
+              <p className={`text-sm leading-relaxed transition-all duration-500 ${activeIndex === index ? "text-[#06101F]/80" : "text-white/30"}`}>
                 {item.desc}
               </p>
 
               {/* Selection Indicator */}
               <div className="mt-6 overflow-hidden h-[1px] w-full bg-white/5">
                 <motion.div
-                  className="h-full bg-teal-accent"
+                  className="h-full bg-[#5eb1ff]"
                   initial={{ x: "-100%" }}
                   animate={{ x: activeIndex === index ? "0%" : "-100%" }}
                   transition={{ duration: 0.5, ease: "circOut" }}

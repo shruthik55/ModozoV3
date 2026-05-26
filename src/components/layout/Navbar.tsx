@@ -97,7 +97,7 @@ export default function Navbar() {
                   alt="Modozo"
                   width={200}
                   height={60}
-                  className="h-12 md:h-14 w-auto"
+                  className="h-16 md:h-20 w-auto"
                   priority
                 />
               </a>
@@ -113,7 +113,7 @@ export default function Navbar() {
                     href={link.href}
                     onClick={(e) => handleSmoothScroll(e, link.href)}
                     className={`px-5 py-2 text-[15px] font-semibold transition-all duration-200 rounded-lg hover:bg-white/5 ${
-                      isActive ? "text-teal-accent bg-white/5" : "text-slate-300 hover:text-white"
+                      isActive ? "text-[#bd9128] bg-white/5" : "text-slate-300 hover:text-white"
                     }`}
                     id={`nav-${link.label.toLowerCase()}`}
                   >
@@ -125,11 +125,14 @@ export default function Navbar() {
 
             {/* Desktop CTA - Pushed Right */}
             <div className="flex-1 hidden md:flex items-center justify-end gap-4">
-              <Button variant="ghost" size="md" href="#contact" className="text-white hover:bg-white/5" id="nav-talk">
-                Sign In
-              </Button>
-              <Button variant="primary" size="md" href="#demo" className="!bg-teal-accent hover:!bg-teal-accent/90 px-8" id="nav-demo">
-                Get a demo
+              <Button
+                variant="secondary"
+                size="md"
+                href="#contact"
+                className="!bg-[hsl(12,60%,46%)] !border !border-[hsl(12,60%,38%)] text-white hover:!bg-[hsl(12,60%,40%)] hover:!border-[hsl(12,60%,35%)] hover:shadow-[0_0_20px_rgba(192,70,50,0.4)] px-6"
+                id="nav-talk"
+              >
+                Sign In / Login
               </Button>
             </div>
 
@@ -167,7 +170,7 @@ export default function Navbar() {
                     href={link.href}
                     onClick={(e) => handleSmoothScroll(e, link.href)}
                     className={`text-lg transition-colors ${
-                      isActive ? "text-teal-accent font-semibold" : "text-slate-text hover:text-white"
+                      isActive ? "text-[#bd9128] font-semibold" : "text-slate-text hover:text-white"
                     }`}
                   >
                     {link.label}
@@ -178,14 +181,14 @@ export default function Navbar() {
                 <Button
                   variant="secondary"
                   href="#contact"
-                  className="w-full justify-center"
+                  className="w-full justify-center !bg-[hsl(12,60%,46%)] !border !border-[hsl(12,60%,38%)] text-white hover:!bg-[hsl(12,60%,40%)] hover:!border-[hsl(12,60%,35%)]"
                 >
-                  Talk to Us
+                  Sign In / Login
                 </Button>
                 <Button
                   variant="primary"
                   href="#demo"
-                  className="w-full justify-center"
+                  className="w-full justify-center !bg-[hsl(12,60%,46%)] !border !border-[hsl(12,60%,38%)] text-white hover:!bg-[hsl(12,60%,40%)]"
                 >
                   Book a Demo
                 </Button>

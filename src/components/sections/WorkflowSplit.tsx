@@ -62,8 +62,8 @@ export default function WorkflowSplit({
             className={clsx("space-y-8", reverse ? "lg:order-2 lg:pl-12" : "lg:order-1")}
           >
             <div className="space-y-4">
-              <div className="flex items-center gap-2 text-sm font-bold text-teal-accent uppercase tracking-widest">
-                <span>{tag}</span>
+              <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest">
+                <span className="bg-gradient-to-r from-[#ff6b6b] to-[#ffaaad] bg-clip-text text-transparent">{tag}</span>
               </div>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
                 {title}
