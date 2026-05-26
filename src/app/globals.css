@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --deep-navy: #07111F;
+  --deep-navy: #040b17;
   --rich-blue: #0F62FE;
   --electric-blue: #3B82F6;
   --soft-blue: #60A5FA;
   --light-bg: #F9FAFB;
   --white: #FFFFFF;
   --slate: #64748B;
-  --dark-surface: #0C1A2E;
+  --dark-surface: #081020;
   --card-border: rgba(59, 130, 246, 0.15);
   --glow-blue: rgba(15, 98, 254, 0.4);
   --teal-accent: #00A396;
@@ -94,7 +94,7 @@ html {
 }
 
 body {
-  background: var(--deep-navy);
+  background: linear-gradient(180deg, #091a36 0%, #050d1a 50%, #020610 100%);
   color: var(--white);
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;

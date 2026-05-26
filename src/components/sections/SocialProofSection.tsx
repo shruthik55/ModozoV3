@@ -9,7 +9,7 @@ export default function SocialProofSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <SectionWrapper id="impact-overview" className="bg-deep-navy text-center py-32 overflow-hidden">
+    <SectionWrapper id="impact-overview" className="bg-transparent text-center py-32 overflow-hidden">
       {/* Background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-rich-blue/10 rounded-full filter blur-[120px] pointer-events-none" />
 

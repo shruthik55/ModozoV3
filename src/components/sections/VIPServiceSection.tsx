@@ -34,7 +34,7 @@ export default function VIPServiceSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <SectionWrapper id="services" className="bg-[#0B1120] py-12 md:py-16 border-t border-white/5">
+    <SectionWrapper id="services" className="bg-transparent py-12 md:py-16 border-t border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
         {/* Header */}
         <div className="text-center space-y-3 mb-10">
@@ -55,9 +55,19 @@ export default function VIPServiceSection() {
           </motion.h2>
         </div>
 
-        {/* 3-Column Tab Grid */}
+        {/* SVG Definition for Red Gradient Icons */}
+        <svg width="0" height="0" className="absolute">
+          <defs>
+            <linearGradient id="lightRedGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ff7b7b" />
+              <stop offset="100%" stopColor="#ffb3b3" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        {/* 3-Column Card Grid */}
         <div
-          className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10 glass-card !p-0 !rounded-3xl border border-white/10 overflow-hidden mb-10"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-10"
           onMouseLeave={() => setActiveIndex(0)}
         >
           {services.map((item, i) => (
@@ -67,39 +77,46 @@ export default function VIPServiceSection() {
               onClick={() => setActiveIndex(i)}
               onFocus={() => setActiveIndex(i)}
               className={clsx(
-                "p-6 md:p-8 flex flex-col items-start transition-all duration-300 ease-out text-left group relative",
-                activeIndex === i ? "bg-white/[0.04]" : "hover:bg-white/[0.02]"
+                "p-6 md:p-8 flex flex-col items-start text-left relative overflow-hidden group border rounded-[2rem] transition-all duration-500 cursor-pointer",
+                activeIndex === i
+                  ? "bg-gradient-to-br from-[#e8d08a] to-[#d4a94e] border-[#d8b86d] shadow-[0_0_40px_rgba(216,184,109,0.2)]"
+                  : "bg-gradient-to-br from-[#d8b86d]/10 to-[#c9a545]/10 border-white/5 hover:from-[#d8b86d]/18 hover:to-[#c9a545]/18 hover:border-[#d8b86d]/30"
               )}
             >
-              {/* Active Indicator */}
-              {activeIndex === i && (
-                <motion.div
-                  layoutId="active-tab"
-                  className="absolute inset-0 border-2 border-teal-accent/30 rounded-none z-10 pointer-events-none"
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                />
-              )}
-
+              {/* Active Glow */}
               <div className={clsx(
-                "w-10 h-10 rounded-xl flex items-center justify-center mb-4 transition-all duration-300",
-                activeIndex === i
-                  ? "bg-teal-accent text-white shadow-[0_0_20px_rgba(0,163,150,0.4)] scale-110"
-                  : "bg-teal-accent/10 border border-teal-accent/20 text-teal-accent group-hover:bg-teal-accent/20"
-              )}>
-                <item.icon size={20} strokeWidth={1.5} />
+                "absolute -inset-10 bg-[#d8b86d]/10 blur-[60px] rounded-full transition-opacity duration-700 pointer-events-none",
+                activeIndex === i ? "opacity-100" : "opacity-0"
+              )} />
+
+              <div className="relative z-10 flex flex-col items-start h-full w-full">
+                <div className={clsx(
+                  "w-10 h-10 rounded-xl flex items-center justify-center mb-4 transition-all duration-300",
+                  activeIndex === i
+                    ? "bg-[#06101F]/90 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.3)] scale-110"
+                    : "bg-red-500/5 border border-red-500/15 group-hover:bg-red-500/10 group-hover:border-red-500/30"
+                )}>
+                  <item.icon
+                    size={20}
+                    strokeWidth={1.5}
+                    className="[stroke:url(#lightRedGradient)]"
+                  />
+                </div>
+                
+                <h3 className={clsx(
+                  "text-lg font-bold mb-2 transition-colors duration-300",
+                  activeIndex === i ? "text-[#06101F]" : "text-white"
+                )}>
+                  {item.title}
+                </h3>
+                
+                <p className={clsx(
+                  "text-sm leading-relaxed transition-colors duration-300",
+                  activeIndex === i ? "text-[#06101F]/80" : "text-slate-400"
+                )}>
+                  {item.desc}
+                </p>
               </div>
-              <h3 className={clsx(
-                "text-lg font-bold mb-2 transition-colors duration-300",
-                activeIndex === i ? "text-white" : "text-slate-200"
-              )}>
-                {item.title}
-              </h3>
-              <p className={clsx(
-                "text-sm leading-relaxed transition-colors duration-300",
-                activeIndex === i ? "text-slate-300" : "text-slate-500"
-              )}>
-                {item.desc}
-              </p>
             </button>
           ))}
         </div>

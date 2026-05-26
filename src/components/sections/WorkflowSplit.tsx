@@ -31,7 +31,7 @@ export default function WorkflowSplit({
   return (
     <section id={id} className={clsx(
       "relative py-16 md:py-20 overflow-hidden",
-      theme === "light" ? "section-light" : "bg-deep-navy"
+      theme === "light" ? "section-light" : "bg-transparent"
     )}>
       {theme === "dark" && (
         <>
@@ -62,13 +62,13 @@ export default function WorkflowSplit({
             className={clsx("space-y-8", reverse ? "lg:order-2 lg:pl-12" : "lg:order-1")}
           >
             <div className="space-y-4">
-              <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest">
                 <span className="bg-gradient-to-r from-[#ff6b6b] to-[#ffaaad] bg-clip-text text-transparent">{tag}</span>
               </div>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
                 {title}
               </h2>
-              <p className="text-lg md:text-xl text-slate-text leading-relaxed">
+              <p className="text-base md:text-lg text-slate-text leading-relaxed">
                 {subtitle}
               </p>
             </div>
@@ -86,7 +86,7 @@ export default function WorkflowSplit({
                   <div className="mt-1 w-6 h-6 rounded-full bg-teal-accent/10 flex items-center justify-center shrink-0">
                     <Check size={14} className="text-teal-accent" />
                   </div>
-                  <span className="text-base font-medium text-slate-text">{bullet}</span>
+                  <span className="text-sm font-medium text-slate-text">{bullet}</span>
                 </motion.li>
               ))}
             </ul>

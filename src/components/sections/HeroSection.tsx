@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-[#06101F] pt-20" id="hero">
+    <section className="relative min-h-screen flex items-center overflow-hidden bg-transparent pt-20" id="hero">
       {/* Background Elements */}
       <div className="animated-grid opacity-40" />
 

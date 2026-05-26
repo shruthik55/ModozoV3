@@ -27,7 +27,7 @@ export default function InteractiveWorkflowSection() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <SectionWrapper id="features" className="bg-deep-navy border-t border-white/5 !py-16 md:!py-20">
+    <SectionWrapper id="features" className="bg-transparent border-t border-white/5 !py-16 md:!py-20">
       <div className="max-w-4xl mx-auto text-center mb-12 md:mb-16">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}

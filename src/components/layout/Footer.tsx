@@ -158,10 +158,9 @@ export default function Footer() {
 
   return (
     <footer
-      className="relative overflow-hidden"
+      className="relative overflow-hidden bg-transparent"
       id="footer"
       ref={ref}
-      style={{ background: "linear-gradient(180deg, #07111F 0%, #040B14 50%, #020710 100%)" }}
     >
       {/* ── Ambient Layer ── */}
       <AmbientParticles />

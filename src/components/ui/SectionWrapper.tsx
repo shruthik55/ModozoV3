@@ -29,7 +29,7 @@ export default function SectionWrapper({
       className={clsx(
         "relative overflow-hidden",
         !noPadding && "py-24 md:py-32 lg:py-40",
-        dark ? "bg-deep-navy" : "bg-light-bg",
+        dark ? "bg-transparent" : "bg-light-bg",
         className
       )}
     >
