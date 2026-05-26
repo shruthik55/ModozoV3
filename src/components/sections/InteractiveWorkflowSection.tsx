@@ -9,17 +9,17 @@ const workflowData = [
   {
     title: "Faster Team Collaboration",
     desc: "Streamline communication and production workflows across your fashion team with seamless coordination.",
-    image: "/photo2.png",
+    image: "/photo51.png",
   },
   {
     title: "Smart Production Planning",
     desc: "Organize sourcing, manufacturing, and timelines efficiently for faster delivery cycles.",
-    image: "/photo31.png",
+    image: "/photo52.png",
   },
   {
     title: "Scalable Fashion Operations",
     desc: "Manage growing collections and production demands with flexible and modern workflows.",
-    image: "/photo4.png",
+    image: "/photo53.png",
   },
 ];
 

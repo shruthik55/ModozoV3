@@ -30,7 +30,7 @@ export default function Home() {
           "Automated Time & Action (T&A) calendar management",
           "Proactive delay alerts and milestone tracking"
         ]}
-        image="/photo32.png"
+        image="/photo54.png"
       />
 
       {/* 5. Workflow Block B: Improve Quality (Dark) */}
