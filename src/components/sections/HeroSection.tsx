@@ -29,7 +29,7 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-lg md:text-xl text-white leading-relaxed max-w-xl"
+              className="text-sm md:text-base text-slate-400 leading-relaxed max-w-xl"
             >
               The operating system for fashion brands. Seamlessly connect your product data, teams, and manufacturers on one high-fidelity platform.
             </motion.p>
