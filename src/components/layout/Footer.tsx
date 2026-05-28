@@ -54,9 +54,30 @@ export default function Footer() {
               />
             </div>
             <div className="text-neutral-400 text-sm leading-relaxed space-y-1.5 font-sans">
-              <p className="text-neutral-300">Shaikpet, Telangana, India, 500081</p>
-              <p>Email: <a href="mailto:admin@modozo.fashion" className="hover:text-white transition-colors duration-200">admin@modozo.fashion</a></p>
-              <p>Contact: <a href="tel:+911234996667" className="hover:text-white transition-colors duration-200">+91 123-499-6667</a></p>
+              <p className="text-neutral-300 font-semibold">Hyderabad, India</p>
+              <p className="text-neutral-400">
+                4th Floor, Sanali Spazio, Inorbit Mall Rd,
+                <br />
+                Madhapur, Hyderabad, Telangana, 500081, India
+              </p>
+              <p>
+                Email:{" "}
+                <a
+                  href="mailto:contact@nforceone.com"
+                  className="hover:text-white transition-colors duration-200"
+                >
+                  contact@nforceone.com
+                </a>
+              </p>
+              <p>
+                Phone:{" "}
+                <a
+                  href="tel:+919980924244"
+                  className="hover:text-white transition-colors duration-200"
+                >
+                  +91 9980924244
+                </a>
+              </p>
             </div>
           </div>
 
@@ -77,8 +98,8 @@ export default function Footer() {
             <div className="w-full max-w-md mx-auto">
               <div
                 className={`relative group rounded-xl p-[1px] transition-all duration-500 ${isFocused
-                    ? "bg-gradient-to-r from-teal-accent/60 via-cyan-400/40 to-teal-accent/60 shadow-[0_0_30px_rgba(0,163,150,0.12)]"
-                    : "bg-gradient-to-r from-white/[0.08] via-white/[0.12] to-white/[0.08] hover:from-teal-accent/20 hover:via-cyan-400/15 hover:to-teal-accent/20"
+                  ? "bg-gradient-to-r from-teal-accent/60 via-cyan-400/40 to-teal-accent/60 shadow-[0_0_30px_rgba(0,163,150,0.12)]"
+                  : "bg-gradient-to-r from-white/[0.08] via-white/[0.12] to-white/[0.08] hover:from-teal-accent/20 hover:via-cyan-400/15 hover:to-teal-accent/20"
                   }`}
               >
                 <div className="flex items-center gap-2 bg-[#070E1A]/90 backdrop-blur-2xl rounded-[11px] px-4 py-1.5">
