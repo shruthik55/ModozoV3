@@ -61,17 +61,17 @@ export default function HeroSection() {
               opacity: { duration: 1.5, delay: 0.2 },
               scale: { duration: 1.5, delay: 0.2 }
             }}
-            className="relative lg:w-[130%] lg:translate-x-[-5%] xl:translate-x-[-8%] flex justify-center items-center h-full min-h-[600px]"
+            className="relative lg:w-[145%] lg:translate-x-[-8%] xl:translate-x-[-12%] flex justify-center items-center h-full min-h-[600px]"
           >
             <div className="relative w-full group flex justify-center items-center">
               {/* Seamlessly Integrated Visual */}
               <div className="relative z-10 w-full flex justify-center items-center overflow-visible">
                 <Image
-                  src="/hero_photo50.png"
+                  src="/photo56.png"
                   alt="Modozo Immersive Fashion Tech Interface"
                   width={1800}
                   height={1800}
-                  className="w-full h-auto max-h-[85vh] lg:max-h-[95vh] lg:scale-105 object-contain transition-transform duration-1000 group-hover:scale-[1.03]"
+                  className="w-full h-auto max-h-[85vh] lg:max-h-[95vh] object-contain transition-transform duration-1000 group-hover:scale-[1.02]"
                   priority
                   unoptimized
                 />
