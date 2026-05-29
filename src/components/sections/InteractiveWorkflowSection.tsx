@@ -1,116 +1,578 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import Image from "next/image";
-import SectionWrapper from "@/components/ui/SectionWrapper";
+import { 
+  FileSpreadsheet, 
+  MessageSquare, 
+  FolderSearch, 
+  CalendarClock, 
+  UsersRound, 
+  AlertTriangle, 
+  FileText, 
+  Check, 
+  Search,
+  EyeOff,
+  CloudLightning
+} from "lucide-react";
 
-const workflowData = [
+interface Card {
+  id: string;
+  tag: string;
+  title: string;
+  desc: string;
+  accent: string;
+  badgeBg: string;
+  glowColor: string;
+  borderColor: string;
+}
+
+const cardsData: Card[] = [
   {
-    title: "Faster Team Collaboration",
-    desc: "Streamline communication and production workflows across your fashion team with seamless coordination.",
-    image: "/photo51.png",
+    id: "01",
+    tag: "Scattered Communication",
+    title: "Scattered Communication",
+    desc: "Techpacks, measurement spec sheets, pattern designs, and assets scattered across localized spreadsheets, personal folders, and email threads.",
+    accent: "#F59E0B",
+    badgeBg: "rgba(245, 158, 11, 0.1)",
+    glowColor: "rgba(245, 158, 11, 0.05)",
+    borderColor: "rgba(245, 158, 11, 0.2)"
   },
   {
-    title: "Smart Production Planning",
-    desc: "Organize sourcing, manufacturing, and timelines efficiently for faster delivery cycles.",
-    image: "/photo52.png",
+    id: "02",
+    tag: "No Workflow Visibility",
+    title: "No Workflow Visibility",
+    desc: "Disjointed processes, status tracking errors, and workflow bottlenecks.",
+    accent: "#EF4444",
+    badgeBg: "rgba(239, 68, 68, 0.1)",
+    glowColor: "rgba(239, 68, 68, 0.05)",
+    borderColor: "rgba(239, 68, 68, 0.2)"
   },
   {
-    title: "Scalable Fashion Operations",
-    desc: "Manage growing collections and production demands with flexible and modern workflows.",
-    image: "/photo53.png",
+    id: "03",
+    tag: "Long Time-to-Market",
+    title: "Long Time-to-Market",
+    desc: "Delays in sampling and production milestones pushing collection timelines.",
+    accent: "#3B82F6",
+    badgeBg: "rgba(59, 130, 246, 0.1)",
+    glowColor: "rgba(59, 130, 246, 0.05)",
+    borderColor: "rgba(59, 130, 246, 0.2)"
   },
+  {
+    id: "04",
+    tag: "Delayed Approvals",
+    title: "Delayed Approvals",
+    desc: "Approval bottlenecks and delayed sample feedback loops.",
+    accent: "#8B5CF6",
+    badgeBg: "rgba(139, 92, 246, 0.1)",
+    glowColor: "rgba(139, 92, 246, 0.05)",
+    borderColor: "rgba(139, 92, 246, 0.2)"
+  },
+  {
+    id: "05",
+    tag: "Production Tracking Issues",
+    title: "Production Tracking Issues",
+    desc: "Lack of real-time visibility into vendor operations and factory progress.",
+    accent: "#06B6D4",
+    badgeBg: "rgba(6, 182, 212, 0.1)",
+    glowColor: "rgba(6, 182, 212, 0.05)",
+    borderColor: "rgba(6, 182, 212, 0.2)"
+  }
 ];
 
 export default function InteractiveWorkflowSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [scrollRange, setScrollRange] = useState(0);
+  const [activeCard, setActiveCard] = useState(0);
+
+  useEffect(() => {
+    const calculateRange = () => {
+      if (trackRef.current) {
+        setScrollRange(trackRef.current.scrollWidth - window.innerWidth);
+      }
+    };
+    
+    // Run after components mount
+    calculateRange();
+    
+    // Add event listener for resizing
+    window.addEventListener("resize", calculateRange);
+    return () => window.removeEventListener("resize", calculateRange);
+  }, []);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+  });
+
+  // Slide horizontally based on scroll progress
+  const x = useTransform(scrollYProgress, [0, 1], [0, -scrollRange]);
+
+  // Sync active card index with scroll position
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    const cardIndex = Math.min(4, Math.floor(latest * 5.1)); // Multiply by 5.1 to buffer the end
+    setActiveCard(cardIndex);
+  });
 
   return (
-    <SectionWrapper id="features" className="bg-transparent border-t border-white/5 !py-16 md:!py-20">
-      <div className="max-w-4xl mx-auto text-center mb-12 md:mb-16">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#5eb1ff] mb-6 tracking-tight"
+    <section 
+      ref={containerRef} 
+      className="relative h-[480vh] bg-transparent"
+      id="problems-horizontal"
+    >
+      {/* Pinned Sticky Wrapper */}
+      <div className="sticky top-0 h-screen w-full flex items-center overflow-hidden bg-transparent">
+        {/* Background Elements */}
+        <div className="animated-grid opacity-25 pointer-events-none" />
+        <div className="glow-orb w-[600px] h-[600px] bg-rich-blue/5 top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        <div className="glow-orb w-[500px] h-[500px] bg-teal-accent/5 top-1/3 right-1/4 translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+
+        {/* Top Sticky Header */}
+        <div className="absolute top-[8%] left-[10vw] lg:left-[15vw] z-20 space-y-2 pointer-events-none">
+          <span className="text-[10px] md:text-xs uppercase tracking-[0.25em] text-[#ff7b7b] font-bold">The Sourcing Pain Points</span>
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-white tracking-tight leading-none">
+            Why Fashion Supply Chains <span className="text-gradient">Break Down</span>
+          </h2>
+        </div>
+
+        {/* Horizontal Moving Track */}
+        <motion.div 
+          ref={trackRef} 
+          style={{ x }} 
+          className="flex gap-12 md:gap-20 items-center h-full pl-[10vw] pr-[10vw] lg:pl-[15vw] lg:pr-[15vw] pt-[15vh] pb-[10vh] overflow-visible select-none"
         >
-          Built for Fashion Teams <br className="hidden md:block" /> That Move Fast
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-lg text-white leading-relaxed max-w-2xl mx-auto"
-        >
-          Modozo connects design, approvals, vendors, sampling, and production into one unified workflow — helping teams eliminate delays, reduce miscommunication, and launch collections faster.
-        </motion.p>
-      </div>
+          {cardsData.map((card, i) => {
+            if (i === 0) {
+              return (
+                <div 
+                  key={card.id}
+                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                >
+                  {/* Subtle background colored glow inside card */}
+                  <div 
+                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
+                    style={{ backgroundColor: card.accent }}
+                  />
 
-      {/* Interactive Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-12">
-        {workflowData.map((item, index) => (
-          <motion.div
-            key={index}
-            onMouseEnter={() => setActiveIndex(index)}
-            onClick={() => setActiveIndex(index)}
-            className={`cursor-pointer p-6 rounded-[2rem] transition-all duration-500 relative overflow-hidden group border ${activeIndex === index
-              ? "bg-gradient-to-br from-[#e8d08a] to-[#d4a94e] border-[#d8b86d] shadow-[0_0_40px_rgba(216,184,109,0.2)]"
-              : "bg-gradient-to-br from-[#d8b86d]/10 to-[#c9a545]/10 border-white/5 hover:from-[#d8b86d]/18 hover:to-[#c9a545]/18 hover:border-[#d8b86d]/30"
-              }`}
-          >
-            {/* Active Glow */}
-            <div className={`absolute -inset-10 bg-[#d8b86d]/10 blur-[60px] rounded-full transition-opacity duration-700 ${activeIndex === index ? "opacity-100" : "opacity-0"}`} />
+                  {/* Header: Title only */}
+                  <div className="z-10 text-left">
+                    <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                      Scattered Communication
+                    </h3>
+                  </div>
 
-            <div className="relative z-10 h-full flex flex-col justify-center pt-2">
-              <h3 className={`text-xl font-bold mb-3 transition-all duration-500 ${activeIndex === index ? "text-[#06101F] translate-x-1" : "text-white/60"}`}>
-                {item.title}
-              </h3>
+                  {/* Video visual area with SaaS style border and shadow */}
+                  <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
+                    <div className="w-full max-h-full aspect-[1412/634] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                      <video 
+                        src="/scattered.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                        style={{ pointerEvents: "none" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            }
 
-              <p className={`text-sm leading-relaxed transition-all duration-500 ${activeIndex === index ? "text-[#06101F]/80" : "text-white/30"}`}>
-                {item.desc}
-              </p>
+            if (i === 1) {
+              return (
+                <div 
+                  key={card.id}
+                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                >
+                  {/* Subtle background colored glow inside card */}
+                  <div 
+                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
+                    style={{ backgroundColor: card.accent }}
+                  />
 
-              {/* Selection Indicator */}
-              <div className="mt-6 overflow-hidden h-[1px] w-full bg-white/5">
-                <motion.div
-                  className="h-full bg-[#5eb1ff]"
-                  initial={{ x: "-100%" }}
-                  animate={{ x: activeIndex === index ? "0%" : "-100%" }}
-                  transition={{ duration: 0.5, ease: "circOut" }}
+                  {/* Header: Title only */}
+                  <div className="z-10 text-left">
+                    <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                      No Workflow Visibility
+                    </h3>
+                  </div>
+
+                  {/* Video visual area with SaaS style border and shadow */}
+                  <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
+                    <div className="w-full max-h-full aspect-[1246/680] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                      <video 
+                        src="/workflow.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                        style={{ pointerEvents: "none" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            if (i === 2) {
+              return (
+                <div 
+                  key={card.id}
+                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                >
+                  {/* Subtle background colored glow inside card */}
+                  <div 
+                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
+                    style={{ backgroundColor: card.accent }}
+                  />
+
+                  {/* Header: Title only */}
+                  <div className="z-10 text-left">
+                    <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                      Long Time-to-Market
+                    </h3>
+                  </div>
+
+                  {/* Video visual area with SaaS style border and shadow */}
+                  <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
+                    <div className="w-full max-h-full aspect-[1312/684] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                      <video 
+                        src="/timetomarket.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                        style={{ pointerEvents: "none" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            if (i === 3) {
+              return (
+                <div 
+                  key={card.id}
+                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                >
+                  {/* Subtle background colored glow inside card */}
+                  <div 
+                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
+                    style={{ backgroundColor: card.accent }}
+                  />
+
+                  {/* Header: Title only */}
+                  <div className="z-10 text-left">
+                    <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                      Delayed Approvals
+                    </h3>
+                  </div>
+
+                  {/* Video visual area with SaaS style border and shadow */}
+                  <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
+                    <div className="w-full max-h-full aspect-[1418/546] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                      <video 
+                        src="/delayed.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                        style={{ pointerEvents: "none" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <div 
+                key={card.id}
+                className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+              >
+                {/* Subtle background colored glow inside card */}
+                <div 
+                  className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
+                  style={{ backgroundColor: card.accent }}
                 />
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
 
-      {/* Dynamic Visual Area */}
-      <div className="relative w-full max-w-5xl mx-auto aspect-[16/9] md:aspect-[21/9] lg:aspect-[2.4/1] rounded-[2rem] overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeIndex}
-            initial={{ opacity: 0, scale: 1.02, filter: "blur(10px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={itemForIndex(activeIndex).image}
-              alt={itemForIndex(activeIndex).title}
-              fill
-              className="object-cover brightness-110 contrast-[1.05]"
-              priority
-            />
-          </motion.div>
-        </AnimatePresence>
+                {/* Header: Title only */}
+                <div className="z-10 text-left">
+                  <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                    Production Tracking Issues
+                  </h3>
+                </div>
+
+                {/* Video visual area with SaaS style border and shadow */}
+                <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
+                  <div className="w-full max-h-full aspect-[1326/610] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                    <video 
+                      src="/fifth.mp4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                      style={{ pointerEvents: "none" }}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </motion.div>
+
+        {/* Bottom Navigation Progress Indicator */}
+        <div className="absolute bottom-[8%] left-[10vw] lg:left-[15vw] z-20 flex items-center gap-6 pointer-events-none">
+          <div className="text-xs md:text-sm font-bold text-white/40 tracking-wider">
+            <span className="text-white text-base md:text-lg font-black">{String(activeCard + 1).padStart(2, '0')}</span> / 05
+          </div>
+          <div className="flex gap-2">
+            {cardsData.map((_, i) => (
+              <div 
+                key={i}
+                className={`h-1 rounded-full transition-all duration-500 ${
+                  i === activeCard ? "w-10 bg-electric-blue shadow-[0_0_10px_rgba(59,130,246,0.5)]" : "w-2 bg-white/20"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
-    </SectionWrapper>
+    </section>
   );
 }
 
-function itemForIndex(index: number) {
-  return workflowData[index] || workflowData[0];
+// ---------------------------------------------------------
+// Visual Mockups for the Supply Chain Pain Points
+// ---------------------------------------------------------
+
+function ExcelMockup() {
+  return (
+    <div className="w-full h-full flex flex-col text-left font-mono text-[10px] md:text-xs">
+      <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-2">
+        <div className="flex items-center gap-1.5">
+          <FileSpreadsheet size={14} className="text-amber-500" />
+          <span className="text-white/60 font-semibold truncate">techpack_bom_v14_final.xlsx</span>
+        </div>
+        <span className="text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded text-[8px] uppercase tracking-wider font-sans font-bold flex items-center gap-1">
+          <AlertTriangle size={8} /> Conflict
+        </span>
+      </div>
+
+      <div className="grid grid-cols-4 gap-1 text-slate-500 font-bold border-b border-white/5 pb-1 mb-1">
+        <div>POM</div>
+        <div>Specs</div>
+        <div>Tolerance</div>
+        <div>Status</div>
+      </div>
+
+      <div className="space-y-1.5 flex-1 overflow-hidden">
+        <div className="grid grid-cols-4 gap-1 text-slate-300">
+          <div className="truncate">Collar Width</div>
+          <div>42 cm</div>
+          <div>+/- 0.5</div>
+          <div className="text-emerald-400">Approved</div>
+        </div>
+        <div className="grid grid-cols-4 gap-1 text-slate-300 bg-red-500/5 border border-red-500/20 p-0.5 rounded">
+          <div className="truncate font-semibold text-red-300">Sleeve Length</div>
+          <div className="text-red-300 line-through">60 cm</div>
+          <div className="text-amber-300">62 cm ??</div>
+          <div className="text-red-400 font-bold">Overwrite</div>
+        </div>
+        <div className="grid grid-cols-4 gap-1 text-slate-400">
+          <div className="truncate">Cuff Opening</div>
+          <div>14 cm</div>
+          <div>+/- 0.3</div>
+          <div className="text-slate-500">Pending</div>
+        </div>
+        <div className="grid grid-cols-4 gap-1 text-slate-400">
+          <div className="truncate">Chest Width</div>
+          <div>54 cm</div>
+          <div>+/- 1.0</div>
+          <div className="text-emerald-400">Approved</div>
+        </div>
+      </div>
+
+      <div className="mt-2 pt-2 border-t border-white/5 text-[9px] text-amber-500 flex items-center gap-1">
+        <AlertTriangle size={10} /> Conflict: Modified by Sai (Pattern Maker) 3 mins ago
+      </div>
+    </div>
+  );
+}
+
+function ChatMockup() {
+  return (
+    <div className="w-full h-full flex flex-col justify-between text-left text-[10px] md:text-xs">
+      <div className="flex items-center gap-2 border-b border-white/5 pb-2 mb-2">
+        <MessageSquare size={14} className="text-red-400" />
+        <span className="text-white/60 font-semibold">Vendor WhatsApp Chat (Group)</span>
+      </div>
+
+      <div className="space-y-2 flex-1 overflow-hidden">
+        <div className="flex gap-2 items-start max-w-[85%]">
+          <div className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center font-bold text-[8px]">D</div>
+          <div className="bg-white/5 p-2 rounded-xl rounded-tl-none border border-white/5">
+            <p className="text-slate-300 leading-tight">Should we proceed with the polyester blend or the 100% organic cotton?</p>
+            <span className="text-[7px] text-slate-500 block mt-1">Designer • 10:14 AM</span>
+          </div>
+        </div>
+        <div className="flex gap-2 items-start max-w-[85%] ml-auto flex-row-reverse">
+          <div className="w-5 h-5 rounded-full bg-teal-accent/20 border border-teal-accent/40 text-teal-300 flex items-center justify-center font-bold text-[8px]">M</div>
+          <div className="bg-electric-blue/15 p-2 rounded-xl rounded-tr-none border border-electric-blue/25 text-right">
+            <p className="text-slate-200 leading-tight">Go with organic cotton, standard dye. Let's start production.</p>
+            <span className="text-[7px] text-slate-400 block mt-1">Sourcing Mgr • 11:32 AM</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-2 pt-2 border-t border-white/5 text-[8px] uppercase tracking-wider text-red-400 font-bold flex items-center gap-1.5">
+        <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-pulse" />
+        Traceability Error: Decision not logged in the platform
+      </div>
+    </div>
+  );
+}
+
+function FolderMockup() {
+  return (
+    <div className="w-full h-full flex flex-col text-left text-[10px] md:text-xs">
+      <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-2">
+        <div className="flex items-center gap-1.5">
+          <Search size={12} className="text-slate-400" />
+          <span className="text-white/60 font-semibold font-mono">search: "jacket_spec"</span>
+        </div>
+        <span className="text-slate-500 text-[9px] font-mono">42 files found</span>
+      </div>
+
+      <div className="space-y-1.5 flex-1 overflow-hidden font-mono text-[9px] md:text-[10px]">
+        <div className="flex items-center justify-between p-1.5 rounded bg-white/[0.02] border border-white/5">
+          <div className="flex items-center gap-2 text-slate-300">
+            <FileText size={12} className="text-red-400" />
+            <span className="truncate">jacket_spec_final_v3.pdf</span>
+          </div>
+          <span className="text-slate-500">Google Drive</span>
+        </div>
+        <div className="flex items-center justify-between p-1.5 rounded bg-red-500/5 border border-red-500/10">
+          <div className="flex items-center gap-2 text-red-300">
+            <FileText size={12} className="text-amber-500" />
+            <span className="truncate">jacket_spec_revised_FINAL.pdf</span>
+          </div>
+          <span className="text-red-400/70 font-semibold">Local (Sai's Mac)</span>
+        </div>
+        <div className="flex items-center justify-between p-1.5 rounded bg-white/[0.02] border border-white/5">
+          <div className="flex items-center gap-2 text-slate-300">
+            <FileText size={12} className="text-blue-400" />
+            <span className="truncate">jacket_spec_factory_version.pdf</span>
+          </div>
+          <span className="text-slate-500">Email attachment</span>
+        </div>
+      </div>
+
+      <div className="mt-2 pt-2 border-t border-white/5 text-[9px] text-[#3B82F6] flex items-center gap-1">
+        <EyeOff size={10} className="shrink-0" /> Version Blindness: No centralized file control
+      </div>
+    </div>
+  );
+}
+
+function TimelineMockup() {
+  return (
+    <div className="w-full h-full flex flex-col text-left text-[10px] md:text-xs">
+      <div className="flex items-center gap-2 border-b border-white/5 pb-2 mb-2">
+        <CalendarClock size={14} className="text-[#8B5CF6]" />
+        <span className="text-white/60 font-semibold">Gantt Production Track</span>
+      </div>
+
+      <div className="space-y-2.5 flex-1 overflow-hidden mt-1 font-mono text-[9px] md:text-[10px]">
+        {/* Row 1 */}
+        <div className="space-y-1">
+          <div className="flex justify-between text-slate-500">
+            <span>Sourcing (Lab Dips)</span>
+            <span className="text-emerald-400">Done</span>
+          </div>
+          <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+            <div className="h-full bg-emerald-500 w-[40%]" />
+          </div>
+        </div>
+
+        {/* Row 2 */}
+        <div className="space-y-1">
+          <div className="flex justify-between">
+            <span className="text-slate-300">Fit Sampling</span>
+            <span className="text-red-400 font-bold flex items-center gap-1">
+              <AlertTriangle size={10} /> Delayed +14d
+            </span>
+          </div>
+          <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden relative">
+            <div className="h-full bg-emerald-500 w-[40%]" />
+            <div className="h-full bg-red-500 w-[25%] absolute left-[40%] animate-pulse" />
+          </div>
+        </div>
+
+        {/* Row 3 */}
+        <div className="space-y-1">
+          <div className="flex justify-between text-slate-500">
+            <span>Bulk Production</span>
+            <span>Blocked</span>
+          </div>
+          <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+            <div className="h-full bg-slate-700 w-0" />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-2 pt-2 border-t border-white/5 text-[9px] text-[#8B5CF6] flex items-center gap-1 font-sans">
+        <CloudLightning size={10} className="shrink-0" /> Risk: Sampling delay pushes factory slot by 3 weeks
+      </div>
+    </div>
+  );
+}
+
+function NetworkMockup() {
+  return (
+    <div className="w-full h-full flex flex-col justify-between text-left text-[10px] md:text-xs">
+      <div className="flex items-center gap-2 border-b border-white/5 pb-2 mb-2">
+        <UsersRound size={14} className="text-cyan-400" />
+        <span className="text-white/60 font-semibold">Stakeholder Alignment Graph</span>
+      </div>
+
+      {/* Simplified Node Connectors Visual */}
+      <div className="flex-1 flex items-center justify-between px-6 relative">
+        <div className="absolute inset-x-12 h-[1px] border-t border-dashed border-red-500/30 top-1/2 -translate-y-1/2" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-950/40 border border-red-500/30 px-1.5 py-0.5 rounded text-[8px] font-mono text-red-400 font-bold">
+          Siloed
+        </div>
+        
+        {/* Node 1 */}
+        <div className="flex flex-col items-center gap-1 z-10">
+          <div className="w-8 h-8 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center text-slate-400 font-bold font-mono text-[9px]">BR</div>
+          <span className="text-[7px] text-slate-500 uppercase tracking-wider font-bold">Brand</span>
+        </div>
+
+        {/* Node 2 */}
+        <div className="flex flex-col items-center gap-1 z-10">
+          <div className="w-8 h-8 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center text-slate-400 font-bold font-mono text-[9px]">PA</div>
+          <span className="text-[7px] text-slate-500 uppercase tracking-wider font-bold">Pattern</span>
+        </div>
+
+        {/* Node 3 */}
+        <div className="flex flex-col items-center gap-1 z-10">
+          <div className="w-8 h-8 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center text-slate-400 font-bold font-mono text-[9px]">FA</div>
+          <span className="text-[7px] text-slate-500 uppercase tracking-wider font-bold">Factory</span>
+        </div>
+      </div>
+
+      <div className="mt-2 pt-2 border-t border-white/5 text-[9px] text-[#06B6D4] flex items-center gap-1.5">
+        <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-ping" />
+        Communication Gap: Average 48h latency for minor revisions
+      </div>
+    </div>
+  );
 }
