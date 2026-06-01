@@ -65,9 +65,15 @@ export default function HeroSection() {
           >
             <div className="relative w-full group flex justify-center items-center">
               {/* Seamlessly Integrated Visual */}
-              <div className="relative z-10 w-full flex justify-center items-center overflow-visible">
+              <div 
+                className="relative z-10 w-full flex justify-center items-center overflow-visible"
+                style={{
+                  maskImage: 'radial-gradient(ellipse at center, black 75%, transparent 98%)',
+                  WebkitMaskImage: 'radial-gradient(ellipse at center, black 75%, transparent 98%)'
+                }}
+              >
                 <Image
-                  src="/photo56.png"
+                  src="/photo57.png"
                   alt="Modozo Immersive Fashion Tech Interface"
                   width={1800}
                   height={1800}

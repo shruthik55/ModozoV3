@@ -3,15 +3,15 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import Image from "next/image";
-import { 
-  FileSpreadsheet, 
-  MessageSquare, 
-  FolderSearch, 
-  CalendarClock, 
-  UsersRound, 
-  AlertTriangle, 
-  FileText, 
-  Check, 
+import {
+  FileSpreadsheet,
+  MessageSquare,
+  FolderSearch,
+  CalendarClock,
+  UsersRound,
+  AlertTriangle,
+  FileText,
+  Check,
   Search,
   EyeOff,
   CloudLightning
@@ -93,10 +93,10 @@ export default function InteractiveWorkflowSection() {
         setScrollRange(trackRef.current.scrollWidth - window.innerWidth);
       }
     };
-    
+
     // Run after components mount
     calculateRange();
-    
+
     // Add event listener for resizing
     window.addEventListener("resize", calculateRange);
     return () => window.removeEventListener("resize", calculateRange);
@@ -116,8 +116,8 @@ export default function InteractiveWorkflowSection() {
   });
 
   return (
-    <section 
-      ref={containerRef} 
+    <section
+      ref={containerRef}
       className="relative h-[480vh] bg-transparent"
       id="problems-horizontal"
     >
@@ -137,20 +137,20 @@ export default function InteractiveWorkflowSection() {
         </div>
 
         {/* Horizontal Moving Track */}
-        <motion.div 
-          ref={trackRef} 
-          style={{ x }} 
+        <motion.div
+          ref={trackRef}
+          style={{ x }}
           className="flex gap-12 md:gap-20 items-center h-full pl-[10vw] pr-[10vw] lg:pl-[15vw] lg:pr-[15vw] pt-[15vh] pb-[10vh] overflow-visible select-none"
         >
           {cardsData.map((card, i) => {
             if (i === 0) {
               return (
-                <div 
+                <div
                   key={card.id}
                   className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
-                  <div 
+                  <div
                     className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
                     style={{ backgroundColor: card.accent }}
                   />
@@ -165,7 +165,7 @@ export default function InteractiveWorkflowSection() {
                   {/* Video visual area with SaaS style border and shadow */}
                   <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
                     <div className="w-full max-h-full aspect-[1412/634] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-                      <video 
+                      <video
                         src="/scattered.mp4"
                         autoPlay
                         loop
@@ -182,12 +182,12 @@ export default function InteractiveWorkflowSection() {
 
             if (i === 1) {
               return (
-                <div 
+                <div
                   key={card.id}
                   className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
-                  <div 
+                  <div
                     className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
                     style={{ backgroundColor: card.accent }}
                   />
@@ -202,7 +202,7 @@ export default function InteractiveWorkflowSection() {
                   {/* Video visual area with SaaS style border and shadow */}
                   <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
                     <div className="w-full max-h-full aspect-[1246/680] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-                      <video 
+                      <video
                         src="/workflow.mp4"
                         autoPlay
                         loop
@@ -219,12 +219,12 @@ export default function InteractiveWorkflowSection() {
 
             if (i === 2) {
               return (
-                <div 
+                <div
                   key={card.id}
                   className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
-                  <div 
+                  <div
                     className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
                     style={{ backgroundColor: card.accent }}
                   />
@@ -239,8 +239,8 @@ export default function InteractiveWorkflowSection() {
                   {/* Video visual area with SaaS style border and shadow */}
                   <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
                     <div className="w-full max-h-full aspect-[1312/684] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-                      <video 
-                        src="/timetomarket.mp4"
+                      <video
+                        src="/ltm1.mp4"
                         autoPlay
                         loop
                         muted
@@ -256,12 +256,12 @@ export default function InteractiveWorkflowSection() {
 
             if (i === 3) {
               return (
-                <div 
+                <div
                   key={card.id}
                   className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
-                  <div 
+                  <div
                     className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
                     style={{ backgroundColor: card.accent }}
                   />
@@ -276,7 +276,7 @@ export default function InteractiveWorkflowSection() {
                   {/* Video visual area with SaaS style border and shadow */}
                   <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
                     <div className="w-full max-h-full aspect-[1418/546] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-                      <video 
+                      <video
                         src="/delayed.mp4"
                         autoPlay
                         loop
@@ -292,12 +292,12 @@ export default function InteractiveWorkflowSection() {
             }
 
             return (
-              <div 
+              <div
                 key={card.id}
                 className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
               >
                 {/* Subtle background colored glow inside card */}
-                <div 
+                <div
                   className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
                   style={{ backgroundColor: card.accent }}
                 />
@@ -312,7 +312,7 @@ export default function InteractiveWorkflowSection() {
                 {/* Video visual area with SaaS style border and shadow */}
                 <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
                   <div className="w-full max-h-full aspect-[1326/610] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-                    <video 
+                    <video
                       src="/fifth.mp4"
                       autoPlay
                       loop
@@ -335,11 +335,10 @@ export default function InteractiveWorkflowSection() {
           </div>
           <div className="flex gap-2">
             {cardsData.map((_, i) => (
-              <div 
+              <div
                 key={i}
-                className={`h-1 rounded-full transition-all duration-500 ${
-                  i === activeCard ? "w-10 bg-electric-blue shadow-[0_0_10px_rgba(59,130,246,0.5)]" : "w-2 bg-white/20"
-                }`}
+                className={`h-1 rounded-full transition-all duration-500 ${i === activeCard ? "w-10 bg-electric-blue shadow-[0_0_10px_rgba(59,130,246,0.5)]" : "w-2 bg-white/20"
+                  }`}
               />
             ))}
           </div>
@@ -549,7 +548,7 @@ function NetworkMockup() {
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-950/40 border border-red-500/30 px-1.5 py-0.5 rounded text-[8px] font-mono text-red-400 font-bold">
           Siloed
         </div>
-        
+
         {/* Node 1 */}
         <div className="flex flex-col items-center gap-1 z-10">
           <div className="w-8 h-8 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center text-slate-400 font-bold font-mono text-[9px]">BR</div>
