@@ -129,9 +129,9 @@ export default function InteractiveWorkflowSection() {
         <div className="glow-orb w-[500px] h-[500px] bg-teal-accent/5 top-1/3 right-1/4 translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
         {/* Top Sticky Header */}
-        <div className="absolute top-[8%] left-[10vw] lg:left-[15vw] z-20 space-y-2 pointer-events-none">
-          <span className="text-[10px] md:text-xs uppercase tracking-[0.25em] text-[#ff7b7b] font-bold">The Sourcing Pain Points</span>
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-white tracking-tight leading-none">
+        <div className="absolute top-[3%] left-[5vw] lg:left-[8vw] z-20 space-y-2 pointer-events-none">
+          <span className="text-[9px] md:text-[11px] uppercase tracking-[0.25em] text-[#ff7b7b] font-bold">The Sourcing Pain Points</span>
+          <h2 className="text-xl md:text-3xl lg:text-4xl font-black text-white tracking-tight leading-none">
             Why Fashion Supply Chains <span className="text-gradient">Break Down</span>
           </h2>
         </div>
@@ -140,14 +140,14 @@ export default function InteractiveWorkflowSection() {
         <motion.div
           ref={trackRef}
           style={{ x }}
-          className="flex gap-12 md:gap-20 items-center h-full pl-[10vw] pr-[10vw] lg:pl-[15vw] lg:pr-[15vw] pt-[32vh] pb-[4vh] overflow-visible select-none"
+          className="flex gap-12 md:gap-20 items-center h-full pl-[5vw] pr-[5vw] lg:pl-[8vw] lg:pr-[8vw] pt-[18vh] pb-[8vh] overflow-visible select-none"
         >
           {cardsData.map((card, i) => {
             if (i === 0) {
               return (
                 <div
                   key={card.id}
-                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 py-4 md:px-8 md:py-4 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[75vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
@@ -157,20 +157,20 @@ export default function InteractiveWorkflowSection() {
 
                   {/* Header: Title only */}
                   <div className="z-10 text-left">
-                    <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                    <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-tight">
                       Scattered Communication
                     </h3>
                   </div>
 
                   {/* Visual area with SaaS style border and shadow */}
-                  <div className="z-10 w-full flex items-center justify-center overflow-hidden">
-                    <div className="w-full aspect-[1535/1024] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                  <div className="z-10 w-full flex items-center justify-center overflow-hidden mb-3 md:mb-4">
+                    <div className="w-full aspect-[1535/1024] rounded-[2rem] overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
                       <Image
                         src="/scattered_communication_1.png"
                         alt="Scattered Communication"
                         width={1535}
                         height={1024}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-[2rem]"
                         priority
                         unoptimized
                       />
@@ -184,7 +184,7 @@ export default function InteractiveWorkflowSection() {
               return (
                 <div
                   key={card.id}
-                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 py-4 md:px-8 md:py-4 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[75vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
@@ -194,20 +194,20 @@ export default function InteractiveWorkflowSection() {
 
                   {/* Header: Title only */}
                   <div className="z-10 text-left">
-                    <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                    <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-tight">
                       Delayed Approvals
                     </h3>
                   </div>
 
                   {/* Visual area with SaaS style border and shadow */}
-                  <div className="z-10 w-full flex items-center justify-center overflow-hidden">
-                    <div className="w-full aspect-[1535/1024] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                  <div className="z-10 w-full flex items-center justify-center overflow-hidden mb-3 md:mb-4">
+                    <div className="w-full aspect-[1535/1024] rounded-[2rem] overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
                       <Image
                         src="/delayed_approvals_1.png"
                         alt="Delayed Approvals"
                         width={1535}
                         height={1024}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-[2rem]"
                         priority
                         unoptimized
                       />
@@ -221,7 +221,7 @@ export default function InteractiveWorkflowSection() {
               return (
                 <div
                   key={card.id}
-                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 py-4 md:px-8 md:py-4 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[75vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
@@ -231,20 +231,20 @@ export default function InteractiveWorkflowSection() {
 
                   {/* Header: Title only */}
                   <div className="z-10 text-left">
-                    <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                    <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-tight">
                       Long Time-to-Market
                     </h3>
                   </div>
 
                   {/* Visual area with SaaS style border and shadow */}
-                  <div className="z-10 w-full flex items-center justify-center overflow-hidden">
-                    <div className="w-full aspect-[1535/1024] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                  <div className="z-10 w-full flex items-center justify-center overflow-hidden mb-3 md:mb-4">
+                    <div className="w-full aspect-[1535/1024] rounded-[2rem] overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
                       <Image
                         src="/long_time_to_market_1.png"
                         alt="Long Time-to-Market"
                         width={1535}
                         height={1024}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain rounded-[2rem]"
                         priority
                         unoptimized
                       />
@@ -258,7 +258,7 @@ export default function InteractiveWorkflowSection() {
               return (
                 <div
                   key={card.id}
-                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 py-4 md:px-8 md:py-4 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[75vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
@@ -268,20 +268,20 @@ export default function InteractiveWorkflowSection() {
 
                   {/* Header: Title only */}
                   <div className="z-10 text-left">
-                    <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                    <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-tight">
                       Techpack Mismanagement
                     </h3>
                   </div>
 
                   {/* Visual area with SaaS style border and shadow */}
-                  <div className="z-10 w-full flex items-center justify-center overflow-hidden">
-                    <div className="w-full aspect-[1535/1024] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                  <div className="z-10 w-full flex items-center justify-center overflow-hidden mb-3 md:mb-4">
+                    <div className="w-full aspect-[1535/1024] rounded-[2rem] overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
                       <Image
                         src="/Techpack_mismanagement_1.png"
                         alt="Techpack Mismanagement"
                         width={1535}
                         height={1024}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain rounded-[2rem]"
                         priority
                         unoptimized
                       />
@@ -294,7 +294,7 @@ export default function InteractiveWorkflowSection() {
             return (
               <div
                 key={card.id}
-                className="w-[80vw] lg:w-[70vw] max-w-4xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 py-4 md:px-8 md:py-4 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                className="w-[75vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
               >
                 {/* Subtle background colored glow inside card */}
                 <div
@@ -304,21 +304,21 @@ export default function InteractiveWorkflowSection() {
 
                 {/* Header: Title only */}
                 <div className="z-10 text-left">
-                  <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                  <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-tight">
                     Production Tracking Issues
                   </h3>
                 </div>
 
                 {/* Video visual area with SaaS style border and shadow */}
-                <div className="z-10 w-full flex items-center justify-center overflow-hidden">
-                  <div className="w-full aspect-[1535/1024] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                <div className="z-10 w-full flex items-center justify-center overflow-hidden mb-3 md:mb-4">
+                  <div className="w-full aspect-[1535/1024] rounded-[2rem] overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
                     <video
                       src="/fifth.mp4"
                       autoPlay
                       loop
                       muted
                       playsInline
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-[2rem]"
                       style={{ pointerEvents: "none" }}
                     />
                   </div>
@@ -329,7 +329,7 @@ export default function InteractiveWorkflowSection() {
         </motion.div>
 
         {/* Bottom Navigation Progress Indicator */}
-        <div className="absolute bottom-[8%] left-[10vw] lg:left-[15vw] z-20 flex items-center gap-6 pointer-events-none">
+        <div className="absolute bottom-[2.5%] left-[5vw] lg:left-[8vw] z-20 flex items-center gap-6 pointer-events-none">
           <div className="flex gap-2">
             {cardsData.map((_, i) => (
               <div
