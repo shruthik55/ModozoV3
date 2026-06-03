@@ -2,6 +2,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/sections/HeroSection";
 import InteractiveWorkflowSection from "@/components/sections/InteractiveWorkflowSection";
+import PlatformShowcaseSection from "@/components/sections/PlatformShowcaseSection";
 import WorkflowSplit from "@/components/sections/WorkflowSplit";
 import IntegrationsSection from "@/components/sections/IntegrationsSection";
 import VIPServiceSection from "@/components/sections/VIPServiceSection";
@@ -16,6 +17,9 @@ export default function Home() {
 
       {/* 2. Interactive Workflow (Dark) - Inspired by plmbr.ai */}
       <InteractiveWorkflowSection />
+
+      {/* 3. Platform Showcase (Dark) - Canopy-style sticky nav + cards */}
+      <PlatformShowcaseSection />
 
       {/* 4. Workflow Block A: Faster to Market (Dark) */}
       <WorkflowSplit
