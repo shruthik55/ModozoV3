@@ -73,7 +73,7 @@ export default function HeroSection() {
                 }}
               >
                 <Image
-                  src="/photo57.png"
+                  src="/Hero_1.png"
                   alt="Modozo Immersive Fashion Tech Interface"
                   width={1800}
                   height={1800}

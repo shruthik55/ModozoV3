@@ -140,14 +140,14 @@ export default function InteractiveWorkflowSection() {
         <motion.div
           ref={trackRef}
           style={{ x }}
-          className="flex gap-12 md:gap-20 items-center h-full pl-[10vw] pr-[10vw] lg:pl-[15vw] lg:pr-[15vw] pt-[15vh] pb-[10vh] overflow-visible select-none"
+          className="flex gap-12 md:gap-20 items-center h-full pl-[10vw] pr-[10vw] lg:pl-[15vw] lg:pr-[15vw] pt-[32vh] pb-[4vh] overflow-visible select-none"
         >
           {cardsData.map((card, i) => {
             if (i === 0) {
               return (
                 <div
                   key={card.id}
-                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 py-4 md:px-8 md:py-4 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
@@ -162,17 +162,17 @@ export default function InteractiveWorkflowSection() {
                     </h3>
                   </div>
 
-                  {/* Video visual area with SaaS style border and shadow */}
-                  <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
-                    <div className="w-full max-h-full aspect-[1412/634] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-                      <video
-                        src="/scattered.mp4"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
+                  {/* Visual area with SaaS style border and shadow */}
+                  <div className="z-10 w-full flex items-center justify-center overflow-hidden">
+                    <div className="w-full aspect-[1535/1024] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                      <Image
+                        src="/scattered_communication_1.png"
+                        alt="Scattered Communication"
+                        width={1535}
+                        height={1024}
                         className="w-full h-full object-cover"
-                        style={{ pointerEvents: "none" }}
+                        priority
+                        unoptimized
                       />
                     </div>
                   </div>
@@ -184,81 +184,7 @@ export default function InteractiveWorkflowSection() {
               return (
                 <div
                   key={card.id}
-                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
-                >
-                  {/* Subtle background colored glow inside card */}
-                  <div
-                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
-                    style={{ backgroundColor: card.accent }}
-                  />
-
-                  {/* Header: Title only */}
-                  <div className="z-10 text-left">
-                    <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                      No Workflow Visibility
-                    </h3>
-                  </div>
-
-                  {/* Video visual area with SaaS style border and shadow */}
-                  <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
-                    <div className="w-full max-h-full aspect-[1246/680] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-                      <video
-                        src="/workflow.mp4"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover"
-                        style={{ pointerEvents: "none" }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-
-            if (i === 2) {
-              return (
-                <div
-                  key={card.id}
-                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
-                >
-                  {/* Subtle background colored glow inside card */}
-                  <div
-                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
-                    style={{ backgroundColor: card.accent }}
-                  />
-
-                  {/* Header: Title only */}
-                  <div className="z-10 text-left">
-                    <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                      Long Time-to-Market
-                    </h3>
-                  </div>
-
-                  {/* Video visual area with SaaS style border and shadow */}
-                  <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
-                    <div className="w-full max-h-full aspect-[1312/684] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-                      <video
-                        src="/ltm1.mp4"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover"
-                        style={{ pointerEvents: "none" }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-
-            if (i === 3) {
-              return (
-                <div
-                  key={card.id}
-                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 py-4 md:px-8 md:py-4 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
@@ -273,17 +199,91 @@ export default function InteractiveWorkflowSection() {
                     </h3>
                   </div>
 
-                  {/* Video visual area with SaaS style border and shadow */}
-                  <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
-                    <div className="w-full max-h-full aspect-[1418/546] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-                      <video
-                        src="/delayed.mp4"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
+                  {/* Visual area with SaaS style border and shadow */}
+                  <div className="z-10 w-full flex items-center justify-center overflow-hidden">
+                    <div className="w-full aspect-[1535/1024] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                      <Image
+                        src="/delayed_approvals_1.png"
+                        alt="Delayed Approvals"
+                        width={1535}
+                        height={1024}
                         className="w-full h-full object-cover"
-                        style={{ pointerEvents: "none" }}
+                        priority
+                        unoptimized
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            if (i === 2) {
+              return (
+                <div
+                  key={card.id}
+                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 py-4 md:px-8 md:py-4 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                >
+                  {/* Subtle background colored glow inside card */}
+                  <div
+                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
+                    style={{ backgroundColor: card.accent }}
+                  />
+
+                  {/* Header: Title only */}
+                  <div className="z-10 text-left">
+                    <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                      Long Time-to-Market
+                    </h3>
+                  </div>
+
+                  {/* Visual area with SaaS style border and shadow */}
+                  <div className="z-10 w-full flex items-center justify-center overflow-hidden">
+                    <div className="w-full aspect-[1535/1024] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                      <Image
+                        src="/long_time_to_market_1.png"
+                        alt="Long Time-to-Market"
+                        width={1535}
+                        height={1024}
+                        className="w-full h-full object-contain"
+                        priority
+                        unoptimized
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            if (i === 3) {
+              return (
+                <div
+                  key={card.id}
+                  className="w-[80vw] lg:w-[70vw] max-w-4xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 py-4 md:px-8 md:py-4 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                >
+                  {/* Subtle background colored glow inside card */}
+                  <div
+                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
+                    style={{ backgroundColor: card.accent }}
+                  />
+
+                  {/* Header: Title only */}
+                  <div className="z-10 text-left">
+                    <h3 className="text-xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                      Techpack Mismanagement
+                    </h3>
+                  </div>
+
+                  {/* Visual area with SaaS style border and shadow */}
+                  <div className="z-10 w-full flex items-center justify-center overflow-hidden">
+                    <div className="w-full aspect-[1535/1024] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                      <Image
+                        src="/Techpack_mismanagement_1.png"
+                        alt="Techpack Mismanagement"
+                        width={1535}
+                        height={1024}
+                        className="w-full h-full object-contain"
+                        priority
+                        unoptimized
                       />
                     </div>
                   </div>
@@ -294,7 +294,7 @@ export default function InteractiveWorkflowSection() {
             return (
               <div
                 key={card.id}
-                className="w-[80vw] lg:w-[70vw] max-w-4xl h-[58vh] md:h-[60vh] shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                className="w-[80vw] lg:w-[70vw] max-w-4xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 py-4 md:px-8 md:py-4 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
               >
                 {/* Subtle background colored glow inside card */}
                 <div
@@ -310,8 +310,8 @@ export default function InteractiveWorkflowSection() {
                 </div>
 
                 {/* Video visual area with SaaS style border and shadow */}
-                <div className="z-10 flex-1 w-full flex items-center justify-center overflow-hidden">
-                  <div className="w-full max-h-full aspect-[1326/610] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                <div className="z-10 w-full flex items-center justify-center overflow-hidden">
+                  <div className="w-full aspect-[1535/1024] rounded-2xl overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
                     <video
                       src="/fifth.mp4"
                       autoPlay
@@ -330,9 +330,6 @@ export default function InteractiveWorkflowSection() {
 
         {/* Bottom Navigation Progress Indicator */}
         <div className="absolute bottom-[8%] left-[10vw] lg:left-[15vw] z-20 flex items-center gap-6 pointer-events-none">
-          <div className="text-xs md:text-sm font-bold text-white/40 tracking-wider">
-            <span className="text-white text-base md:text-lg font-black">{String(activeCard + 1).padStart(2, '0')}</span> / 05
-          </div>
           <div className="flex gap-2">
             {cardsData.map((_, i) => (
               <div
