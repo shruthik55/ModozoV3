@@ -10,9 +10,11 @@ import {
   FlaskConical,
   Eye,
   Users,
+  Activity,
 } from "lucide-react";
 import CentralizedCollaborationVisual from "./CentralizedCollaborationVisual";
 import VendorManagementVisual from "./VendorManagementVisual";
+import ProductionTrackingVisual from "./ProductionTrackingVisual";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -49,14 +51,14 @@ const features: FeatureCard[] = [
       "Modozo brings your brand, designers, pattern makers, fit specialists, and vendor networks together on a single immersive platform to eliminate communication silos.",
   },
   {
-    id: "vendor-connect",
-    slug: "vendor-connect",
-    title: "Vendor Connect",
-    icon: Link2,
-    image: "/feature_vendor.png",
-    boldText: "Centralize all vendor communications.",
+    id: "production-tracking",
+    slug: "production-tracking",
+    title: "Real-time Production Tracking",
+    icon: Activity,
+    image: "/production_tracking.png",
+    boldText: "Track production milestones from cutting to shipment.",
     description:
-      "Replace scattered WhatsApp threads and email chains with a single portal for vendor quotes, sample approvals, and real-time factory updates.",
+      "Get end-to-end visibility into your manufacturing lines. Automated factory floor updates, real-time scanning logs, and instant bottleneck alerts keep your delivery dates secure.",
   },
   {
     id: "sample-manager",
@@ -269,6 +271,16 @@ export default function PlatformShowcaseSection() {
                           className="relative mt-6 w-full"
                         >
                           <CentralizedCollaborationVisual />
+                        </motion.div>
+                      ) : feat.id === "production-tracking" ? (
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-50px" }}
+                          transition={{ duration: 0.6, delay: 0.2 }}
+                          className="relative mt-6 w-full"
+                        >
+                          <ProductionTrackingVisual />
                         </motion.div>
                       ) : feat.id === "sample-manager" ? (
                         <motion.div

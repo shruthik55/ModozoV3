@@ -65,7 +65,7 @@ export default function HeroSection() {
           >
             <div className="relative w-full group flex justify-center items-center">
               {/* Seamlessly Integrated Visual */}
-              <div 
+              <div
                 className="relative z-10 w-full aspect-square max-w-[85vh] lg:max-w-[95vh] flex justify-center items-center overflow-hidden"
                 style={{
                   maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent), linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)',
