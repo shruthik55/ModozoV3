@@ -69,16 +69,6 @@ const cardsData: Card[] = [
     glowColor: "rgba(139, 92, 246, 0.05)",
     borderColor: "rgba(139, 92, 246, 0.2)"
   },
-  {
-    id: "05",
-    tag: "Production Tracking Issues",
-    title: "Production Tracking Issues",
-    desc: "Lack of real-time visibility into vendor operations and factory progress.",
-    accent: "#06B6D4",
-    badgeBg: "rgba(6, 182, 212, 0.1)",
-    glowColor: "rgba(6, 182, 212, 0.05)",
-    borderColor: "rgba(6, 182, 212, 0.2)"
-  }
 ];
 
 export default function InteractiveWorkflowSection() {
@@ -111,7 +101,7 @@ export default function InteractiveWorkflowSection() {
 
   // Sync active card index with scroll position
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const cardIndex = Math.min(4, Math.floor(latest * 5.1)); // Multiply by 5.1 to buffer the end
+    const cardIndex = Math.min(3, Math.floor(latest * 4.1)); // Multiply by 4.1 to buffer the end
     setActiveCard(cardIndex);
   });
 
@@ -129,10 +119,10 @@ export default function InteractiveWorkflowSection() {
         <div className="glow-orb w-[500px] h-[500px] bg-teal-accent/5 top-1/3 right-1/4 translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
         {/* Top Sticky Header */}
-        <div className="absolute top-[3%] left-[6vw] lg:left-[8vw] z-20 space-y-2 pointer-events-none">
-          <span className="text-[9px] md:text-[11px] uppercase tracking-[0.25em] text-[#ff7b7b] font-bold">The Sourcing Pain Points</span>
+        <div className="absolute top-[6%] left-[8vw] lg:left-[10vw] z-20 space-y-2 pointer-events-none">
+          {/* <span className="text-[9px] md:text-[11px] uppercase tracking-[0.25em] text-[#ff7b7b] font-bold">The Sourcing Pain Points</span> */}
           <h2 className="text-xl md:text-3xl lg:text-4xl font-black text-white tracking-tight leading-none">
-            Why Fashion Supply Chains <span className="text-gradient">Break Down</span>
+            Multiple tools. Limited visibility. Slower collaboration.
           </h2>
         </div>
 
@@ -157,7 +147,7 @@ export default function InteractiveWorkflowSection() {
 
                   {/* Header: Title only */}
                   <div className="z-10 text-left">
-                    <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                    <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-[#bd9128] tracking-tight leading-tight">
                       Scattered Communication
                     </h3>
                   </div>
@@ -194,7 +184,7 @@ export default function InteractiveWorkflowSection() {
 
                   {/* Header: Title only */}
                   <div className="z-10 text-left">
-                    <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                    <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-[#bd9128] tracking-tight leading-tight">
                       Delayed Approvals
                     </h3>
                   </div>
@@ -231,7 +221,7 @@ export default function InteractiveWorkflowSection() {
 
                   {/* Header: Title only */}
                   <div className="z-10 text-left">
-                    <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                    <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-[#bd9128] tracking-tight leading-tight">
                       Long Time-to-Market
                     </h3>
                   </div>
@@ -268,7 +258,7 @@ export default function InteractiveWorkflowSection() {
 
                   {/* Header: Title only */}
                   <div className="z-10 text-left">
-                    <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                    <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-[#bd9128] tracking-tight leading-tight">
                       Techpack Mismanagement
                     </h3>
                   </div>
@@ -291,40 +281,7 @@ export default function InteractiveWorkflowSection() {
               );
             }
 
-            return (
-              <div
-                key={card.id}
-                className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
-              >
-                {/* Subtle background colored glow inside card */}
-                <div
-                  className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
-                  style={{ backgroundColor: card.accent }}
-                />
-
-                {/* Header: Title only */}
-                <div className="z-10 text-left">
-                  <h3 className="text-lg md:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-tight">
-                    Production Tracking Issues
-                  </h3>
-                </div>
-
-                {/* Video visual area with SaaS style border and shadow */}
-                <div className="z-10 w-full flex items-center justify-center overflow-hidden mb-3 md:mb-4">
-                  <div className="w-full aspect-[1535/1024] rounded-[2rem] overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
-                    <video
-                      src="/fifth.mp4"
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-full h-full object-cover rounded-[2rem]"
-                      style={{ pointerEvents: "none" }}
-                    />
-                  </div>
-                </div>
-              </div>
-            );
+            return null;
           })}
         </motion.div>
 

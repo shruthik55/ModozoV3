@@ -256,7 +256,7 @@ export default function PlatformShowcaseSection() {
                         <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-electric-blue/20 to-teal-accent/10 border border-white/[0.08] flex items-center justify-center">
                           <Icon size={18} className="text-electric-blue" />
                         </div>
-                        <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+                        <h3 className="text-xl md:text-2xl font-bold text-[#bd9128] tracking-tight">
                           {feat.title}
                         </h3>
                       </motion.div>
