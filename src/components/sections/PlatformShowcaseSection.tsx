@@ -9,8 +9,9 @@ import {
   BarChart3,
   FlaskConical,
   Eye,
-  ShieldCheck,
+  Users,
 } from "lucide-react";
+import CentralizedCollaborationVisual from "./CentralizedCollaborationVisual";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -37,14 +38,14 @@ const features: FeatureCard[] = [
     description: "",
   },
   {
-    id: "style-tracker",
-    slug: "style-tracker",
-    title: "Style Tracker",
-    icon: Eye,
-    image: "/feature_kanban.png",
-    boldText: "Track every garment from concept to shipment.",
+    id: "centralized-collaboration",
+    slug: "centralized-collaboration",
+    title: "Centralized Collaboration",
+    icon: Users,
+    image: "/centralized_collaboration.png",
+    boldText: "Connect your entire fashion workflow in one place.",
     description:
-      "Live Kanban boards, automated Time & Action calendars, and proactive delay alerts keep your entire team aligned across every stage of production.",
+      "Modozo brings your brand, designers, pattern makers, fit specialists, and vendor networks together on a single immersive platform to eliminate communication silos.",
   },
   {
     id: "vendor-connect",
@@ -75,16 +76,6 @@ const features: FeatureCard[] = [
     boldText: "Optimize sourcing and reduce costs.",
     description:
       "Compare vendor quotes side-by-side, track material costs across collections, and uncover savings opportunities with real-time cost breakdowns.",
-  },
-  {
-    id: "quality-guard",
-    slug: "quality-guard",
-    title: "QualityGuard",
-    icon: ShieldCheck,
-    image: "/feature_ai_techpack.png",
-    boldText: "Catch defects before they reach production.",
-    description:
-      "Automated QC checklists, inline inspection reports, and defect tracking ensure every garment meets your brand's quality standards before bulk production.",
   },
 ];
 
@@ -268,6 +259,7 @@ export default function PlatformShowcaseSection() {
                         </h3>
                       </motion.div>
 
+<<<<<<< HEAD
                       {/* Card Image */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -344,6 +336,27 @@ export default function PlatformShowcaseSection() {
                             />
                           </div>
                         ) : (
+=======
+                      {/* Card Image / Video */}
+                      {feat.id === "centralized-collaboration" ? (
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-50px" }}
+                          transition={{ duration: 0.6, delay: 0.2 }}
+                          className="relative mt-6 w-full"
+                        >
+                          <CentralizedCollaborationVisual />
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-50px" }}
+                          transition={{ duration: 0.6, delay: 0.2 }}
+                          className="relative mt-6 flex aspect-[858/400] items-end overflow-hidden rounded-xl"
+                        >
+>>>>>>> cb547a32395f4677839671f919608dc98b7fa9d0
                           <Image
                             alt={feat.title}
                             loading="lazy"
@@ -353,12 +366,19 @@ export default function PlatformShowcaseSection() {
                               transition-transform duration-700 group-hover:scale-[1.02]"
                             src={feat.image}
                           />
+<<<<<<< HEAD
                         )}
                         {/* Bottom gradient fade */}
                         {feat.id !== "techpack-builder" && (
                           <div className="absolute bottom-0 h-[120px] w-full bg-gradient-to-t from-[#050d1a] via-[#050d1a]/60 to-transparent pointer-events-none" />
                         )}
                       </motion.div>
+=======
+                          {/* Bottom gradient fade */}
+                          <div className="absolute bottom-0 h-[120px] w-full bg-gradient-to-t from-[#050d1a] via-[#050d1a]/60 to-transparent pointer-events-none" />
+                        </motion.div>
+                      )}
+>>>>>>> cb547a32395f4677839671f919608dc98b7fa9d0
 
                       {/* Card Footer: Description + Arrow */}
                       <motion.div
