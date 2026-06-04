@@ -10,7 +10,9 @@ import {
   FlaskConical,
   Eye,
   ShieldCheck,
+  Users,
 } from "lucide-react";
+import CentralizedCollaborationVisual from "./CentralizedCollaborationVisual";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -38,14 +40,14 @@ const features: FeatureCard[] = [
       "Modozo's AI-powered Techpack Builder extracts Points of Measure, generates Bills of Materials, and creates grading rules — all from a single sketch upload.",
   },
   {
-    id: "style-tracker",
-    slug: "style-tracker",
-    title: "Style Tracker",
-    icon: Eye,
-    image: "/feature_kanban.png",
-    boldText: "Track every garment from concept to shipment.",
+    id: "centralized-collaboration",
+    slug: "centralized-collaboration",
+    title: "Centralized Collaboration",
+    icon: Users,
+    image: "/centralized_collaboration.png",
+    boldText: "Connect your entire fashion workflow in one place.",
     description:
-      "Live Kanban boards, automated Time & Action calendars, and proactive delay alerts keep your entire team aligned across every stage of production.",
+      "Modozo brings your brand, designers, pattern makers, fit specialists, and vendor networks together on a single immersive platform to eliminate communication silos.",
   },
   {
     id: "vendor-connect",
@@ -268,26 +270,38 @@ export default function PlatformShowcaseSection() {
                         </h3>
                       </motion.div>
 
-                      {/* Card Image */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        className="relative mt-6 flex aspect-[858/400] items-end overflow-hidden rounded-xl"
-                      >
-                        <Image
-                          alt={feat.title}
-                          loading="lazy"
-                          width={1400}
-                          height={700}
-                          className="mx-auto h-full w-[90%] object-contain object-bottom md:w-full md:max-w-[620px]
-                            transition-transform duration-700 group-hover:scale-[1.02]"
-                          src={feat.image}
-                        />
-                        {/* Bottom gradient fade */}
-                        <div className="absolute bottom-0 h-[120px] w-full bg-gradient-to-t from-[#050d1a] via-[#050d1a]/60 to-transparent pointer-events-none" />
-                      </motion.div>
+                      {/* Card Image / Video */}
+                      {feat.id === "centralized-collaboration" ? (
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-50px" }}
+                          transition={{ duration: 0.6, delay: 0.2 }}
+                          className="relative mt-6 w-full"
+                        >
+                          <CentralizedCollaborationVisual />
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-50px" }}
+                          transition={{ duration: 0.6, delay: 0.2 }}
+                          className="relative mt-6 flex aspect-[858/400] items-end overflow-hidden rounded-xl"
+                        >
+                          <Image
+                            alt={feat.title}
+                            loading="lazy"
+                            width={1400}
+                            height={700}
+                            className="mx-auto h-full w-[90%] object-contain object-bottom md:w-full md:max-w-[620px]
+                              transition-transform duration-700 group-hover:scale-[1.02]"
+                            src={feat.image}
+                          />
+                          {/* Bottom gradient fade */}
+                          <div className="absolute bottom-0 h-[120px] w-full bg-gradient-to-t from-[#050d1a] via-[#050d1a]/60 to-transparent pointer-events-none" />
+                        </motion.div>
+                      )}
 
                       {/* Card Footer: Description + Arrow */}
                       <motion.div

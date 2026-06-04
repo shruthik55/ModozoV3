@@ -66,10 +66,12 @@ export default function HeroSection() {
             <div className="relative w-full group flex justify-center items-center">
               {/* Seamlessly Integrated Visual */}
               <div 
-                className="relative z-10 w-full flex justify-center items-center overflow-visible"
+                className="relative z-10 w-full aspect-square max-w-[85vh] lg:max-w-[95vh] flex justify-center items-center overflow-hidden"
                 style={{
-                  maskImage: 'radial-gradient(ellipse at center, black 75%, transparent 98%)',
-                  WebkitMaskImage: 'radial-gradient(ellipse at center, black 75%, transparent 98%)'
+                  maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent), linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)',
+                  WebkitMaskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent), linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)',
+                  maskComposite: 'intersect',
+                  WebkitMaskComposite: 'source-in'
                 }}
               >
                 <Image
@@ -77,7 +79,7 @@ export default function HeroSection() {
                   alt="Modozo Immersive Fashion Tech Interface"
                   width={1800}
                   height={1800}
-                  className="w-full h-auto max-h-[85vh] lg:max-h-[95vh] object-contain transition-transform duration-1000 group-hover:scale-[1.02]"
+                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-[1.02]"
                   priority
                   unoptimized
                 />
