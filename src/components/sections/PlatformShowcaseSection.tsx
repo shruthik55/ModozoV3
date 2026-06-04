@@ -259,18 +259,25 @@ export default function PlatformShowcaseSection() {
                         </h3>
                       </motion.div>
 
-<<<<<<< HEAD
-                      {/* Card Image */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        className={`relative mt-6 flex aspect-[858/400] justify-center overflow-hidden rounded-xl ${
-                          feat.id === "techpack-builder" ? "items-center" : "items-end"
-                        }`}
-                      >
-                        {feat.id === "techpack-builder" ? (
+                      {/* Card Image / Video */}
+                      {feat.id === "centralized-collaboration" ? (
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-50px" }}
+                          transition={{ duration: 0.6, delay: 0.2 }}
+                          className="relative mt-6 w-full"
+                        >
+                          <CentralizedCollaborationVisual />
+                        </motion.div>
+                      ) : feat.id === "techpack-builder" ? (
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-50px" }}
+                          transition={{ duration: 0.6, delay: 0.2 }}
+                          className="relative mt-6 flex aspect-[858/400] justify-center overflow-hidden rounded-xl items-center"
+                        >
                           <div className="relative w-full max-w-[800px] aspect-[1536/1024] shrink-0">
                             <Image
                               alt={feat.title}
@@ -335,18 +342,6 @@ export default function PlatformShowcaseSection() {
                               }}
                             />
                           </div>
-                        ) : (
-=======
-                      {/* Card Image / Video */}
-                      {feat.id === "centralized-collaboration" ? (
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, margin: "-50px" }}
-                          transition={{ duration: 0.6, delay: 0.2 }}
-                          className="relative mt-6 w-full"
-                        >
-                          <CentralizedCollaborationVisual />
                         </motion.div>
                       ) : (
                         <motion.div
@@ -356,7 +351,6 @@ export default function PlatformShowcaseSection() {
                           transition={{ duration: 0.6, delay: 0.2 }}
                           className="relative mt-6 flex aspect-[858/400] items-end overflow-hidden rounded-xl"
                         >
->>>>>>> cb547a32395f4677839671f919608dc98b7fa9d0
                           <Image
                             alt={feat.title}
                             loading="lazy"
@@ -366,19 +360,10 @@ export default function PlatformShowcaseSection() {
                               transition-transform duration-700 group-hover:scale-[1.02]"
                             src={feat.image}
                           />
-<<<<<<< HEAD
-                        )}
-                        {/* Bottom gradient fade */}
-                        {feat.id !== "techpack-builder" && (
-                          <div className="absolute bottom-0 h-[120px] w-full bg-gradient-to-t from-[#050d1a] via-[#050d1a]/60 to-transparent pointer-events-none" />
-                        )}
-                      </motion.div>
-=======
                           {/* Bottom gradient fade */}
                           <div className="absolute bottom-0 h-[120px] w-full bg-gradient-to-t from-[#050d1a] via-[#050d1a]/60 to-transparent pointer-events-none" />
                         </motion.div>
                       )}
->>>>>>> cb547a32395f4677839671f919608dc98b7fa9d0
 
                       {/* Card Footer: Description + Arrow */}
                       <motion.div
