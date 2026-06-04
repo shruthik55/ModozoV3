@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import CentralizedCollaborationVisual from "./CentralizedCollaborationVisual";
+import VendorManagementVisual from "./VendorManagementVisual";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -60,9 +61,9 @@ const features: FeatureCard[] = [
   {
     id: "sample-manager",
     slug: "sample-manager",
-    title: "Sample Manager",
+    title: "Vendor Management",
     icon: FlaskConical,
-    image: "/feature_accelerate.png",
+    image: "/vendor_management_1.png",
     boldText: "Streamline your sampling workflow.",
     description:
       "Digitize the entire sample lifecycle — from development and fit samples to pre-production and TOP approvals — with photo comparisons and inline comments.",
@@ -205,11 +206,10 @@ export default function PlatformShowcaseSection() {
 
                       <button
                         onClick={() => scrollToCard(i)}
-                        className={`block w-full text-left text-sm transition-all duration-300 cursor-pointer ${
-                          isActive
+                        className={`block w-full text-left text-sm transition-all duration-300 cursor-pointer ${isActive
                             ? "text-white font-medium"
                             : "text-white/35 hover:text-white/60"
-                        }`}
+                          }`}
                       >
                         {feat.title}
                       </button>
@@ -254,7 +254,7 @@ export default function PlatformShowcaseSection() {
                         <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-electric-blue/20 to-teal-accent/10 border border-white/[0.08] flex items-center justify-center">
                           <Icon size={18} className="text-electric-blue" />
                         </div>
-                        <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+                        <h3 className="text-xl md:text-2xl font-bold text-[#bd9128] tracking-tight">
                           {feat.title}
                         </h3>
                       </motion.div>
@@ -269,6 +269,16 @@ export default function PlatformShowcaseSection() {
                           className="relative mt-6 w-full"
                         >
                           <CentralizedCollaborationVisual />
+                        </motion.div>
+                      ) : feat.id === "sample-manager" ? (
+                        <motion.div
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-50px" }}
+                          transition={{ duration: 0.6, delay: 0.2 }}
+                          className="relative mt-6 w-full"
+                        >
+                          <VendorManagementVisual />
                         </motion.div>
                       ) : feat.id === "techpack-builder" ? (
                         <motion.div
@@ -293,7 +303,7 @@ export default function PlatformShowcaseSection() {
                             </div>
 
                             {/* Hide text line: "Version-controlled techpacks with comments and approval tracking" */}
-                            <div 
+                            <div
                               className="absolute pointer-events-none"
                               style={{
                                 top: "13.2%",
@@ -305,7 +315,7 @@ export default function PlatformShowcaseSection() {
                             />
 
                             {/* Card 1 Cover (dimmer when Card 2 is active) */}
-                            <div 
+                            <div
                               className="absolute rounded-xl bg-[#08101e]/65 border border-white/5 pointer-events-none transition-all duration-300"
                               style={{
                                 top: "24.8%",
@@ -317,7 +327,7 @@ export default function PlatformShowcaseSection() {
                             />
 
                             {/* Card 1 Highlight (glow when Card 1 is active) */}
-                            <div 
+                            <div
                               className="absolute rounded-xl border border-electric-blue pointer-events-none transition-all duration-300"
                               style={{
                                 top: "24.8%",
@@ -330,7 +340,7 @@ export default function PlatformShowcaseSection() {
                             />
 
                             {/* Card 2 Highlight (glow when Card 2 is active) */}
-                            <div 
+                            <div
                               className="absolute rounded-xl border border-electric-blue pointer-events-none transition-all duration-300"
                               style={{
                                 top: "43.0%",
@@ -356,7 +366,7 @@ export default function PlatformShowcaseSection() {
                             loading="lazy"
                             width={1400}
                             height={700}
-                            className="mx-auto h-full w-[90%] object-contain object-bottom md:w-full md:max-w-[620px]
+                            className="mx-auto h-full w-[90%] object-contain object-bottom md:w-full md:max-w-[780px]
                               transition-transform duration-700 group-hover:scale-[1.02]"
                             src={feat.image}
                           />
@@ -420,113 +430,16 @@ export default function PlatformShowcaseSection() {
 /*  Animated Apparel Preview Component                                 */
 /* ------------------------------------------------------------------ */
 
-function TransparentImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isTransparent, setIsTransparent] = useState(false);
-
-  useEffect(() => {
-    setIsTransparent(false);
-    const img = new window.Image();
-    img.src = src;
-    img.onload = () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-
-      // Draw original image
-      ctx.drawImage(img, 0, 0);
-
-      // Get image pixel data
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const data = imgData.data;
-      const width = canvas.width;
-      const height = canvas.height;
-      
-      // Flood fill background from borders to make it transparent
-      const visited = new Uint8Array(width * height);
-      const queue: [number, number][] = [];
-
-      const checkAndAdd = (x: number, y: number) => {
-        const idx = y * width + x;
-        if (visited[idx]) return;
-        visited[idx] = 1;
-        
-        const pos = idx * 4;
-        const r = data[pos];
-        const g = data[pos + 1];
-        const b = data[pos + 2];
-        
-        // Lowered threshold (215) to catch light gray shadows/compression noise
-        if (r > 215 && g > 215 && b > 215) {
-          queue.push([x, y]);
-          data[pos + 3] = 0; // Alpha channel to 0
-        }
-      };
-
-      // Push all boundary pixels to start the flood fill
-      for (let x = 0; x < width; x++) {
-        checkAndAdd(x, 0);
-        checkAndAdd(x, height - 1);
-      }
-      for (let y = 0; y < height; y++) {
-        checkAndAdd(0, y);
-        checkAndAdd(width - 1, y);
-      }
-
-      const dx = [0, 0, 1, -1];
-      const dy = [1, -1, 0, 0];
-
-      while (queue.length > 0) {
-        const [cx, cy] = queue.shift()!;
-        for (let j = 0; j < 4; j++) {
-          const nx = cx + dx[j];
-          const ny = cy + dy[j];
-          if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-            const nidx = ny * width + nx;
-            if (!visited[nidx]) {
-              visited[nidx] = 1;
-              const npos = nidx * 4;
-              const nr = data[npos];
-              const ng = data[npos + 1];
-              const nb = data[npos + 2];
-              
-              if (nr > 215 && ng > 215 && nb > 215) {
-                queue.push([nx, ny]);
-                data[npos + 3] = 0;
-              }
-            }
-          }
-        }
-      }
-
-      ctx.putImageData(imgData, 0, 0);
-      setIsTransparent(true);
-    };
-  }, [src]);
-
-  return (
-    <div className={`relative ${className} flex items-center justify-center`}>
-      <canvas
-        ref={canvasRef}
-        className={`w-full h-full object-contain transition-opacity duration-300 ${
-          isTransparent ? "opacity-100" : "opacity-0"
-        }`}
-      />
-      {!isTransparent && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#08101e]/80">
-          <div className="w-5 h-5 border-2 border-electric-blue border-t-transparent rounded-full animate-spin" />
-        </div>
-      )}
-    </div>
-  );
-}
-
 function AnimatedApparelPreview({ onVersionChange }: { onVersionChange: (version: number) => void }) {
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    // Preload all showcase images to avoid transition lag
+    apparelList.forEach((item) => {
+      const img = new window.Image();
+      img.src = item.image;
+    });
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -552,10 +465,10 @@ function AnimatedApparelPreview({ onVersionChange }: { onVersionChange: (version
           transition={{ duration: 0.3 }}
           className="w-full h-full flex items-center justify-center"
         >
-          <TransparentImage
+          <img
             src={current.image}
             alt={current.name}
-            className="w-full h-full"
+            className="w-full h-full object-contain"
           />
         </motion.div>
       </AnimatePresence>
