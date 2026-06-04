@@ -28,7 +28,7 @@ const apparelItems: ApparelItem[] = [
     id: "shoe",
     name: "Air Flow Runner v2",
     category: "Footwear",
-    image: "/apparel_shoe.png",
+    image: "/collab_shoe.png",
     status: "Fit Review",
     statusColor: "text-amber-400 bg-amber-400/10 border-amber-400/20",
     messages: [
@@ -59,7 +59,7 @@ const apparelItems: ApparelItem[] = [
     id: "polo",
     name: "Classic Pique Polo",
     category: "Tops",
-    image: "/apparel_polo.png",
+    image: "/collab_polo.png",
     status: "Sourcing",
     statusColor: "text-blue-400 bg-blue-400/10 border-blue-400/20",
     messages: [
@@ -90,7 +90,7 @@ const apparelItems: ApparelItem[] = [
     id: "jacket",
     name: "Waterproof Shell Jacket",
     category: "Outerwear",
-    image: "/apparel_jacket.png",
+    image: "/collab_jacket.png",
     status: "QC Testing",
     statusColor: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
     messages: [
@@ -121,7 +121,7 @@ const apparelItems: ApparelItem[] = [
     id: "hoodie",
     name: "Cozy French Terry Hoodie",
     category: "Activewear",
-    image: "/apparel_hoodie.png",
+    image: "/collab_hoodie.png",
     status: "Approved",
     statusColor: "text-teal-400 bg-teal-400/10 border-teal-400/20",
     messages: [
@@ -152,7 +152,7 @@ const apparelItems: ApparelItem[] = [
     id: "denim",
     name: "Slim Fit Stretch Denim",
     category: "Bottoms",
-    image: "/apparel_denim.png",
+    image: "/collab_denim.png",
     status: "Production",
     statusColor: "text-indigo-400 bg-indigo-400/10 border-indigo-400/20",
     messages: [

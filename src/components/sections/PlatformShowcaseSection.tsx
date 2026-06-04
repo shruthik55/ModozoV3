@@ -9,7 +9,6 @@ import {
   BarChart3,
   FlaskConical,
   Eye,
-  ShieldCheck,
   Users,
 } from "lucide-react";
 import CentralizedCollaborationVisual from "./CentralizedCollaborationVisual";
@@ -78,16 +77,6 @@ const features: FeatureCard[] = [
     boldText: "Optimize sourcing and reduce costs.",
     description:
       "Compare vendor quotes side-by-side, track material costs across collections, and uncover savings opportunities with real-time cost breakdowns.",
-  },
-  {
-    id: "quality-guard",
-    slug: "quality-guard",
-    title: "QualityGuard",
-    icon: ShieldCheck,
-    image: "/feature_ai_techpack.png",
-    boldText: "Catch defects before they reach production.",
-    description:
-      "Automated QC checklists, inline inspection reports, and defect tracking ensure every garment meets your brand's quality standards before bulk production.",
   },
 ];
 
