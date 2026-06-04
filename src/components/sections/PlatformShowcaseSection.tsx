@@ -30,12 +30,11 @@ const features: FeatureCard[] = [
   {
     id: "techpack-builder",
     slug: "techpack-builder",
-    title: "Techpack Builder",
+    title: "Smart Techpack Management",
     icon: Layers,
-    image: "/feature_techpacks.png",
-    boldText: "Turn sketches into factory-ready specs.",
-    description:
-      "Modozo's AI-powered Techpack Builder extracts Points of Measure, generates Bills of Materials, and creates grading rules — all from a single sketch upload.",
+    image: "/smarttechpackmanagement.png",
+    boldText: "Version-controlled techpacks with comments and approval tracking.",
+    description: "",
   },
   {
     id: "style-tracker",
@@ -97,6 +96,7 @@ export default function PlatformShowcaseSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [activeVersion, setActiveVersion] = useState(1);
 
   /* ---------- scroll-spy ------------------------------------------ */
   const handleScroll = useCallback(() => {
@@ -274,19 +274,90 @@ export default function PlatformShowcaseSection() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-50px" }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="relative mt-6 flex aspect-[858/400] items-end overflow-hidden rounded-xl"
+                        className={`relative mt-6 flex aspect-[858/400] justify-center overflow-hidden rounded-xl ${
+                          feat.id === "techpack-builder" ? "items-center" : "items-end"
+                        }`}
                       >
-                        <Image
-                          alt={feat.title}
-                          loading="lazy"
-                          width={1400}
-                          height={700}
-                          className="mx-auto h-full w-[90%] object-contain object-bottom md:w-full md:max-w-[620px]
-                            transition-transform duration-700 group-hover:scale-[1.02]"
-                          src={feat.image}
-                        />
+                        {feat.id === "techpack-builder" ? (
+                          <div className="relative w-full max-w-[800px] aspect-[1536/1024] shrink-0">
+                            <Image
+                              alt={feat.title}
+                              width={1536}
+                              height={1024}
+                              className="h-full w-full object-cover rounded-lg"
+                              src={feat.image}
+                              unoptimized
+                              priority
+                            />
+                            <div className="absolute top-[28.8%] left-[29.4%] w-[36.1%] h-[28.2%] overflow-hidden rounded-lg">
+                              <AnimatedApparelPreview onVersionChange={setActiveVersion} />
+                            </div>
+
+                            {/* Hide text line: "Version-controlled techpacks with comments and approval tracking" */}
+                            <div 
+                              className="absolute pointer-events-none"
+                              style={{
+                                top: "13.2%",
+                                left: "20%",
+                                width: "60%",
+                                height: "4.5%",
+                                backgroundColor: "#000517",
+                              }}
+                            />
+
+                            {/* Card 1 Cover (dimmer when Card 2 is active) */}
+                            <div 
+                              className="absolute rounded-xl bg-[#08101e]/65 border border-white/5 pointer-events-none transition-all duration-300"
+                              style={{
+                                top: "24.8%",
+                                left: "72.3%",
+                                width: "21.3%",
+                                height: "17.6%",
+                                opacity: activeVersion === 2 ? 1 : 0,
+                              }}
+                            />
+
+                            {/* Card 1 Highlight (glow when Card 1 is active) */}
+                            <div 
+                              className="absolute rounded-xl border border-electric-blue pointer-events-none transition-all duration-300"
+                              style={{
+                                top: "24.8%",
+                                left: "72.3%",
+                                width: "21.3%",
+                                height: "17.6%",
+                                boxShadow: "0 0 15px rgba(59, 130, 246, 0.6)",
+                                opacity: activeVersion === 1 ? 1 : 0,
+                              }}
+                            />
+
+                            {/* Card 2 Highlight (glow when Card 2 is active) */}
+                            <div 
+                              className="absolute rounded-xl border border-electric-blue pointer-events-none transition-all duration-300"
+                              style={{
+                                top: "43.0%",
+                                left: "72.3%",
+                                width: "21.3%",
+                                height: "12.0%",
+                                boxShadow: "0 0 15px rgba(59, 130, 246, 0.6)",
+                                opacity: activeVersion === 2 ? 1 : 0,
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <Image
+                            alt={feat.title}
+                            loading="lazy"
+                            width={1400}
+                            height={700}
+                            className="mx-auto h-full w-[90%] object-contain object-bottom md:w-full md:max-w-[620px]
+                              transition-transform duration-700 group-hover:scale-[1.02]"
+                            src={feat.image}
+                          />
+                        )}
                         {/* Bottom gradient fade */}
-                        <div className="absolute bottom-0 h-[120px] w-full bg-gradient-to-t from-[#050d1a] via-[#050d1a]/60 to-transparent pointer-events-none" />
+                        {feat.id !== "techpack-builder" && (
+                          <div className="absolute bottom-0 h-[120px] w-full bg-gradient-to-t from-[#050d1a] via-[#050d1a]/60 to-transparent pointer-events-none" />
+                        )}
                       </motion.div>
 
                       {/* Card Footer: Description + Arrow */}
@@ -339,3 +410,184 @@ export default function PlatformShowcaseSection() {
     </section>
   );
 }
+
+/* ------------------------------------------------------------------ */
+/*  Animated Apparel Preview Component                                 */
+/* ------------------------------------------------------------------ */
+
+function TransparentImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isTransparent, setIsTransparent] = useState(false);
+
+  useEffect(() => {
+    setIsTransparent(false);
+    const img = new window.Image();
+    img.src = src;
+    img.onload = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+
+      // Draw original image
+      ctx.drawImage(img, 0, 0);
+
+      // Get image pixel data
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+      const width = canvas.width;
+      const height = canvas.height;
+      
+      // Flood fill background from borders to make it transparent
+      const visited = new Uint8Array(width * height);
+      const queue: [number, number][] = [];
+
+      const checkAndAdd = (x: number, y: number) => {
+        const idx = y * width + x;
+        if (visited[idx]) return;
+        visited[idx] = 1;
+        
+        const pos = idx * 4;
+        const r = data[pos];
+        const g = data[pos + 1];
+        const b = data[pos + 2];
+        
+        // Lowered threshold (215) to catch light gray shadows/compression noise
+        if (r > 215 && g > 215 && b > 215) {
+          queue.push([x, y]);
+          data[pos + 3] = 0; // Alpha channel to 0
+        }
+      };
+
+      // Push all boundary pixels to start the flood fill
+      for (let x = 0; x < width; x++) {
+        checkAndAdd(x, 0);
+        checkAndAdd(x, height - 1);
+      }
+      for (let y = 0; y < height; y++) {
+        checkAndAdd(0, y);
+        checkAndAdd(width - 1, y);
+      }
+
+      const dx = [0, 0, 1, -1];
+      const dy = [1, -1, 0, 0];
+
+      while (queue.length > 0) {
+        const [cx, cy] = queue.shift()!;
+        for (let j = 0; j < 4; j++) {
+          const nx = cx + dx[j];
+          const ny = cy + dy[j];
+          if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+            const nidx = ny * width + nx;
+            if (!visited[nidx]) {
+              visited[nidx] = 1;
+              const npos = nidx * 4;
+              const nr = data[npos];
+              const ng = data[npos + 1];
+              const nb = data[npos + 2];
+              
+              if (nr > 215 && ng > 215 && nb > 215) {
+                queue.push([nx, ny]);
+                data[npos + 3] = 0;
+              }
+            }
+          }
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+      setIsTransparent(true);
+    };
+  }, [src]);
+
+  return (
+    <div className={`relative ${className} flex items-center justify-center`}>
+      <canvas
+        ref={canvasRef}
+        className={`w-full h-full object-contain transition-opacity duration-300 ${
+          isTransparent ? "opacity-100" : "opacity-0"
+        }`}
+      />
+      {!isTransparent && (
+        <div className="absolute inset-0 flex items-center justify-center bg-[#08101e]/80">
+          <div className="w-5 h-5 border-2 border-electric-blue border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AnimatedApparelPreview({ onVersionChange }: { onVersionChange: (version: number) => void }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % apparelList.length);
+    }, 2500);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    onVersionChange(apparelList[index].version);
+  }, [index, onVersionChange]);
+
+  const current = apparelList[index];
+
+  return (
+    <div className="w-full h-full bg-[#08101e] relative flex items-center justify-center p-2">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={current.name}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.3 }}
+          className="w-full h-full flex items-center justify-center"
+        >
+          <TransparentImage
+            src={current.image}
+            alt={current.name}
+            className="w-full h-full"
+          />
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+const apparelList = [
+  {
+    name: "Wavy Coat Sketch",
+    image: "/showcase_sketch_coat.png",
+    version: 1,
+  },
+  {
+    name: "Wavy Coat Photo",
+    image: "/showcase_photo_coat.png",
+    version: 2,
+  },
+  {
+    name: "Leopard Sneaker Sketch",
+    image: "/showcase_sketch_sneaker.png",
+    version: 1,
+  },
+  {
+    name: "Leopard Sneaker Photo",
+    image: "/showcase_photo_sneaker.png",
+    version: 2,
+  },
+  {
+    name: "Ornate Suit Sketch",
+    image: "/showcase_sketch_suit.png",
+    version: 1,
+  },
+  {
+    name: "Ornate Suit Photo",
+    image: "/showcase_photo_suit.png",
+    version: 2,
+  },
+];
+
