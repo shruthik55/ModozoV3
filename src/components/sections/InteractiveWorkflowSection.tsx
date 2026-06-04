@@ -129,7 +129,7 @@ export default function InteractiveWorkflowSection() {
         <div className="glow-orb w-[500px] h-[500px] bg-teal-accent/5 top-1/3 right-1/4 translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
         {/* Top Sticky Header */}
-        <div className="absolute top-[3%] left-[5vw] lg:left-[8vw] z-20 space-y-2 pointer-events-none">
+        <div className="absolute top-[3%] left-[6vw] lg:left-[8vw] z-20 space-y-2 pointer-events-none">
           <span className="text-[9px] md:text-[11px] uppercase tracking-[0.25em] text-[#ff7b7b] font-bold">The Sourcing Pain Points</span>
           <h2 className="text-xl md:text-3xl lg:text-4xl font-black text-white tracking-tight leading-none">
             Why Fashion Supply Chains <span className="text-gradient">Break Down</span>
@@ -140,14 +140,14 @@ export default function InteractiveWorkflowSection() {
         <motion.div
           ref={trackRef}
           style={{ x }}
-          className="flex gap-12 md:gap-20 items-center h-full pl-[5vw] pr-[5vw] lg:pl-[8vw] lg:pr-[8vw] pt-[18vh] pb-[8vh] overflow-visible select-none"
+          className="flex gap-12 md:gap-20 items-center h-full pl-[10vw] pr-[10vw] lg:pl-[15vw] lg:pr-[15vw] pt-[28vh] pb-[10vh] overflow-visible select-none"
         >
           {cardsData.map((card, i) => {
             if (i === 0) {
               return (
                 <div
                   key={card.id}
-                  className="w-[75vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
@@ -184,7 +184,7 @@ export default function InteractiveWorkflowSection() {
               return (
                 <div
                   key={card.id}
-                  className="w-[75vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
@@ -221,7 +221,7 @@ export default function InteractiveWorkflowSection() {
               return (
                 <div
                   key={card.id}
-                  className="w-[75vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
@@ -258,7 +258,7 @@ export default function InteractiveWorkflowSection() {
               return (
                 <div
                   key={card.id}
-                  className="w-[75vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
@@ -294,7 +294,7 @@ export default function InteractiveWorkflowSection() {
             return (
               <div
                 key={card.id}
-                className="w-[75vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
               >
                 {/* Subtle background colored glow inside card */}
                 <div
@@ -329,7 +329,7 @@ export default function InteractiveWorkflowSection() {
         </motion.div>
 
         {/* Bottom Navigation Progress Indicator */}
-        <div className="absolute bottom-[2.5%] left-[5vw] lg:left-[8vw] z-20 flex items-center gap-6 pointer-events-none">
+        <div className="absolute bottom-[4%] left-[6vw] lg:left-[8vw] z-20 flex items-center gap-6 pointer-events-none">
           <div className="flex gap-2">
             {cardsData.map((_, i) => (
               <div
