@@ -33,7 +33,7 @@ const apparelItems: ApparelItem[] = [
     id: "linesheets",
     name: "S/S T-Shirt Linesheet",
     category: "Linesheets",
-    image: "/collab_linesheets.png",
+    image: "/collab_linesheets_v2.png",
     status: "Shared",
     statusColor: "text-amber-400 bg-amber-400/10 border-amber-400/20",
     commentSections: [
@@ -79,7 +79,7 @@ const apparelItems: ApparelItem[] = [
     id: "techpack",
     name: "S/S Techpack Review",
     category: "Techpack",
-    image: "/collab_techpack.png",
+    image: "/collab_techpack_v2.png",
     status: "In Progress",
     statusColor: "text-blue-400 bg-blue-400/10 border-blue-400/20",
     commentSections: [
@@ -168,45 +168,45 @@ const apparelItems: ApparelItem[] = [
     ],
   },
   {
-    id: "fit",
-    name: "Fit Approval",
-    category: "Fit",
-    image: "/collab_fit.png",
-    status: "Adjusted",
-    statusColor: "text-indigo-400 bg-indigo-400/10 border-indigo-400/20",
+    id: "strikeoff",
+    name: "Print Strike-off",
+    category: "Strike-off",
+    image: "/printstrikk.png",
+    status: "Pending",
+    statusColor: "text-orange-400 bg-orange-400/10 border-orange-400/20",
     commentSections: [
       {
-        label: "Fit Adjustments",
+        label: "Print Quality",
         messages: [
           {
-            sender: "Marcus Vance",
-            role: "Fit Specialist",
-            text: "Fit review complete. Shoulder drop adjusted by -0.5cm and sleeve length shortened for better drape.",
-            initials: "MV",
-            avatarBg: "bg-purple-500",
-            time: "6 hours ago",
+            sender: "Sarah Jenkins",
+            role: "Design Lead",
+            text: "Strike-off received from the mill. Comparing the print placement against the original artwork file now.",
+            initials: "SJ",
+            avatarBg: "bg-blue-500",
+            time: "3 hours ago",
             replies: 2,
           },
           {
-            sender: "Tariq Ali",
-            role: "Pattern Maker",
-            text: "Pattern corrections applied. Exporting the updated DXF and grading specs to the factory portal.",
-            initials: "TA",
-            avatarBg: "bg-pink-500",
-            time: "5 hours ago",
+            sender: "Elena Rostova",
+            role: "Sourcing Agent",
+            text: "Color matching looks accurate under D65 lighting. Ink coverage on the chest graphic is within tolerance.",
+            initials: "ER",
+            avatarBg: "bg-indigo-500",
+            time: "2 hours ago",
           },
         ],
       },
       {
-        label: "Factory Response",
+        label: "Approval",
         messages: [
           {
             sender: "Chen Wei",
             role: "Factory Manager",
-            text: "DXF received. Loading the corrected marker for the next sample round.",
+            text: "Awaiting final sign-off to proceed with bulk print production. Mill is on standby.",
             initials: "CW",
             avatarBg: "bg-teal-500",
-            time: "4 hours ago",
+            time: "1 hour ago",
             replies: 1,
           },
         ],
@@ -217,7 +217,7 @@ const apparelItems: ApparelItem[] = [
     id: "ppsample",
     name: "Pre-Production Sample",
     category: "PP Sample",
-    image: "/collab_pp_sample.png",
+    image: "/pp-smpf.png",
     status: "Approved",
     statusColor: "text-teal-400 bg-teal-400/10 border-teal-400/20",
     commentSections: [
@@ -253,6 +253,52 @@ const apparelItems: ApparelItem[] = [
             initials: "CW",
             avatarBg: "bg-teal-500",
             time: "22 hours ago",
+            replies: 1,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "fit",
+    name: "Fit Approval",
+    category: "Fit",
+    image: "/fitappro.png",
+    status: "Adjusted",
+    statusColor: "text-indigo-400 bg-indigo-400/10 border-indigo-400/20",
+    commentSections: [
+      {
+        label: "Fit Adjustments",
+        messages: [
+          {
+            sender: "Marcus Vance",
+            role: "Fit Specialist",
+            text: "Fit review complete. Shoulder drop adjusted by -0.5cm and sleeve length shortened for better drape.",
+            initials: "MV",
+            avatarBg: "bg-purple-500",
+            time: "6 hours ago",
+            replies: 2,
+          },
+          {
+            sender: "Tariq Ali",
+            role: "Pattern Maker",
+            text: "Pattern corrections applied. Exporting the updated DXF and grading specs to the factory portal.",
+            initials: "TA",
+            avatarBg: "bg-pink-500",
+            time: "5 hours ago",
+          },
+        ],
+      },
+      {
+        label: "Factory Response",
+        messages: [
+          {
+            sender: "Chen Wei",
+            role: "Factory Manager",
+            text: "DXF received. Loading the corrected marker for the next sample round.",
+            initials: "CW",
+            avatarBg: "bg-teal-500",
+            time: "4 hours ago",
             replies: 1,
           },
         ],
@@ -313,7 +359,7 @@ export default function CentralizedCollaborationVisual() {
             Workspace
           </span>
           <span className="text-[9px] bg-electric-blue/10 text-electric-blue px-1.5 py-0.5 rounded-full font-medium">
-            5 Active
+            6 Active
           </span>
         </div>
 
@@ -325,11 +371,10 @@ export default function CentralizedCollaborationVisual() {
               <button
                 key={item.id}
                 onClick={() => handleSelect(index)}
-                className={`flex items-center gap-2.5 p-2 rounded-xl text-left border transition-all duration-300 shrink-0 lg:shrink ${
-                  isActive
-                    ? "bg-white/[0.06] border-white/15 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
-                    : "bg-transparent border-transparent hover:bg-white/[0.02]"
-                }`}
+                className={`flex items-center gap-2.5 p-2 rounded-xl text-left border transition-all duration-300 shrink-0 lg:shrink ${isActive
+                  ? "bg-white/[0.06] border-white/15 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+                  : "bg-transparent border-transparent hover:bg-white/[0.02]"
+                  }`}
               >
                 {/* Thumb Image */}
                 <div className="relative size-8 rounded-lg overflow-hidden bg-white/5 flex items-center justify-center border border-white/10">
