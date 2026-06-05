@@ -11,6 +11,7 @@ import {
   Eye,
   Users,
   Activity,
+  Check,
 } from "lucide-react";
 import CentralizedCollaborationVisual from "./CentralizedCollaborationVisual";
 import ProductionTrackingVisual from "./ProductionTrackingVisual";
@@ -68,16 +69,6 @@ const features: FeatureCard[] = [
     boldText: "Streamline your sampling workflow.",
     description:
       "Digitize the entire sample lifecycle — from development and fit samples to pre-production and TOP approvals — with photo comparisons and inline comments.",
-  },
-  {
-    id: "cost-analyzer",
-    slug: "cost-analyzer",
-    title: "Cost Analyzer",
-    icon: BarChart3,
-    image: "/feature_vendor_map.png",
-    boldText: "Optimize sourcing and reduce costs.",
-    description:
-      "Compare vendor quotes side-by-side, track material costs across collections, and uncover savings opportunities with real-time cost breakdowns.",
   },
 ];
 
@@ -207,11 +198,10 @@ export default function PlatformShowcaseSection() {
 
                       <button
                         onClick={() => scrollToCard(i)}
-                        className={`block w-full text-left text-sm transition-all duration-300 cursor-pointer ${
-                          isActive
-                            ? "text-white font-medium"
-                            : "text-white/35 hover:text-white/60"
-                        }`}
+                        className={`block w-full text-left text-sm transition-all duration-300 cursor-pointer ${isActive
+                          ? "text-white font-medium"
+                          : "text-white/35 hover:text-white/60"
+                          }`}
                       >
                         {feat.title}
                       </button>
@@ -305,7 +295,7 @@ export default function PlatformShowcaseSection() {
                             </div>
 
                             {/* Hide text line: "Version-controlled techpacks with comments and approval tracking" */}
-                            <div 
+                            <div
                               className="absolute pointer-events-none"
                               style={{
                                 top: "13.2%",
@@ -317,7 +307,7 @@ export default function PlatformShowcaseSection() {
                             />
 
                             {/* Card 1 Cover (dimmer when Card 2 is active) */}
-                            <div 
+                            <div
                               className="absolute rounded-xl bg-[#08101e]/65 border border-white/5 pointer-events-none transition-all duration-300"
                               style={{
                                 top: "24.8%",
@@ -329,7 +319,7 @@ export default function PlatformShowcaseSection() {
                             />
 
                             {/* Card 1 Highlight (glow when Card 1 is active) */}
-                            <div 
+                            <div
                               className="absolute rounded-xl border border-electric-blue pointer-events-none transition-all duration-300"
                               style={{
                                 top: "24.8%",
@@ -342,7 +332,7 @@ export default function PlatformShowcaseSection() {
                             />
 
                             {/* Card 2 Highlight (glow when Card 2 is active) */}
-                            <div 
+                            <div
                               className="absolute rounded-xl border border-electric-blue pointer-events-none transition-all duration-300"
                               style={{
                                 top: "43.0%",
@@ -423,6 +413,87 @@ export default function PlatformShowcaseSection() {
             </div>
           </div>
         </div>
+
+        {/* Standalone Cost Analyzer Card (moved outside of the 4 sidebar cards) */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
+          className="mt-20 lg:mt-32 w-full relative"
+        >
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Column: Sourcing / Cost Details */}
+            <div className="lg:col-span-5 space-y-6 text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-electric-blue/20 to-teal-accent/10 border border-white/[0.08] flex items-center justify-center">
+                  <BarChart3 size={16} className="text-electric-blue" />
+                </div>
+                <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-[#ff7b7b] font-bold">
+                  COST OPTIMIZATION & LOGISTICS
+                </span>
+              </div>
+
+              <h3 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#bd9128] tracking-tight leading-tight">
+                Optimize sourcing and reduce costs
+              </h3>
+
+              <p className="text-sm md:text-base text-white/70 leading-relaxed">
+                Compare vendor quotes side-by-side, track material costs across collections, and uncover savings opportunities with real-time cost breakdowns and logistics tracking.
+              </p>
+
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3">
+                  <div className="mt-1 size-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                    <Check size={12} className="text-emerald-400" />
+                  </div>
+                  <span className="text-sm text-white/80 leading-snug">
+                    Compare vendor quotes and raw material costs in real-time
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="mt-1 size-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                    <Check size={12} className="text-emerald-400" />
+                  </div>
+                  <span className="text-sm text-white/80 leading-snug">
+                    Track global logistics, routes, and vessel statuses on a live map
+                  </span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="mt-1 size-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                    <Check size={12} className="text-emerald-400" />
+                  </div>
+                  <span className="text-sm text-white/80 leading-snug">
+                    Uncover cost-saving opportunities with automated margin analysis
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Right Column: Visual Mockup */}
+            <div className="lg:col-span-7">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.98 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6 }}
+                className="relative flex aspect-[858/400] md:aspect-[858/480] justify-center overflow-hidden rounded-xl items-center border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]"
+              >
+                <div className="relative w-full h-full">
+                  <Image
+                    alt="Cost Analyzer Global Logistics"
+                    fill
+                    className="object-cover rounded-lg"
+                    src="/feature_vendor_map.png"
+                    unoptimized
+                    priority
+                  />
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -457,7 +528,7 @@ function TransparentImage({ src, alt, className }: { src: string; alt: string; c
       const data = imgData.data;
       const width = canvas.width;
       const height = canvas.height;
-      
+
       // Flood fill background from borders to make it transparent
       const visited = new Uint8Array(width * height);
       const queue: [number, number][] = [];
@@ -466,12 +537,12 @@ function TransparentImage({ src, alt, className }: { src: string; alt: string; c
         const idx = y * width + x;
         if (visited[idx]) return;
         visited[idx] = 1;
-        
+
         const pos = idx * 4;
         const r = data[pos];
         const g = data[pos + 1];
         const b = data[pos + 2];
-        
+
         // Lowered threshold (215) to catch light gray shadows/compression noise
         if (r > 215 && g > 215 && b > 215) {
           queue.push([x, y]);
@@ -505,7 +576,7 @@ function TransparentImage({ src, alt, className }: { src: string; alt: string; c
               const nr = data[npos];
               const ng = data[npos + 1];
               const nb = data[npos + 2];
-              
+
               if (nr > 215 && ng > 215 && nb > 215) {
                 queue.push([nx, ny]);
                 data[npos + 3] = 0;
@@ -524,9 +595,8 @@ function TransparentImage({ src, alt, className }: { src: string; alt: string; c
     <div className={`relative ${className} flex items-center justify-center`}>
       <canvas
         ref={canvasRef}
-        className={`w-full h-full object-contain transition-opacity duration-300 ${
-          isTransparent ? "opacity-100" : "opacity-0"
-        }`}
+        className={`w-full h-full object-contain transition-opacity duration-300 ${isTransparent ? "opacity-100" : "opacity-0"
+          }`}
       />
       {!isTransparent && (
         <div className="absolute inset-0 flex items-center justify-center bg-[#08101e]/80">
