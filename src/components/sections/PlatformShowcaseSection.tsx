@@ -128,9 +128,13 @@ export default function PlatformShowcaseSection() {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Auto-play cycle for features tabs (pauses on interaction)
+  // Auto-play cycle — skips timer for cards that use a subcycle callback
   useEffect(() => {
     if (!isAutoPlaying) return;
+
+    const feature = features[activeIndex];
+    // Centralized-collaboration advances via onCycleComplete, not a fixed timer
+    if (feature.id === "centralized-collaboration") return;
 
     timerRef.current = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % features.length);
@@ -139,6 +143,12 @@ export default function PlatformShowcaseSection() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
+  }, [isAutoPlaying, activeIndex]);
+
+  // Called by CentralizedCollaborationVisual after all 6 subcards have been shown once
+  const handleCollabCycleComplete = useCallback(() => {
+    if (!isAutoPlaying) return;
+    setActiveIndex((prev) => (prev + 1) % features.length);
   }, [isAutoPlaying]);
 
   const handleTabClick = (index: number) => {
@@ -153,7 +163,7 @@ export default function PlatformShowcaseSection() {
     <section
       ref={sectionRef}
       id="platform-showcase"
-      className="relative overflow-clip pt-24 md:pt-32 lg:pt-40 pb-16 md:pb-20 lg:pb-28"
+      className="relative overflow-clip pt-24 md:pt-32 lg:pt-40 pb-6 md:pb-8 lg:pb-10"
     >
       {/* BG elements */}
       <div className="animated-grid opacity-15 pointer-events-none" />
@@ -330,7 +340,7 @@ export default function PlatformShowcaseSection() {
                     </div>
                   ) : features[activeIndex].id === "centralized-collaboration" ? (
                     <div className="w-full">
-                      <CentralizedCollaborationVisual />
+                      <CentralizedCollaborationVisual onCycleComplete={handleCollabCycleComplete} />
                     </div>
                   ) : features[activeIndex].id === "production-tracking" ? (
                     <div className="w-full">

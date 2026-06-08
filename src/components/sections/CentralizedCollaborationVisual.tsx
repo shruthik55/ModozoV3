@@ -307,10 +307,13 @@ const apparelItems: ApparelItem[] = [
   },
 ];
 
-export default function CentralizedCollaborationVisual() {
+export default function CentralizedCollaborationVisual({ onCycleComplete }: { onCycleComplete?: () => void }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const autoPlayRef = useRef<boolean>(true);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const onCycleCompleteRef = useRef(onCycleComplete);
+
+  useEffect(() => { onCycleCompleteRef.current = onCycleComplete; }, [onCycleComplete]);
 
   const activeItem = apparelItems[activeIndex];
 
@@ -325,7 +328,11 @@ export default function CentralizedCollaborationVisual() {
     const startTimer = () => {
       timerRef.current = setInterval(() => {
         if (autoPlayRef.current) {
-          setActiveIndex((prev) => (prev + 1) % apparelItems.length);
+          setActiveIndex((prev) => {
+            const next = (prev + 1) % apparelItems.length;
+            if (next === 0) onCycleCompleteRef.current?.();
+            return next;
+          });
         }
       }, 7000);
     };
@@ -478,7 +485,7 @@ export default function CentralizedCollaborationVisual() {
         </div>
 
         {/* Comment List - Scrollable */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin px-2.5 py-3 space-y-1">
+        <div className="overflow-y-auto scrollbar-thin px-2.5 py-3 space-y-1">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeItem.id}
@@ -555,7 +562,7 @@ export default function CentralizedCollaborationVisual() {
           </AnimatePresence>
         </div>
 
-        {/* Comment Input */}
+        {/* Comment Input - sits immediately below last comment */}
         <div className="px-4 py-3 border-t border-white/10">
           <div className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2">
             <span className="text-[11px] text-white/25 flex-1">
@@ -571,6 +578,8 @@ export default function CentralizedCollaborationVisual() {
             </div>
           </div>
         </div>
+        {/* Spacer pushes any remaining height to the bottom, not above the input */}
+        <div className="flex-1" />
       </div>
     </div>
   );

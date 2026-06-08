@@ -4,8 +4,8 @@ import HeroSection from "@/components/sections/HeroSection";
 import InteractiveWorkflowSection from "@/components/sections/InteractiveWorkflowSection";
 import PlatformShowcaseSection from "@/components/sections/PlatformShowcaseSection";
 import WorkflowSplit from "@/components/sections/WorkflowSplit";
-import IntegrationsSection from "@/components/sections/IntegrationsSection";
 import VIPServiceSection from "@/components/sections/VIPServiceSection";
+import BeforeAfterSection from "@/components/sections/BeforeAfterSection";
 
 export default function Home() {
   return (
@@ -20,6 +20,9 @@ export default function Home() {
 
       {/* 3. Platform Showcase (Dark) - Canopy-style sticky nav + cards */}
       <PlatformShowcaseSection />
+
+      {/* 4. Before vs After MODOZO (Dark) */}
+      <BeforeAfterSection />
 
       {/* 4. Workflow Block A: Faster to Market (Dark) */}
       <WorkflowSplit
