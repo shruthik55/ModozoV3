@@ -400,13 +400,6 @@ function Scene3() {
             {/* Thumb + scan */}
             <div className="relative size-11 rounded-lg overflow-hidden bg-white/5 border border-white/10 shrink-0 flex items-center justify-center">
               <Image src={o.image} alt={o.name} width={40} height={40} className="object-contain" />
-              <motion.div
-                className="absolute left-0 right-0 h-[1.5px] bg-emerald-400 pointer-events-none"
-                style={{ boxShadow: "0 0 5px rgba(52,211,153,0.8)" }}
-                initial={{ top: "0%" }}
-                animate={{ top: ["0%", "100%", "0%"] }}
-                transition={{ duration: 2.2, repeat: Infinity, ease: "linear", delay: i * 0.65 }}
-              />
             </div>
 
             {/* Info */}
