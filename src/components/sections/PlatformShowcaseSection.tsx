@@ -29,6 +29,9 @@ interface FeatureCard {
   image: string;
   boldText: string;
   description: string;
+  badge: string;
+  badgeColor: string;
+  checklist: string[];
 }
 
 const features: FeatureCard[] = [
@@ -39,7 +42,14 @@ const features: FeatureCard[] = [
     icon: Layers,
     image: "/smarttechpackmanagement.png",
     boldText: "Version-controlled techpacks with comments and approval tracking.",
-    description: "",
+    description: "Grade specs, create POM tables, and update bill of materials dynamically with seamless versioning control.",
+    badge: "TECHPACK DESIGN & COMPLIANCE",
+    badgeColor: "text-teal-accent",
+    checklist: [
+      "Keep track of every iteration with complete history comparison",
+      "Threaded comments directly on sketches and measurements",
+      "Automated status updates and sign-off requests for factory partners"
+    ],
   },
   {
     id: "centralized-collaboration",
@@ -48,8 +58,14 @@ const features: FeatureCard[] = [
     icon: Users,
     image: "/centralized_collaboration.png",
     boldText: "Connect your entire fashion workflow in one place.",
-    description:
-      "Modozo brings your brand, designers, pattern makers, fit specialists, and vendor networks together on a single immersive platform to eliminate communication silos.",
+    description: "Modozo brings your brand, designers, pattern makers, fit specialists, and vendor networks together on a single immersive platform to eliminate communication silos.",
+    badge: "COLLABORATION HUB",
+    badgeColor: "text-electric-blue",
+    checklist: [
+      "Real-time chat and document sharing for all stakeholders",
+      "Instant design updates and fit correction approvals",
+      "Unified database for fabrics, trims, and styling guidelines"
+    ],
   },
   {
     id: "production-tracking",
@@ -58,8 +74,14 @@ const features: FeatureCard[] = [
     icon: Activity,
     image: "/production_tracking.png",
     boldText: "Track production milestones from cutting to shipment.",
-    description:
-      "Get end-to-end visibility into your manufacturing lines. Automated factory floor updates, real-time scanning logs, and instant bottleneck alerts keep your delivery dates secure.",
+    description: "Get end-to-end visibility into your manufacturing lines. Automated factory floor updates, real-time scanning logs, and instant bottleneck alerts keep your delivery dates secure.",
+    badge: "FACTORY PRODUCTION",
+    badgeColor: "text-purple-400",
+    checklist: [
+      "Automated scan logs direct from assembly lines",
+      "Visual milestone dashboard indicating line bottlenecks",
+      "Live progress tracking for all purchase orders"
+    ],
   },
   {
     id: "sample-manager",
@@ -68,8 +90,30 @@ const features: FeatureCard[] = [
     icon: FlaskConical,
     image: "/vendor_management_1.png",
     boldText: "Streamline your sampling workflow.",
-    description:
-      "Digitize the entire sample lifecycle — from development and fit samples to pre-production and TOP approvals — with photo comparisons and inline comments.",
+    description: "Digitize the entire sample lifecycle — from development and fit samples to pre-production and TOP approvals — with photo comparisons and inline comments.",
+    badge: "SOURCING & SAMPLING",
+    badgeColor: "text-[#ff7b7b]",
+    checklist: [
+      "Digital sample approvals and step-by-step cycle tracking",
+      "Side-by-side photo comparison tools for fit adjustments",
+      "Vendor ratings and factory audit data integration"
+    ],
+  },
+  {
+    id: "cost-optimization",
+    slug: "cost-optimization",
+    title: "Cost Optimization",
+    icon: BarChart3,
+    image: "/feature_vendor_map.png",
+    boldText: "Optimize sourcing and reduce costs.",
+    description: "Compare vendor quotes side-by-side, track material costs across collections, and uncover savings opportunities with real-time cost breakdowns and logistics tracking.",
+    badge: "COST OPTIMIZATION & LOGISTICS",
+    badgeColor: "text-[#ff7b7b]",
+    checklist: [
+      "Compare vendor quotes and raw material costs in real-time",
+      "Track global logistics, routes, and vessel statuses on a live map",
+      "Uncover cost-saving opportunities with automated margin analysis"
+    ],
   },
 ];
 
@@ -79,40 +123,32 @@ const features: FeatureCard[] = [
 
 export default function PlatformShowcaseSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [activeVersion, setActiveVersion] = useState(1);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  /* ---------- scroll-spy ------------------------------------------ */
-  const handleScroll = useCallback(() => {
-    const offset = window.innerHeight * 0.15;
-    let currentIndex = 0;
-
-    cardRefs.current.forEach((card, i) => {
-      if (!card) return;
-      const rect = card.getBoundingClientRect();
-      if (rect.top <= offset + 10) {
-        currentIndex = i;
-      }
-    });
-
-    setActiveIndex(currentIndex);
-  }, []);
-
+  // Auto-play cycle for features tabs (pauses on interaction)
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
+    if (!isAutoPlaying) return;
 
-  const scrollToCard = (index: number) => {
-    const card = cardRefs.current[index];
-    if (card) {
-      const top = card.getBoundingClientRect().top + window.scrollY - 10;
-      window.scrollTo({ top, behavior: "smooth" });
+    timerRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % features.length);
+    }, 8500);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isAutoPlaying]);
+
+  const handleTabClick = (index: number) => {
+    setActiveIndex(index);
+    setIsAutoPlaying(false);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
     }
   };
 
-  /* ---------- render ---------------------------------------------- */
   return (
     <section
       ref={sectionRef}
@@ -144,367 +180,185 @@ export default function PlatformShowcaseSection() {
           </h2>
         </motion.div>
 
-        {/* ---- Grid: sidebar + cards --------------------------------- */}
-        <div className="relative">
-          <div className="grid gap-6 md:grid-cols-4">
-            {/* ---- Sticky Sidebar Nav ---- */}
-            <aside className="hidden overflow-visible md:sticky md:top-[15vh] md:flex md:h-screen md:flex-1 md:flex-col md:gap-4 md:self-start">
-              <nav className="flex flex-col gap-3 overflow-visible">
-                {features.map((feat, i) => {
-                  const isActive = i === activeIndex;
-                  return (
-                    <div key={feat.id} className="relative">
-                      {/* Active dot + animated gradient line */}
-                      {i === 0 && (
-                        <div className="absolute -left-6 top-3 flex flex-col items-center gap-0">
-                          {/* Blue dot on active */}
-                          <div
-                            className="size-1.5 rounded-full transition-all duration-300"
-                            style={{
-                              backgroundColor: isActive
-                                ? "#3B82F6"
-                                : "transparent",
-                              boxShadow: isActive
-                                ? "0 0 8px rgba(59,130,246,0.6)"
-                                : "none",
-                            }}
-                          />
-
-                          {/* Gradient line track */}
-                          <div
-                            className="w-px bg-white/[0.08] overflow-hidden relative"
-                            style={{
-                              height: `${(features.length - 1) * 36 + 8}px`,
-                            }}
-                          >
-                            {/* Animated highlight */}
-                            <motion.div
-                              className="absolute left-0 w-px"
-                              style={{
-                                height: "48px",
-                                background:
-                                  "linear-gradient(to bottom, rgba(59,130,246,0), #3B82F6, rgba(59,130,246,0))",
-                              }}
-                              animate={{
-                                top: `${activeIndex * 36}px`,
-                              }}
-                              transition={{
-                                duration: 0.4,
-                                ease: [0.25, 0.1, 0.25, 1],
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      <button
-                        onClick={() => scrollToCard(i)}
-                        className={`block w-full text-left text-sm transition-all duration-300 cursor-pointer ${isActive
-                          ? "text-white font-medium"
-                          : "text-white/35 hover:text-white/60"
-                          }`}
-                      >
-                        {feat.title}
-                      </button>
-                    </div>
-                  );
-                })}
-              </nav>
-            </aside>
-
-            {/* ---- Cards Column ---- */}
-            <div className="w-full md:col-span-3">
-              <div>
-                {features.map((feat, i) => {
-                  const Icon = feat.icon;
-                  return (
-                    <a
-                      key={feat.id}
-                      ref={(el) => {
-                        cardRefs.current[i] = el;
-                      }}
-                      id={feat.slug}
-                      href={`#${feat.slug}`}
-                      className="group mb-5 block rounded-xl px-4 py-6 last:mb-0 lg:p-12
-                        border transition-all duration-300 cursor-default
-                        border-white/[0.08] bg-white/[0.02]
-                        hover:border-electric-blue/40 hover:bg-white/[0.04]"
-                      style={{
-                        scrollMarginTop: "10px",
-                        position: "relative",
-                        zIndex: features.length - i,
-                      }}
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      {/* Card Header: Icon + Title */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 15 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 0.5, delay: 0.1 }}
-                        className="flex items-center gap-3 md:gap-4"
-                      >
-                        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-electric-blue/20 to-teal-accent/10 border border-white/[0.08] flex items-center justify-center">
-                          <Icon size={18} className="text-electric-blue" />
-                        </div>
-                        <h3 className="text-xl md:text-2xl font-bold text-[#bd9128] tracking-tight">
-                          {feat.title}
-                        </h3>
-                      </motion.div>
-
-                      {/* Card Image / Video */}
-                      {feat.id === "centralized-collaboration" ? (
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, margin: "-50px" }}
-                          transition={{ duration: 0.6, delay: 0.2 }}
-                          className="relative mt-6 w-full"
-                        >
-                          <CentralizedCollaborationVisual />
-                        </motion.div>
-                      ) : feat.id === "production-tracking" ? (
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, margin: "-50px" }}
-                          transition={{ duration: 0.6, delay: 0.2 }}
-                          className="relative mt-6 w-full"
-                        >
-                          <ProductionTrackingVisual />
-                        </motion.div>
-                      ) : feat.id === "sample-manager" ? (
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, margin: "-50px" }}
-                          transition={{ duration: 0.6, delay: 0.2 }}
-                          className="relative mt-6 w-full"
-                        >
-                          <VendorManagementVisual />
-                        </motion.div>
-                      ) : feat.id === "techpack-builder" ? (
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, margin: "-50px" }}
-                          transition={{ duration: 0.6, delay: 0.2 }}
-                          className="relative mt-6 flex aspect-[858/400] justify-center overflow-hidden rounded-xl items-center"
-                        >
-                          <div className="relative w-full max-w-[800px] aspect-[1536/1024] shrink-0">
-                            <Image
-                              alt={feat.title}
-                              width={1536}
-                              height={1024}
-                              className="h-full w-full object-cover rounded-lg"
-                              src={feat.image}
-                              unoptimized
-                              priority
-                            />
-                            <div className="absolute top-[28.8%] left-[29.4%] w-[36.1%] h-[28.2%] overflow-hidden rounded-lg">
-                              <AnimatedApparelPreview onVersionChange={setActiveVersion} />
-                            </div>
-
-                            {/* Hide text line: "Version-controlled techpacks with comments and approval tracking" */}
-                            <div
-                              className="absolute pointer-events-none"
-                              style={{
-                                top: "13.2%",
-                                left: "20%",
-                                width: "60%",
-                                height: "4.5%",
-                                backgroundColor: "#000517",
-                              }}
-                            />
-
-                            {/* Card 1 Cover (dimmer when Card 2 is active) */}
-                            <div
-                              className="absolute rounded-xl bg-[#08101e]/65 border border-white/5 pointer-events-none transition-all duration-300"
-                              style={{
-                                top: "24.8%",
-                                left: "72.3%",
-                                width: "21.3%",
-                                height: "17.6%",
-                                opacity: activeVersion === 2 ? 1 : 0,
-                              }}
-                            />
-
-                            {/* Card 1 Highlight (glow when Card 1 is active) */}
-                            <div
-                              className="absolute rounded-xl border border-electric-blue pointer-events-none transition-all duration-300"
-                              style={{
-                                top: "24.8%",
-                                left: "72.3%",
-                                width: "21.3%",
-                                height: "17.6%",
-                                boxShadow: "0 0 15px rgba(59, 130, 246, 0.6)",
-                                opacity: activeVersion === 1 ? 1 : 0,
-                              }}
-                            />
-
-                            {/* Card 2 Highlight (glow when Card 2 is active) */}
-                            <div
-                              className="absolute rounded-xl border border-electric-blue pointer-events-none transition-all duration-300"
-                              style={{
-                                top: "43.0%",
-                                left: "72.3%",
-                                width: "21.3%",
-                                height: "12.0%",
-                                boxShadow: "0 0 15px rgba(59, 130, 246, 0.6)",
-                                opacity: activeVersion === 2 ? 1 : 0,
-                              }}
-                            />
-                          </div>
-                        </motion.div>
-                      ) : (
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, margin: "-50px" }}
-                          transition={{ duration: 0.6, delay: 0.2 }}
-                          className="relative mt-6 flex aspect-[858/400] items-end overflow-hidden rounded-xl"
-                        >
-                          <Image
-                            alt={feat.title}
-                            loading="lazy"
-                            width={1400}
-                            height={700}
-                            className="mx-auto h-full w-[90%] object-contain object-bottom md:w-full md:max-w-[780px]
-                              transition-transform duration-700 group-hover:scale-[1.02]"
-                            src={feat.image}
-                          />
-                          {/* Bottom gradient fade */}
-                          <div className="absolute bottom-0 h-[120px] w-full bg-gradient-to-t from-[#050d1a] via-[#050d1a]/60 to-transparent pointer-events-none" />
-                        </motion.div>
-                      )}
-
-                      {/* Card Footer: Description + Arrow */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-30px" }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
-                        className="flex justify-between gap-3 border-t border-white/[0.06] pt-5 md:items-center md:pt-8"
-                      >
-                        <div className="text-sm md:text-base w-full md:max-w-[540px] text-white/60 leading-relaxed">
-                          <strong className="text-white/90 font-semibold">
-                            {feat.boldText}
-                          </strong>{" "}
-                          {feat.description}
-                        </div>
-
-                        {/* Arrow button */}
-                        <div
-                          className="hidden md:flex size-10 shrink-0 items-center justify-center rounded-full
-                          border transition-all duration-300
-                          border-white/10 bg-white/5 text-white/50
-                          group-hover:bg-electric-blue group-hover:text-white group-hover:border-electric-blue
-                          group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="18"
-                            height="19"
-                            fill="none"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="1.5"
-                              d="m4.346 14.127 9-9M6.033 5.127h7.313v7.312"
-                            />
-                          </svg>
-                        </div>
-                      </motion.div>
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
+        {/* ---- Horizontal Tabs and Showcase ------------------------- */}
+        <div className="space-y-10">
+          {/* Tab Selector */}
+          <div className="flex flex-nowrap md:flex-wrap items-center gap-2 md:gap-3 overflow-x-auto pb-4 md:pb-0 scrollbar-none justify-start border-b border-white/[0.06] w-full">
+            {features.map((feat, i) => {
+              const isActive = i === activeIndex;
+              const Icon = feat.icon;
+              return (
+                <button
+                  key={feat.id}
+                  onClick={() => handleTabClick(i)}
+                  className="relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold transition-all duration-300 cursor-pointer whitespace-nowrap"
+                >
+                  {/* Active tab background slider */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="activePlatformTab"
+                      className="absolute inset-0 bg-gradient-to-br from-electric-blue/15 to-teal-accent/5 border border-electric-blue/30 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.15)]"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                  
+                  <Icon size={16} className={`relative z-10 ${isActive ? "text-electric-blue" : "text-white/40 group-hover:text-white/60"}`} />
+                  <span className={`relative z-10 transition-colors duration-300 ${isActive ? "text-white" : "text-white/50 hover:text-white/80"}`}>
+                    {feat.title}
+                  </span>
+                </button>
+              );
+            })}
           </div>
-        </div>
 
-        {/* Standalone Cost Analyzer Card (moved outside of the 4 sidebar cards) */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-          className="mt-20 lg:mt-32 w-full relative"
-        >
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            {/* Left Column: Sourcing / Cost Details */}
-            <div className="lg:col-span-5 space-y-6 text-left">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-electric-blue/20 to-teal-accent/10 border border-white/[0.08] flex items-center justify-center">
-                  <BarChart3 size={16} className="text-electric-blue" />
-                </div>
-                <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-[#ff7b7b] font-bold">
-                  COST OPTIMIZATION & LOGISTICS
-                </span>
-              </div>
-
-              <h3 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#bd9128] tracking-tight leading-tight">
-                Optimize sourcing and reduce costs
-              </h3>
-
-              <p className="text-sm md:text-base text-white/70 leading-relaxed">
-                Compare vendor quotes side-by-side, track material costs across collections, and uncover savings opportunities with real-time cost breakdowns and logistics tracking.
-              </p>
-
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 size-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
-                    <Check size={12} className="text-emerald-400" />
-                  </div>
-                  <span className="text-sm text-white/80 leading-snug">
-                    Compare vendor quotes and raw material costs in real-time
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 size-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
-                    <Check size={12} className="text-emerald-400" />
-                  </div>
-                  <span className="text-sm text-white/80 leading-snug">
-                    Track global logistics, routes, and vessel statuses on a live map
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 size-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
-                    <Check size={12} className="text-emerald-400" />
-                  </div>
-                  <span className="text-sm text-white/80 leading-snug">
-                    Uncover cost-saving opportunities with automated margin analysis
-                  </span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Right Column: Visual Mockup */}
-            <div className="lg:col-span-7">
+          {/* Active Tab Content Grid */}
+          <div className="w-full min-h-[500px]">
+            <AnimatePresence mode="wait">
               <motion.div
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6 }}
-                className="relative flex aspect-[858/400] md:aspect-[858/480] justify-center overflow-hidden rounded-xl items-center border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]"
+                key={activeIndex}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
               >
-                <div className="relative w-full h-full">
-                  <Image
-                    alt="Cost Analyzer Global Logistics"
-                    fill
-                    className="object-cover rounded-lg"
-                    src="/feature_vendor_map.png"
-                    unoptimized
-                    priority
-                  />
+                {/* Left Column: Feature Details */}
+                <div className="lg:col-span-5 space-y-6 text-left">
+                  {/* Badge */}
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-electric-blue/20 to-teal-accent/10 border border-white/[0.08] flex items-center justify-center">
+                      {(() => {
+                        const Icon = features[activeIndex].icon;
+                        return <Icon size={16} className="text-electric-blue" />;
+                      })()}
+                    </div>
+                    <span className={`text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold ${features[activeIndex].badgeColor}`}>
+                      {features[activeIndex].badge}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#bd9128] tracking-tight leading-tight">
+                    {features[activeIndex].title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-sm md:text-base text-white/70 leading-relaxed">
+                    {features[activeIndex].description}
+                  </p>
+
+                  {/* Checklist */}
+                  <ul className="space-y-4 pt-2">
+                    {features[activeIndex].checklist.map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-3 group">
+                        <div className="mt-1 size-5 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110">
+                          <Check size={12} className="text-emerald-400" />
+                        </div>
+                        <span className="text-sm text-white/80 leading-snug">
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Right Column: Visual Mockup */}
+                <div className="lg:col-span-7 flex justify-center items-center w-full">
+                  {features[activeIndex].id === "techpack-builder" ? (
+                    <div className="w-full relative aspect-[1536/1024] overflow-hidden rounded-xl border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                      <Image
+                        alt={features[activeIndex].title}
+                        fill
+                        className="object-cover rounded-lg"
+                        src={features[activeIndex].image}
+                        unoptimized
+                        priority
+                      />
+                      <div className="absolute top-[28.8%] left-[29.4%] w-[36.1%] h-[28.2%] overflow-hidden rounded-lg">
+                        <AnimatedApparelPreview onVersionChange={setActiveVersion} />
+                      </div>
+
+                      {/* Hide text line */}
+                      <div
+                        className="absolute pointer-events-none"
+                        style={{
+                          top: "13.2%",
+                          left: "20%",
+                          width: "60%",
+                          height: "4.5%",
+                          backgroundColor: "#000517",
+                        }}
+                      />
+
+                      {/* Card 1 Cover */}
+                      <div
+                        className="absolute rounded-xl bg-[#08101e]/65 border border-white/5 pointer-events-none transition-all duration-300"
+                        style={{
+                          top: "24.8%",
+                          left: "72.3%",
+                          width: "21.3%",
+                          height: "17.6%",
+                          opacity: activeVersion === 2 ? 1 : 0,
+                        }}
+                      />
+
+                      {/* Card 1 Highlight */}
+                      <div
+                        className="absolute rounded-xl border border-electric-blue pointer-events-none transition-all duration-300"
+                        style={{
+                          top: "24.8%",
+                          left: "72.3%",
+                          width: "21.3%",
+                          height: "17.6%",
+                          boxShadow: "0 0 15px rgba(59, 130, 246, 0.6)",
+                          opacity: activeVersion === 1 ? 1 : 0,
+                        }}
+                      />
+
+                      {/* Card 2 Highlight */}
+                      <div
+                        className="absolute rounded-xl border border-electric-blue pointer-events-none transition-all duration-300"
+                        style={{
+                          top: "43.0%",
+                          left: "72.3%",
+                          width: "21.3%",
+                          height: "12.0%",
+                          boxShadow: "0 0 15px rgba(59, 130, 246, 0.6)",
+                          opacity: activeVersion === 2 ? 1 : 0,
+                        }}
+                      />
+                    </div>
+                  ) : features[activeIndex].id === "centralized-collaboration" ? (
+                    <div className="w-full">
+                      <CentralizedCollaborationVisual />
+                    </div>
+                  ) : features[activeIndex].id === "production-tracking" ? (
+                    <div className="w-full">
+                      <ProductionTrackingVisual />
+                    </div>
+                  ) : features[activeIndex].id === "sample-manager" ? (
+                    <div className="w-full">
+                      <VendorManagementVisual />
+                    </div>
+                  ) : features[activeIndex].id === "cost-optimization" ? (
+                    <div className="w-full relative flex aspect-[858/400] md:aspect-[858/480] justify-center overflow-hidden rounded-xl items-center border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
+                      <div className="relative w-full h-full">
+                        <Image
+                          alt="Cost Optimization Global Logistics"
+                          fill
+                          className="object-cover rounded-lg"
+                          src="/feature_vendor_map.png"
+                          unoptimized
+                          priority
+                        />
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               </motion.div>
-            </div>
+            </AnimatePresence>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -353,7 +353,7 @@ export default function CentralizedCollaborationVisual() {
   return (
     <div className="w-full bg-[#040a15]/40 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden flex flex-col lg:flex-row h-auto lg:h-[620px]">
       {/* ═══════ LEFT: Sidebar - Product Workspace list ═══════ */}
-      <div className="w-full lg:w-[190px] xl:w-[210px] border-b lg:border-b-0 lg:border-r border-white/10 p-3 flex flex-col bg-[#050e1e]/60 shrink-0">
+      <div className="w-full lg:w-[155px] xl:w-[175px] border-b lg:border-b-0 lg:border-r border-white/10 p-2.5 flex flex-col bg-[#050e1e]/60 shrink-0">
         <div className="flex items-center justify-between mb-3">
           <span className="text-[9px] uppercase font-bold tracking-wider text-white/40">
             Workspace
@@ -388,11 +388,11 @@ export default function CentralizedCollaborationVisual() {
                 </div>
 
                 {/* Details */}
-                <div className="flex flex-col min-w-[100px] lg:min-w-0 pr-1">
+                <div className="flex flex-col min-w-[80px] lg:min-w-0 pr-1">
                   <span className="text-[9px] font-medium text-white/40 leading-none mb-0.5">
                     {item.category}
                   </span>
-                  <span className="text-[10px] font-bold text-white truncate max-w-[120px]">
+                  <span className="text-[10px] font-bold text-white truncate max-w-[90px] xl:max-w-[110px]">
                     {item.name}
                   </span>
                   <div className="flex items-center gap-1 mt-1">
@@ -455,7 +455,7 @@ export default function CentralizedCollaborationVisual() {
       </div>
 
       {/* ═══════ RIGHT: Comment Panel (Reference-style) ═══════ */}
-      <div className="w-full lg:w-[240px] xl:w-[260px] flex flex-col bg-[#0a1628]/80 backdrop-blur-sm shrink-0">
+      <div className="w-full lg:w-[185px] xl:w-[205px] flex flex-col bg-[#0a1628]/80 backdrop-blur-sm shrink-0">
         {/* Comment Panel Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
           <div className="flex items-center gap-2">
@@ -478,7 +478,7 @@ export default function CentralizedCollaborationVisual() {
         </div>
 
         {/* Comment List - Scrollable */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin px-4 py-3 space-y-1">
+        <div className="flex-1 overflow-y-auto scrollbar-thin px-2.5 py-3 space-y-1">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeItem.id}
@@ -511,7 +511,7 @@ export default function CentralizedCollaborationVisual() {
                         className="group/comment"
                       >
                         {/* Comment row */}
-                        <div className="flex gap-2.5">
+                        <div className="flex gap-1.5">
                           {/* Avatar dot */}
                           <div
                             className={`size-6 rounded-full shrink-0 flex items-center justify-center text-[8px] font-bold text-white mt-0.5 ${msg.avatarBg}`}
