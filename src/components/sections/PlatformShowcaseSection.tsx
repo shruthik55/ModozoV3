@@ -5,10 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
   Layers,
-  Link2,
   BarChart3,
   FlaskConical,
-  Eye,
   Users,
   Activity,
   Check,
@@ -29,8 +27,6 @@ interface FeatureCard {
   image: string;
   boldText: string;
   description: string;
-  badge: string;
-  badgeColor: string;
   checklist: string[];
 }
 
@@ -42,13 +38,11 @@ const features: FeatureCard[] = [
     icon: Layers,
     image: "/smarttechpackmanagement.png",
     boldText: "Version-controlled techpacks with comments and approval tracking.",
-    description: "Grade specs, create POM tables, and update bill of materials dynamically with seamless versioning control.",
-    badge: "TECHPACK DESIGN & COMPLIANCE",
-    badgeColor: "text-teal-accent",
+    description: "Create one source of truth for every style with structured techpack data, POM measurements, BOM details, artwork files, vendor comments, and approval history tied to each version.",
     checklist: [
-      "Keep track of every iteration with complete history comparison",
-      "Threaded comments directly on sketches and measurements",
-      "Automated status updates and sign-off requests for factory partners"
+      "Centralize specs, POMs, BOMs, fabrics, trims, and artwork",
+      "Align designers, sourcing, vendors, and factories in context",
+      "Track versions, approvals, and factory-ready handoffs",
     ],
   },
   {
@@ -59,12 +53,10 @@ const features: FeatureCard[] = [
     image: "/centralized_collaboration.png",
     boldText: "Connect your entire fashion workflow in one place.",
     description: "Modozo brings your brand, designers, pattern makers, fit specialists, and vendor networks together on a single immersive platform to eliminate communication silos.",
-    badge: "COLLABORATION HUB",
-    badgeColor: "text-electric-blue",
     checklist: [
       "Real-time chat and document sharing for all stakeholders",
       "Instant design updates and fit correction approvals",
-      "Unified database for fabrics, trims, and styling guidelines"
+      "Unified database for fabrics, trims, and styling guidelines",
     ],
   },
   {
@@ -75,12 +67,10 @@ const features: FeatureCard[] = [
     image: "/production_tracking.png",
     boldText: "Track production milestones from cutting to shipment.",
     description: "Get end-to-end visibility into your manufacturing lines. Automated factory floor updates, real-time scanning logs, and instant bottleneck alerts keep your delivery dates secure.",
-    badge: "FACTORY PRODUCTION",
-    badgeColor: "text-purple-400",
     checklist: [
       "Automated scan logs direct from assembly lines",
       "Visual milestone dashboard indicating line bottlenecks",
-      "Live progress tracking for all purchase orders"
+      "Live progress tracking for all purchase orders",
     ],
   },
   {
@@ -91,12 +81,10 @@ const features: FeatureCard[] = [
     image: "/vendor_management_1.png",
     boldText: "Streamline your sampling workflow.",
     description: "Digitize the entire sample lifecycle — from development and fit samples to pre-production and TOP approvals — with photo comparisons and inline comments.",
-    badge: "SOURCING & SAMPLING",
-    badgeColor: "text-[#ff7b7b]",
     checklist: [
       "Digital sample approvals and step-by-step cycle tracking",
       "Side-by-side photo comparison tools for fit adjustments",
-      "Vendor ratings and factory audit data integration"
+      "Vendor ratings and factory audit data integration",
     ],
   },
   {
@@ -107,12 +95,10 @@ const features: FeatureCard[] = [
     image: "/feature_vendor_map.png",
     boldText: "Optimize sourcing and reduce costs.",
     description: "Compare vendor quotes side-by-side, track material costs across collections, and uncover savings opportunities with real-time cost breakdowns and logistics tracking.",
-    badge: "COST OPTIMIZATION & LOGISTICS",
-    badgeColor: "text-[#ff7b7b]",
     checklist: [
       "Compare vendor quotes and raw material costs in real-time",
       "Track global logistics, routes, and vessel statuses on a live map",
-      "Uncover cost-saving opportunities with automated margin analysis"
+      "Uncover cost-saving opportunities with automated margin analysis",
     ],
   },
 ];
@@ -145,7 +131,7 @@ export default function PlatformShowcaseSection() {
     };
   }, [isAutoPlaying, activeIndex]);
 
-  // Called by CentralizedCollaborationVisual after all 6 subcards have been shown once
+  // Called by CentralizedCollaborationVisual after all subcards have been shown once
   const handleCollabCycleComplete = useCallback(() => {
     if (!isAutoPlaying) return;
     setActiveIndex((prev) => (prev + 1) % features.length);
@@ -211,7 +197,7 @@ export default function PlatformShowcaseSection() {
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
-                  
+
                   <Icon size={16} className={`relative z-10 ${isActive ? "text-electric-blue" : "text-white/40 group-hover:text-white/60"}`} />
                   <span className={`relative z-10 transition-colors duration-300 ${isActive ? "text-white" : "text-white/50 hover:text-white/80"}`}>
                     {feat.title}
@@ -234,19 +220,6 @@ export default function PlatformShowcaseSection() {
               >
                 {/* Left Column: Feature Details */}
                 <div className="lg:col-span-5 space-y-6 text-left">
-                  {/* Badge */}
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-electric-blue/20 to-teal-accent/10 border border-white/[0.08] flex items-center justify-center">
-                      {(() => {
-                        const Icon = features[activeIndex].icon;
-                        return <Icon size={16} className="text-electric-blue" />;
-                      })()}
-                    </div>
-                    <span className={`text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold ${features[activeIndex].badgeColor}`}>
-                      {features[activeIndex].badge}
-                    </span>
-                  </div>
-
                   {/* Title */}
                   <h3 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#bd9128] tracking-tight leading-tight">
                     {features[activeIndex].title}
@@ -452,4 +425,3 @@ const apparelList = [
     version: 2,
   },
 ];
-

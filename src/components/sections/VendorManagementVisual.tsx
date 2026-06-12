@@ -19,7 +19,7 @@ interface Tab {
 }
 
 const tabs: Tab[] = [
-  { id: "pantone_library", name: "Pantone Library", icon: Palette },
+  { id: "pantone_library", name: "Pantone Approval", icon: Palette },
   { id: "strike_off", name: "Print Strike-off", icon: Sparkles },
   { id: "pp_sample", name: "PP Sample", icon: Layers },
   { id: "status", name: "Order Status", icon: CheckCircle2 },

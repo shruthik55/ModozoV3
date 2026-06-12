@@ -92,17 +92,136 @@ export default function InteractiveWorkflowSection() {
     return () => window.removeEventListener("resize", calculateRange);
   }, []);
 
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
   });
 
+  const clearAllTimers = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    if (inactivityTimeoutRef.current) {
+      clearTimeout(inactivityTimeoutRef.current);
+      inactivityTimeoutRef.current = null;
+    }
+  };
+
+  const startAutoplayChain = (startIndex: number) => {
+    clearAllTimers();
+
+    // Start a 4-second timeout for the current card
+    inactivityTimeoutRef.current = setTimeout(() => {
+      if (!containerRef.current) return;
+
+      const element = containerRef.current;
+      const startScroll = element.offsetTop;
+      const totalScrollHeight = element.offsetHeight - window.innerHeight;
+
+      let nextCard = startIndex + 1;
+
+      if (nextCard <= 3) {
+        // Scroll to the next card
+        const progressMap = [0.0, 0.28, 0.58, 0.88];
+        const targetProgress = progressMap[nextCard];
+        const targetY = startScroll + totalScrollHeight * targetProgress;
+
+        window.scrollTo({
+          top: targetY,
+          behavior: "smooth",
+        });
+
+        // Start the interval for subsequent cards (every 4 seconds)
+        timerRef.current = setInterval(() => {
+          nextCard += 1;
+
+          if (nextCard <= 3) {
+            const progress = progressMap[nextCard];
+            const targetY = startScroll + totalScrollHeight * progress;
+
+            window.scrollTo({
+              top: targetY,
+              behavior: "smooth",
+            });
+          } else {
+            // Scroll to the next section (PlatformShowcaseSection)
+            const targetY = startScroll + element.offsetHeight;
+            window.scrollTo({
+              top: targetY,
+              behavior: "smooth",
+            });
+            clearAllTimers();
+          }
+        }, 4000);
+      } else {
+        // Already at or past the last card, scroll to the next section
+        const targetY = startScroll + element.offsetHeight;
+        window.scrollTo({
+          top: targetY,
+          behavior: "smooth",
+        });
+        clearAllTimers();
+      }
+    }, 4000);
+  };
+
+  useEffect(() => {
+    const handleUserInteraction = () => {
+      clearAllTimers();
+
+      const progress = scrollYProgress.get();
+      const currentIdx = Math.min(3, Math.floor(progress * 4.1));
+
+      // After 4 seconds of scroll inactivity, restart autoplay from the current card
+      if (progress > 0.02 && progress < 0.95) {
+        inactivityTimeoutRef.current = setTimeout(() => {
+          startAutoplayChain(currentIdx);
+        }, 4000);
+      }
+    };
+
+    window.addEventListener("wheel", handleUserInteraction, { passive: true });
+    window.addEventListener("touchmove", handleUserInteraction, { passive: true });
+    window.addEventListener("keydown", handleUserInteraction, { passive: true });
+    window.addEventListener("mousedown", handleUserInteraction, { passive: true });
+
+    return () => {
+      window.removeEventListener("wheel", handleUserInteraction);
+      window.removeEventListener("touchmove", handleUserInteraction);
+      window.removeEventListener("keydown", handleUserInteraction);
+      window.removeEventListener("mousedown", handleUserInteraction);
+      clearAllTimers();
+    };
+  }, [scrollYProgress]);
+
+  useEffect(() => {
+    const progress = scrollYProgress.get();
+    if (progress > 0.02 && progress < 0.95) {
+      const currentIdx = Math.min(3, Math.floor(progress * 4.1));
+      startAutoplayChain(currentIdx);
+    }
+  }, [scrollYProgress]);
+
   // Slide horizontally based on scroll progress
   const x = useTransform(scrollYProgress, [0, 1], [0, -scrollRange]);
 
-  // Sync active card index with scroll position
+  // Sync active card index with scroll position and handle programmatic triggers
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     const cardIndex = Math.min(3, Math.floor(latest * 4.1)); // Multiply by 4.1 to buffer the end
     setActiveCard(cardIndex);
+
+    // Trigger autoplay when entering sticky range via links (no user touch/mouse inputs)
+    if (latest > 0.02 && latest < 0.95) {
+      if (!timerRef.current && !inactivityTimeoutRef.current) {
+        startAutoplayChain(cardIndex);
+      }
+    } else {
+      // Clear timers if scrolled out of the sticky range
+      clearAllTimers();
+    }
   });
 
   return (
@@ -137,11 +256,11 @@ export default function InteractiveWorkflowSection() {
               return (
                 <div
                   key={card.id}
-                  className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 group-hover:border-white/20 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group transition-all duration-350"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
-                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
+                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 group-hover:opacity-25 pointer-events-none transition-opacity duration-500"
                     style={{ backgroundColor: card.accent }}
                   />
 
@@ -156,11 +275,11 @@ export default function InteractiveWorkflowSection() {
                   <div className="z-10 w-full flex items-center justify-center overflow-hidden mb-3 md:mb-4">
                     <div className="w-full aspect-[1535/1024] rounded-[2rem] overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
                       <Image
-                        src="/scattered_communication_1.png"
+                        src="/scattered-communication-2.png"
                         alt="Scattered Communication"
                         width={1535}
                         height={1024}
-                        className="w-full h-full object-cover rounded-[2rem]"
+                        className="w-full h-full object-cover rounded-[2rem] transition-transform duration-700 group-hover:scale-[1.02]"
                         priority
                         unoptimized
                       />
@@ -174,11 +293,11 @@ export default function InteractiveWorkflowSection() {
               return (
                 <div
                   key={card.id}
-                  className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 group-hover:border-white/20 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group transition-all duration-350"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
-                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
+                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 group-hover:opacity-25 pointer-events-none transition-opacity duration-500"
                     style={{ backgroundColor: card.accent }}
                   />
 
@@ -193,11 +312,11 @@ export default function InteractiveWorkflowSection() {
                   <div className="z-10 w-full flex items-center justify-center overflow-hidden mb-3 md:mb-4">
                     <div className="w-full aspect-[1535/1024] rounded-[2rem] overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
                       <Image
-                        src="/delayed_approvals_1.png"
+                        src="/delayed-approval-2.png"
                         alt="Delayed Approvals"
                         width={1535}
                         height={1024}
-                        className="w-full h-full object-cover rounded-[2rem]"
+                        className="w-full h-full object-cover rounded-[2rem] transition-transform duration-700 group-hover:scale-[1.02]"
                         priority
                         unoptimized
                       />
@@ -211,11 +330,11 @@ export default function InteractiveWorkflowSection() {
               return (
                 <div
                   key={card.id}
-                  className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 group-hover:border-white/20 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group transition-all duration-350"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
-                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
+                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 group-hover:opacity-25 pointer-events-none transition-opacity duration-500"
                     style={{ backgroundColor: card.accent }}
                   />
 
@@ -230,11 +349,11 @@ export default function InteractiveWorkflowSection() {
                   <div className="z-10 w-full flex items-center justify-center overflow-hidden mb-3 md:mb-4">
                     <div className="w-full aspect-[1535/1024] rounded-[2rem] overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
                       <Image
-                        src="/long_time_to_market_1.png"
+                        src="/longtimetomarket-2.png"
                         alt="Long Time-to-Market"
                         width={1535}
                         height={1024}
-                        className="w-full h-full object-contain rounded-[2rem]"
+                        className="w-full h-full object-contain rounded-[2rem] transition-transform duration-700 group-hover:scale-[1.02]"
                         priority
                         unoptimized
                       />
@@ -248,11 +367,11 @@ export default function InteractiveWorkflowSection() {
               return (
                 <div
                   key={card.id}
-                  className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group"
+                  className="w-[80vw] md:w-[70vw] lg:w-[60vw] max-w-3xl h-auto shrink-0 bg-gradient-to-br from-[#0c1a2e]/85 to-[#050d1a]/85 border border-white/10 group-hover:border-white/20 rounded-[2rem] px-6 pt-4 pb-6 md:px-8 md:pt-4 md:pb-6 shadow-[0_20px_50px_rgba(4,11,23,0.65)] flex flex-col justify-start gap-4 md:gap-6 overflow-hidden relative group transition-all duration-350"
                 >
                   {/* Subtle background colored glow inside card */}
                   <div
-                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 pointer-events-none"
+                    className="absolute -top-24 -right-24 w-64 h-64 rounded-full filter blur-[80px] opacity-15 group-hover:opacity-25 pointer-events-none transition-opacity duration-500"
                     style={{ backgroundColor: card.accent }}
                   />
 
@@ -267,11 +386,11 @@ export default function InteractiveWorkflowSection() {
                   <div className="z-10 w-full flex items-center justify-center overflow-hidden mb-3 md:mb-4">
                     <div className="w-full aspect-[1535/1024] rounded-[2rem] overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
                       <Image
-                        src="/techpack_mismanagement_new.png"
+                        src="/techpack-mismanagement-2.png"
                         alt="Techpack Mismanagement"
                         width={1535}
                         height={1024}
-                        className="w-full h-full object-contain rounded-[2rem]"
+                        className="w-full h-full object-contain rounded-[2rem] transition-transform duration-700 group-hover:scale-[1.02]"
                         priority
                         unoptimized
                       />

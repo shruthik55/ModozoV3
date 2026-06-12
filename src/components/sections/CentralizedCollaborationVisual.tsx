@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { MessageSquare, MoreHorizontal, Reply } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 
 interface ChatMessage {
   sender: string;
@@ -22,6 +22,11 @@ interface ApparelItem {
   image: string;
   status: string;
   statusColor: string;
+  chatThread: {
+    author: string;
+    text: string;
+    align: "left" | "right";
+  }[];
   commentSections: {
     label: string;
     messages: ChatMessage[];
@@ -36,6 +41,11 @@ const apparelItems: ApparelItem[] = [
     image: "/collab_linesheets_v2.png",
     status: "Shared",
     statusColor: "text-amber-400 bg-amber-400/10 border-amber-400/20",
+    chatThread: [
+      { author: "Design", text: "Linesheet shared with final colorways.", align: "left" },
+      { author: "Sales", text: "Pricing looks ready for buyer review.", align: "right" },
+      { author: "Sourcing", text: "MOQ notes are updated.", align: "left" },
+    ],
     commentSections: [
       {
         label: "Pricing",
@@ -82,6 +92,11 @@ const apparelItems: ApparelItem[] = [
     image: "/collab_techpack_v2.png",
     status: "In Progress",
     statusColor: "text-blue-400 bg-blue-400/10 border-blue-400/20",
+    chatThread: [
+      { author: "Design", text: "BOM and specs are updated.", align: "left" },
+      { author: "Pattern", text: "Checking measurements now.", align: "right" },
+      { author: "Factory", text: "Prototype cut starts after approval.", align: "left" },
+    ],
     commentSections: [
       {
         label: "BOM Updates",
@@ -128,6 +143,11 @@ const apparelItems: ApparelItem[] = [
     image: "/collab_pantone.png",
     status: "Review",
     statusColor: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
+    chatThread: [
+      { author: "Design", text: "Final palette is uploaded.", align: "left" },
+      { author: "Sourcing", text: "Mill shades are matched.", align: "right" },
+      { author: "Lab", text: "Dips arrive in 3 days.", align: "left" },
+    ],
     commentSections: [
       {
         label: "Color Palette",
@@ -174,6 +194,11 @@ const apparelItems: ApparelItem[] = [
     image: "/printstrikk.png",
     status: "Pending",
     statusColor: "text-orange-400 bg-orange-400/10 border-orange-400/20",
+    chatThread: [
+      { author: "Design", text: "Print placement looks aligned.", align: "left" },
+      { author: "Sourcing", text: "Ink coverage is within tolerance.", align: "right" },
+      { author: "Factory", text: "Mill is waiting for sign-off.", align: "left" },
+    ],
     commentSections: [
       {
         label: "Print Quality",
@@ -220,6 +245,11 @@ const apparelItems: ApparelItem[] = [
     image: "/pp-smpf.png",
     status: "Approved",
     statusColor: "text-teal-400 bg-teal-400/10 border-teal-400/20",
+    chatThread: [
+      { author: "QA", text: "PP sample passes inspection.", align: "left" },
+      { author: "Design", text: "Approved. Keep label placement.", align: "right" },
+      { author: "Factory", text: "Bulk line setup begins today.", align: "left" },
+    ],
     commentSections: [
       {
         label: "QA Review",
@@ -266,6 +296,11 @@ const apparelItems: ApparelItem[] = [
     image: "/fitappro.png",
     status: "Adjusted",
     statusColor: "text-indigo-400 bg-indigo-400/10 border-indigo-400/20",
+    chatThread: [
+      { author: "Fit", text: "Shoulder and sleeve are corrected.", align: "left" },
+      { author: "Pattern", text: "DXF file is exported.", align: "right" },
+      { author: "Factory", text: "Marker file received.", align: "left" },
+    ],
     commentSections: [
       {
         label: "Fit Adjustments",
@@ -310,29 +345,35 @@ const apparelItems: ApparelItem[] = [
 export default function CentralizedCollaborationVisual({ onCycleComplete }: { onCycleComplete?: () => void }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const autoPlayRef = useRef<boolean>(true);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onCycleCompleteRef = useRef(onCycleComplete);
+  const pendingCycleCompleteRef = useRef(false);
 
   useEffect(() => { onCycleCompleteRef.current = onCycleComplete; }, [onCycleComplete]);
 
-  const activeItem = apparelItems[activeIndex];
+  const advanceActiveItem = useCallback(() => {
+    setActiveIndex((prev) => {
+      const next = (prev + 1) % apparelItems.length;
+      pendingCycleCompleteRef.current = next === 0;
+      return next;
+    });
+  }, []);
 
-  // Total comment count for active item
-  const totalComments = activeItem.commentSections.reduce(
-    (sum, section) => sum + section.messages.length,
-    0
-  );
+  useEffect(() => {
+    if (!pendingCycleCompleteRef.current || activeIndex !== 0) return;
+
+    pendingCycleCompleteRef.current = false;
+    onCycleCompleteRef.current?.();
+  }, [activeIndex]);
+
+  const activeItem = apparelItems[activeIndex];
 
   // Auto-play timer
   useEffect(() => {
     const startTimer = () => {
       timerRef.current = setInterval(() => {
         if (autoPlayRef.current) {
-          setActiveIndex((prev) => {
-            const next = (prev + 1) % apparelItems.length;
-            if (next === 0) onCycleCompleteRef.current?.();
-            return next;
-          });
+          advanceActiveItem();
         }
       }, 7000);
     };
@@ -341,85 +382,14 @@ export default function CentralizedCollaborationVisual({ onCycleComplete }: { on
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, []);
-
-  const handleSelect = (index: number) => {
-    setActiveIndex(index);
-    autoPlayRef.current = false;
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
-    timerRef.current = setTimeout(() => {
-      autoPlayRef.current = true;
-      timerRef.current = setInterval(() => {
-        setActiveIndex((prev) => (prev + 1) % apparelItems.length);
-      }, 7000);
-    }, 12000);
-  };
+  }, [advanceActiveItem]);
 
   return (
-    <div className="w-full bg-[#040a15]/40 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden flex flex-col lg:flex-row h-auto lg:h-[620px]">
-      {/* ═══════ LEFT: Sidebar - Product Workspace list ═══════ */}
-      <div className="w-full lg:w-[155px] xl:w-[175px] border-b lg:border-b-0 lg:border-r border-white/10 p-2.5 flex flex-col bg-[#050e1e]/60 shrink-0">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-[9px] uppercase font-bold tracking-wider text-white/40">
-            Workspace
-          </span>
-          <span className="text-[9px] bg-electric-blue/10 text-electric-blue px-1.5 py-0.5 rounded-full font-medium">
-            6 Active
-          </span>
-        </div>
-
-        {/* Scrollable sidebar list */}
-        <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-y-auto pb-2 lg:pb-0 scrollbar-none">
-          {apparelItems.map((item, index) => {
-            const isActive = index === activeIndex;
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleSelect(index)}
-                className={`flex items-center gap-2.5 p-2 rounded-xl text-left border transition-all duration-300 shrink-0 lg:shrink ${isActive
-                  ? "bg-white/[0.06] border-white/15 shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
-                  : "bg-transparent border-transparent hover:bg-white/[0.02]"
-                  }`}
-              >
-                {/* Thumb Image */}
-                <div className="relative size-8 rounded-lg overflow-hidden bg-white/5 flex items-center justify-center border border-white/10">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    width={32}
-                    height={32}
-                    className="object-contain"
-                  />
-                </div>
-
-                {/* Details */}
-                <div className="flex flex-col min-w-[80px] lg:min-w-0 pr-1">
-                  <span className="text-[9px] font-medium text-white/40 leading-none mb-0.5">
-                    {item.category}
-                  </span>
-                  <span className="text-[10px] font-bold text-white truncate max-w-[90px] xl:max-w-[110px]">
-                    {item.name}
-                  </span>
-                  <div className="flex items-center gap-1 mt-1">
-                    <span
-                      className={`text-[8px] px-1.5 py-0.5 rounded border leading-none font-medium ${item.statusColor}`}
-                    >
-                      {item.status}
-                    </span>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
+    <div className="w-full bg-[#040a15]/40 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden h-auto lg:h-[640px]">
       {/* ═══════ CENTER: Product Image Preview ═══════ */}
-      <div className="flex-1 flex flex-col min-h-[350px] lg:min-h-0 bg-[#030814]/30 border-b lg:border-b-0 lg:border-r border-white/10">
+      <div className="h-full flex flex-col min-h-[390px] lg:min-h-0 bg-[#030814]/30">
         {/* Image Area */}
-        <div className="flex-1 p-3 md:p-5 flex items-center justify-center relative overflow-hidden">
+        <div className="flex-1 p-2 lg:p-3 flex items-center justify-center relative overflow-hidden">
           {/* Background radar circles */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
             <div className="absolute size-40 rounded-full border border-white/10 animate-[ping_6s_infinite]" />
@@ -433,153 +403,73 @@ export default function CentralizedCollaborationVisual({ onCycleComplete }: { on
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.35, ease: "easeOut" }}
-              className="relative w-full h-full min-h-[300px] lg:min-h-[450px] flex items-center justify-center"
+              className="relative w-full h-full min-h-[480px] md:min-h-[530px] lg:min-h-[590px] flex flex-col items-center justify-start pt-20 pb-[185px] md:pt-24 md:pb-[195px] lg:pt-18 lg:pb-8 px-4 md:px-6 lg:px-8 rounded-xl border border-white/10 bg-black/15 overflow-hidden"
             >
-              <Image
-                src={activeItem.image}
-                alt={activeItem.name}
-                fill
-                priority
-                className="object-contain transition-transform duration-700 hover:scale-105"
-              />
-            </motion.div>
-          </AnimatePresence>
+              {/* Card Name Tag (Top Left Corner of the entire outer container card) */}
+              <div className="absolute top-3 left-3 md:top-4 md:left-4 lg:top-5 lg:left-5 z-20 max-w-[70%] rounded-lg border border-white/15 bg-[#07111f]/90 px-3 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.35)] backdrop-blur-md whitespace-nowrap">
+                <span className="block text-[9px] font-bold uppercase tracking-[0.18em] text-electric-blue/80">
+                  {activeItem.category}
+                </span>
+                <span className="mt-0.5 block truncate text-xs font-bold text-white">
+                  {activeItem.name}
+                </span>
+              </div>
 
-          {/* Info Badge */}
-          <div className="absolute top-3 left-4 flex items-center gap-2">
-            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[10px] font-bold text-white/50 tracking-wider uppercase">
-              Live Canvas
-            </span>
-          </div>
+              {/* Centered Relative Wrapper for Image */}
+              <div className="relative">
+                {/* Center Image (Optimized Size) */}
+                <img
+                  src={activeItem.image}
+                  alt={activeItem.name}
+                  className="h-[210px] sm:h-[240px] md:h-[270px] lg:h-[310px] w-auto object-contain rounded-xl border border-white/10 bg-black/25 transition-transform duration-700 hover:scale-[1.01]"
+                />
+              </div>
 
-          {/* Item Name Badge */}
-          <div className="absolute bottom-3 left-4 bg-black/50 backdrop-blur-sm border border-white/10 rounded-lg px-3 py-1.5">
-            <span className="text-[10px] text-white/60 font-medium">{activeItem.category}</span>
-            <span className="text-xs font-bold text-white ml-2">{activeItem.name}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ═══════ RIGHT: Comment Panel (Reference-style) ═══════ */}
-      <div className="w-full lg:w-[185px] xl:w-[205px] flex flex-col bg-[#0a1628]/80 backdrop-blur-sm shrink-0">
-        {/* Comment Panel Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-          <div className="flex items-center gap-2">
-            <MessageSquare size={14} className="text-white/60" />
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={activeItem.id + "-count"}
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 5 }}
-                className="text-sm font-bold text-white"
-              >
-                {totalComments} Comments
-              </motion.span>
-            </AnimatePresence>
-          </div>
-          <button className="p-1 rounded-md hover:bg-white/5 transition-colors">
-            <MoreHorizontal size={16} className="text-white/40" />
-          </button>
-        </div>
-
-        {/* Comment List - Scrollable */}
-        <div className="overflow-y-auto scrollbar-thin px-2.5 py-3 space-y-1">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeItem.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="space-y-1"
-            >
-              {activeItem.commentSections.map((section, sIdx) => (
-                <div key={section.label + sIdx}>
-                  {/* Section Label */}
-                  <div className="sticky top-0 bg-[#0a1628]/95 backdrop-blur-sm py-1.5 z-10">
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-white/30">
-                      {section.label}
-                    </span>
+              {/* Comment Chat Box (Bottom Right Corner of the entire outer container card - Compact Size) */}
+              <div className="absolute bottom-3 right-3 md:bottom-4 md:right-4 lg:bottom-5 lg:right-5 z-20 w-[220px] sm:w-[235px] md:w-[250px] rounded-xl border border-electric-blue/30 bg-[#07111f]/95 p-2.5 md:p-3 shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                <div className="mb-2 flex items-center gap-2">
+                  <div className="size-5.5 rounded-lg bg-electric-blue/15 flex items-center justify-center">
+                    <MessageSquare size={12} className="text-electric-blue" />
                   </div>
-
-                  {/* Messages */}
-                  <div className="space-y-3 pb-3">
-                    {section.messages.map((msg, mIdx) => (
-                      <motion.div
-                        key={msg.sender + mIdx}
-                        initial={{ opacity: 0, x: 10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{
-                          duration: 0.3,
-                          delay: sIdx * 0.15 + mIdx * 0.1,
-                        }}
-                        className="group/comment"
-                      >
-                        {/* Comment row */}
-                        <div className="flex gap-1.5">
-                          {/* Avatar dot */}
-                          <div
-                            className={`size-6 rounded-full shrink-0 flex items-center justify-center text-[8px] font-bold text-white mt-0.5 ${msg.avatarBg}`}
-                          >
-                            {msg.initials}
-                          </div>
-
-                          {/* Comment content */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-baseline gap-1.5 flex-wrap">
-                              <span className="text-[11px] font-bold text-white">
-                                {msg.sender}
-                              </span>
-                              {msg.time && (
-                                <span className="text-[9px] text-white/25 font-medium">
-                                  {msg.time}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-[11px] text-white/55 leading-relaxed mt-0.5">
-                              {msg.text}
-                            </p>
-
-                            {/* Reply count */}
-                            {msg.replies && msg.replies > 0 && (
-                              <div className="flex items-center gap-1 mt-1.5 opacity-0 group-hover/comment:opacity-100 transition-opacity duration-200">
-                                <Reply size={10} className="text-electric-blue/60" />
-                                <span className="text-[9px] text-electric-blue/60 font-medium">
-                                  {msg.replies} {msg.replies === 1 ? "reply" : "replies"}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
+                  <span className="text-[9.5px] font-bold uppercase tracking-[0.16em] text-white/45">
+                    Team chat
+                  </span>
                 </div>
-              ))}
+                <div className="space-y-1.5">
+                  {activeItem.chatThread.map((message) => (
+                    <div
+                      key={`${activeItem.id}-${message.author}`}
+                      className={`flex ${message.align === "right" ? "justify-end" : "justify-start"}`}
+                    >
+                      <div
+                        className={`max-w-[88%] rounded-lg px-2.5 py-1 ${
+                          message.align === "right"
+                            ? "bg-electric-blue/20 border border-electric-blue/25 text-white"
+                            : "bg-white/[0.06] border border-white/10 text-white/85"
+                        }`}
+                      >
+                        <span className="block text-[7.5px] font-bold uppercase tracking-[0.12em] text-white/35">
+                          {message.author}
+                        </span>
+                        <span className="block text-[9.5px] font-semibold leading-snug">
+                          {message.text}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-2.5 flex items-center gap-1.5 border-t border-white/[0.06] pt-2">
+                  <span className={`text-[7.5px] px-1.5 py-0.5 rounded border leading-none font-medium ${activeItem.statusColor}`}>
+                    {activeItem.status}
+                  </span>
+                  <span className="text-[8.5px] font-medium text-white/35">
+                    synced now
+                  </span>
+                </div>
+              </div>
             </motion.div>
           </AnimatePresence>
         </div>
-
-        {/* Comment Input - sits immediately below last comment */}
-        <div className="px-4 py-3 border-t border-white/10">
-          <div className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2">
-            <span className="text-[11px] text-white/25 flex-1">
-              Add a comment. Use @ to mention.
-            </span>
-            <div className="flex items-center gap-1.5">
-              <div className="size-5 rounded flex items-center justify-center bg-white/[0.06] hover:bg-white/10 transition-colors cursor-pointer">
-                <span className="text-[10px] text-white/40">@</span>
-              </div>
-              <div className="size-5 rounded flex items-center justify-center bg-electric-blue/20 hover:bg-electric-blue/30 transition-colors cursor-pointer">
-                <MessageSquare size={10} className="text-electric-blue" />
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Spacer pushes any remaining height to the bottom, not above the input */}
-        <div className="flex-1" />
       </div>
     </div>
   );
