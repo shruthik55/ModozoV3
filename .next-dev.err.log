@@ -611,3 +611,80 @@ https://nextjs.org/docs/messages/module-not-found
 [browser] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (file://C:/Users/Sai Shiva Alagandula/Desktop/Modozo-V2/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2477:13)
 [browser] Image with src "/modozo_brand_logo.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. (file://C:/Users/Sai Shiva Alagandula/Desktop/Modozo-V2/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2477:13)
 [browser] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (file://C:/Users/Sai Shiva Alagandula/Desktop/Modozo-V2/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2477:13)
+[browser] Image with src "/modozo_brand_logo.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. (file://C:/Users/Sai Shiva Alagandula/Desktop/Modozo-V2/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2477:13)
+⨯ ./src/components/sections/PlatformShowcaseSection.tsx:233:5
+Expected '</', got 'ident'
+  [90m231 |[0m                 exit={{ opacity: [35m0[0m, y: -[35m15[0m }}
+  [90m232 |[0m   {
+[31m[1m>[0m [90m233 |[0m     id: [32m"centralized-collaboration"[0m,
+  [90m    |[0m     [31m[1m^^[0m
+  [90m234 |[0m     slug: [32m"centralized-collaboration"[0m,
+  [90m235 |[0m     title: [32m"Centralized Collaboration"[0m,
+  [90m236 |[0m     icon: [33mUsers[0m,
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/components/sections/PlatformShowcaseSection.tsx
+    ./src/app/page.tsx
+
+
+⨯ ./src/components/sections/PlatformShowcaseSection.tsx:233:5
+Expected '</', got 'ident'
+  [90m231 |[0m                 exit={{ opacity: [35m0[0m, y: -[35m15[0m }}
+  [90m232 |[0m   {
+[31m[1m>[0m [90m233 |[0m     id: [32m"centralized-collaboration"[0m,
+  [90m    |[0m     [31m[1m^^[0m
+  [90m234 |[0m     slug: [32m"centralized-collaboration"[0m,
+  [90m235 |[0m     title: [32m"Centralized Collaboration"[0m,
+  [90m236 |[0m     icon: [33mUsers[0m,
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/components/sections/PlatformShowcaseSection.tsx
+    ./src/app/page.tsx
+
+
+⨯ ./src/components/sections/PlatformShowcaseSection.tsx:233:5
+Expected '</', got 'ident'
+  [90m231 |[0m                 exit={{ opacity: [35m0[0m, y: -[35m15[0m }}
+  [90m232 |[0m   {
+[31m[1m>[0m [90m233 |[0m     id: [32m"centralized-collaboration"[0m,
+  [90m    |[0m     [31m[1m^^[0m
+  [90m234 |[0m     slug: [32m"centralized-collaboration"[0m,
+  [90m235 |[0m     title: [32m"Centralized Collaboration"[0m,
+  [90m236 |[0m     icon: [33mUsers[0m,
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/components/sections/PlatformShowcaseSection.tsx
+    ./src/app/page.tsx
+
+
+[browser] Uncaught Error: ./src/components/sections/PlatformShowcaseSection.tsx:233:5
+Expected '</', got 'ident'
+  231 |                 exit={{ opacity: 0, y: -15 }}
+  232 |   {
+> 233 |     id: "centralized-collaboration",
+      |     ^^
+  234 |     slug: "centralized-collaboration",
+  235 |     title: "Centralized Collaboration",
+  236 |     icon: Users,
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./src/components/sections/PlatformShowcaseSection.tsx
+    ./src/app/page.tsx
+
+
+    at <unknown> (Error: ./src/components/sections/PlatformShowcaseSection.tsx:233:5)
+    at <unknown> (Error: (./src/components/sections/PlatformShowcaseSection.tsx:233:5)
+[browser] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. (file://C:/Users/Sai Shiva Alagandula/Desktop/Modozo-V2/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2477:13)
+[browser] Image with src "/modozo_brand_logo.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. (file://C:/Users/Sai Shiva Alagandula/Desktop/Modozo-V2/.next/dev/static/chunks/node_modules_next_dist_115brz8._.js:2477:13)
