@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar,
   CheckCircle2,
-  XCircle,
   Layers,
   Sparkles,
-  Building,
   Palette
 } from "lucide-react";
 
@@ -177,7 +175,6 @@ const sourcingOrders: SourcingOrder[] = [
 export default function VendorManagementVisual() {
   const [activeTab, setActiveTab] = useState<string>("pp_sample");
   const [isAutoNavigating, setIsAutoNavigating] = useState<boolean>(true);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Auto navigation loop
   useEffect(() => {
@@ -398,80 +395,14 @@ export default function VendorManagementVisual() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
-              className="w-full h-full flex flex-col md:flex-row gap-3 overflow-hidden"
+              className="w-full h-full flex flex-col justify-between overflow-hidden"
             >
-              {/* Left Calendar Grid */}
-              <div className="flex-1 rounded-xl border border-white/[0.08] bg-[#02060f] p-3 flex flex-col justify-between h-[60%] md:h-full">
-                <div className="flex items-center justify-between border-b border-white/5 pb-1.5 mb-2">
-                  <span className="text-[10px] font-bold text-white">June 2026</span>
-                  <span className="text-[8px] text-white/40">Standard Grid</span>
-                </div>
-
-                {/* Days header */}
-                <div className="grid grid-cols-7 gap-1 text-[8px] text-center text-white/35 font-bold mb-1">
-                  <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
-                </div>
-
-                {/* Calendar Days */}
-                <div className="grid grid-cols-7 gap-1 flex-1">
-                  {/* Empty cells for starting offset */}
-                  {Array.from({ length: 0 }).map((_, i) => <div key={`empty-${i}`} />)}
-
-                  {Array.from({ length: 30 }).map((_, i) => {
-                    const day = i + 1;
-                    const isInspectionDay = day === 18;
-                    return (
-                      <div
-                        key={`day-${day}`}
-                        className={`rounded flex items-center justify-center text-[9px] font-bold aspect-square transition-all duration-300 ${isInspectionDay
-                          ? "bg-[#bd9128] text-white shadow-[0_0_10px_rgba(189,145,40,0.4)] border border-[#bd9128]/50 relative"
-                          : "bg-white/[0.02] text-white/50 border border-white/[0.03]"
-                          }`}
-                      >
-                        {day}
-                        {isInspectionDay && (
-                          <span className="absolute -top-0.5 -right-0.5 size-1.5 rounded-full bg-white border border-[#bd9128]" />
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Right Event details */}
-              <div className="w-full md:w-[42%] flex flex-col justify-between h-[38%] md:h-full border-t md:border-t-0 md:border-l border-white/5 pt-2.5 md:pt-0 md:pl-3">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#bd9128]">
-                    <Calendar size={13} />
-                    <span>Inspection Event</span>
-                  </div>
-
-                  <div className="bg-[#bd9128]/5 border border-[#bd9128]/15 rounded-xl p-3 space-y-2">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-bold text-white">Final Shipment Audit</span>
-                      <span className="text-[8px] text-white/40">Sino Apparel Factory</span>
-                    </div>
-                    <div className="space-y-1 text-[9px] text-[#bd9128]/90 font-medium">
-                      <div className="flex justify-between">
-                        <span>Inspector:</span>
-                        <span className="text-white/70">Bureau Veritas</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Date:</span>
-                        <span className="text-white/70">June 18, 2026</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Status:</span>
-                        <span className="text-emerald-400">CONFIRMED</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-[8px] text-white/30 flex items-center gap-1.5 border-t border-white/5 pt-2">
-                  <Building size={10} className="text-electric-blue" />
-                  <span>Audited inspections protect factory output quality targets.</span>
-                </div>
+              <div className="flex-1 overflow-hidden relative rounded-xl border border-white/[0.08] bg-[#02060f]">
+                <img
+                  src="/final_inspecction.png"
+                  alt="Final Inspection Call"
+                  className="w-full h-full object-contain block mx-auto"
+                />
               </div>
             </motion.div>
           )}
