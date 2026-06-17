@@ -6,6 +6,7 @@ import PlatformShowcaseSection from "@/components/sections/PlatformShowcaseSecti
 import WorkflowSplit from "@/components/sections/WorkflowSplit";
 import VIPServiceSection from "@/components/sections/VIPServiceSection";
 import BeforeAfterSection from "@/components/sections/BeforeAfterSection";
+import HowModozoWorksSection from "@/components/sections/HowModozoWorksSection";
 
 export default function Home() {
   return (
@@ -24,21 +25,8 @@ export default function Home() {
       {/* 4. Before vs After MODOZO (Dark) */}
       <BeforeAfterSection />
 
-      {/* 4. Workflow Block A: Faster to Market (Dark) */}
-      <WorkflowSplit
-        id="workflow"
-        tag="Rapid Fashion Deployment"
-        theme="dark"
-        // emoji="⚡"
-        title="Accelerate your time to market"
-        subtitle="Watch productivity soar. Modozo provides a centralized hub to track every garment from initial sketch to final shipment."
-        bullets={[
-          "Live Kanban boards to track collection progress",
-          "Automated Time & Action (T&A) calendar management",
-          "Proactive delay alerts and milestone tracking"
-        ]}
-        image="/photo54.png"
-      />
+      {/* 4. How Modozo Works (Dark) */}
+      <HowModozoWorksSection />
 
       {/* 5. Workflow Block B: Improve Quality (Dark) */}
       <WorkflowSplit

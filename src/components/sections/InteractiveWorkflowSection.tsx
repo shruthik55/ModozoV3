@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValueEvent, animate } from "framer-motion";
 import Image from "next/image";
 import {
   FileSpreadsheet,
@@ -94,78 +94,67 @@ export default function InteractiveWorkflowSection() {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const animationControlsRef = useRef<any>(null);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
+    offset: ["start start", "end end"]
   });
 
   const clearAllTimers = () => {
     if (timerRef.current) {
-      clearInterval(timerRef.current);
+      clearTimeout(timerRef.current);
       timerRef.current = null;
     }
     if (inactivityTimeoutRef.current) {
       clearTimeout(inactivityTimeoutRef.current);
       inactivityTimeoutRef.current = null;
     }
+    if (animationControlsRef.current) {
+      animationControlsRef.current.stop();
+      animationControlsRef.current = null;
+    }
   };
 
-  const startAutoplayChain = (startIndex: number) => {
+  const startAutoplayChain = (startIndex: number, initialDelay = 5000) => {
     clearAllTimers();
 
-    // Start a 4-second timeout for the current card
+    // Start a timeout for the current card before scrolling
     inactivityTimeoutRef.current = setTimeout(() => {
-      if (!containerRef.current) return;
+      const progressMap = [0.0, 0.333333, 0.666667, 1.0];
 
-      const element = containerRef.current;
-      const startScroll = element.offsetTop;
-      const totalScrollHeight = element.offsetHeight - window.innerHeight;
+      const animateToNext = (cardIdx: number) => {
+        if (cardIdx > 3 || !containerRef.current) {
+          clearAllTimers();
+          return;
+        }
 
-      let nextCard = startIndex + 1;
+        const element = containerRef.current;
+        const startScroll = element.offsetTop;
+        const totalScrollHeight = element.offsetHeight - window.innerHeight;
 
-      if (nextCard <= 3) {
-        // Scroll to the next card
-        const progressMap = [0.0, 0.28, 0.58, 0.88];
-        const targetProgress = progressMap[nextCard];
+        const targetProgress = progressMap[cardIdx];
         const targetY = startScroll + totalScrollHeight * targetProgress;
 
-        window.scrollTo({
-          top: targetY,
-          behavior: "smooth",
-        });
-
-        // Start the interval for subsequent cards (every 4 seconds)
-        timerRef.current = setInterval(() => {
-          nextCard += 1;
-
-          if (nextCard <= 3) {
-            const progress = progressMap[nextCard];
-            const targetY = startScroll + totalScrollHeight * progress;
-
-            window.scrollTo({
-              top: targetY,
-              behavior: "smooth",
-            });
-          } else {
-            // Scroll to the next section (PlatformShowcaseSection)
-            const targetY = startScroll + element.offsetHeight;
-            window.scrollTo({
-              top: targetY,
-              behavior: "smooth",
-            });
-            clearAllTimers();
+        // Animate to the next card smoothly
+        animationControlsRef.current = animate(window.scrollY, targetY, {
+          type: "spring",
+          damping: 50,
+          stiffness: 80,
+          mass: 2,
+          onUpdate: (latest) => window.scrollTo(0, latest),
+          onComplete: () => {
+            // Once centered, pause for exactly 5 seconds before moving to the next card
+            timerRef.current = setTimeout(() => {
+              animateToNext(cardIdx + 1);
+            }, 5000);
           }
-        }, 4000);
-      } else {
-        // Already at or past the last card, scroll to the next section
-        const targetY = startScroll + element.offsetHeight;
-        window.scrollTo({
-          top: targetY,
-          behavior: "smooth",
         });
-        clearAllTimers();
-      }
-    }, 4000);
+      };
+
+      // Initiate the sequence
+      animateToNext(startIndex + 1);
+    }, initialDelay);
   };
 
   useEffect(() => {
@@ -173,13 +162,13 @@ export default function InteractiveWorkflowSection() {
       clearAllTimers();
 
       const progress = scrollYProgress.get();
-      const currentIdx = Math.min(3, Math.floor(progress * 4.1));
+      const currentIdx = Math.min(3, Math.floor(progress * 3.9));
 
-      // After 4 seconds of scroll inactivity, restart autoplay from the current card
-      if (progress > 0.02 && progress < 0.95) {
+      // After user stops scrolling, restart autoplay logic smoothly
+      if (progress > 0.001 && progress < 0.95) {
         inactivityTimeoutRef.current = setTimeout(() => {
-          startAutoplayChain(currentIdx);
-        }, 4000);
+          startAutoplayChain(currentIdx, 4000);
+        }, 1000);
       }
     };
 
@@ -199,9 +188,9 @@ export default function InteractiveWorkflowSection() {
 
   useEffect(() => {
     const progress = scrollYProgress.get();
-    if (progress > 0.02 && progress < 0.95) {
-      const currentIdx = Math.min(3, Math.floor(progress * 4.1));
-      startAutoplayChain(currentIdx);
+    if (progress > 0.001 && progress < 0.95) {
+      const currentIdx = Math.min(3, Math.floor(progress * 3.9));
+      startAutoplayChain(currentIdx, 5000);
     }
   }, [scrollYProgress]);
 
@@ -210,13 +199,13 @@ export default function InteractiveWorkflowSection() {
 
   // Sync active card index with scroll position and handle programmatic triggers
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const cardIndex = Math.min(3, Math.floor(latest * 4.1)); // Multiply by 4.1 to buffer the end
+    const cardIndex = Math.min(3, Math.floor(latest * 3.9)); // Ensure valid index
     setActiveCard(cardIndex);
 
     // Trigger autoplay when entering sticky range via links (no user touch/mouse inputs)
-    if (latest > 0.02 && latest < 0.95) {
-      if (!timerRef.current && !inactivityTimeoutRef.current) {
-        startAutoplayChain(cardIndex);
+    if (latest > 0.001 && latest < 0.95) {
+      if (!timerRef.current && !inactivityTimeoutRef.current && !animationControlsRef.current) {
+        startAutoplayChain(cardIndex, 5000);
       }
     } else {
       // Clear timers if scrolled out of the sticky range
