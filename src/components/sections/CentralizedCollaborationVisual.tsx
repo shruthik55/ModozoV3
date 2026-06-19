@@ -35,6 +35,57 @@ interface ApparelItem {
 
 const apparelItems: ApparelItem[] = [
   {
+    id: "pantone",
+    name: "Pantone Library",
+    category: "Pantone",
+    image: "/collab_pantone.png",
+    status: "Review",
+    statusColor: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
+    chatThread: [
+      { author: "Design", text: "Final palette is uploaded.", align: "left" },
+      { author: "Sourcing", text: "Mill shades are matched.", align: "right" },
+      { author: "Lab", text: "Dips arrive in 3 days.", align: "left" },
+    ],
+    commentSections: [
+      {
+        label: "Color Palette",
+        messages: [
+          {
+            sender: "Sarah Jenkins",
+            role: "Design Lead",
+            text: "I've updated the Pantone library with the final S/S color palette. Please cross-reference with the approved swatches.",
+            initials: "SJ",
+            avatarBg: "bg-blue-500",
+            time: "5 hours ago",
+            replies: 2,
+          },
+          {
+            sender: "Elena Rostova",
+            role: "Sourcing Agent",
+            text: "Matching Pantone codes with our fabric mill's available dyelots. Lab dips will be ready in 3 days.",
+            initials: "ER",
+            avatarBg: "bg-indigo-500",
+            time: "4 hours ago",
+          },
+        ],
+      },
+      {
+        label: "Lab Dips",
+        messages: [
+          {
+            sender: "Chen Wei",
+            role: "Factory Manager",
+            text: "Understood. Awaiting lab dip approvals for light box color matching.",
+            initials: "CW",
+            avatarBg: "bg-teal-500",
+            time: "3 hours ago",
+            replies: 1,
+          },
+        ],
+      },
+    ],
+  },
+  {
     id: "linesheets",
     name: "S/S T-Shirt Linesheet",
     category: "Linesheets",
@@ -137,50 +188,50 @@ const apparelItems: ApparelItem[] = [
     ],
   },
   {
-    id: "pantone",
-    name: "Pantone Library",
-    category: "Pantone",
-    image: "/collab_pantone.png",
-    status: "Review",
-    statusColor: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
+    id: "fit",
+    name: "Fit Approval",
+    category: "Fit",
+    image: "/fitappro.png",
+    status: "Adjusted",
+    statusColor: "text-indigo-400 bg-indigo-400/10 border-indigo-400/20",
     chatThread: [
-      { author: "Design", text: "Final palette is uploaded.", align: "left" },
-      { author: "Sourcing", text: "Mill shades are matched.", align: "right" },
-      { author: "Lab", text: "Dips arrive in 3 days.", align: "left" },
+      { author: "Fit", text: "Shoulder and sleeve are corrected.", align: "left" },
+      { author: "Pattern", text: "DXF file is exported.", align: "right" },
+      { author: "Factory", text: "Marker file received.", align: "left" },
     ],
     commentSections: [
       {
-        label: "Color Palette",
+        label: "Fit Adjustments",
         messages: [
           {
-            sender: "Sarah Jenkins",
-            role: "Design Lead",
-            text: "I've updated the Pantone library with the final S/S color palette. Please cross-reference with the approved swatches.",
-            initials: "SJ",
-            avatarBg: "bg-blue-500",
-            time: "5 hours ago",
+            sender: "Marcus Vance",
+            role: "Fit Specialist",
+            text: "Fit review complete. Shoulder drop adjusted by -0.5cm and sleeve length shortened for better drape.",
+            initials: "MV",
+            avatarBg: "bg-purple-500",
+            time: "6 hours ago",
             replies: 2,
           },
           {
-            sender: "Elena Rostova",
-            role: "Sourcing Agent",
-            text: "Matching Pantone codes with our fabric mill's available dyelots. Lab dips will be ready in 3 days.",
-            initials: "ER",
-            avatarBg: "bg-indigo-500",
-            time: "4 hours ago",
+            sender: "Tariq Ali",
+            role: "Pattern Maker",
+            text: "Pattern corrections applied. Exporting the updated DXF and grading specs to the factory portal.",
+            initials: "TA",
+            avatarBg: "bg-pink-500",
+            time: "5 hours ago",
           },
         ],
       },
       {
-        label: "Lab Dips",
+        label: "Factory Response",
         messages: [
           {
             sender: "Chen Wei",
             role: "Factory Manager",
-            text: "Understood. Awaiting lab dip approvals for light box color matching.",
+            text: "DXF received. Loading the corrected marker for the next sample round.",
             initials: "CW",
             avatarBg: "bg-teal-500",
-            time: "3 hours ago",
+            time: "4 hours ago",
             replies: 1,
           },
         ],
@@ -289,57 +340,6 @@ const apparelItems: ApparelItem[] = [
       },
     ],
   },
-  {
-    id: "fit",
-    name: "Fit Approval",
-    category: "Fit",
-    image: "/fitappro.png",
-    status: "Adjusted",
-    statusColor: "text-indigo-400 bg-indigo-400/10 border-indigo-400/20",
-    chatThread: [
-      { author: "Fit", text: "Shoulder and sleeve are corrected.", align: "left" },
-      { author: "Pattern", text: "DXF file is exported.", align: "right" },
-      { author: "Factory", text: "Marker file received.", align: "left" },
-    ],
-    commentSections: [
-      {
-        label: "Fit Adjustments",
-        messages: [
-          {
-            sender: "Marcus Vance",
-            role: "Fit Specialist",
-            text: "Fit review complete. Shoulder drop adjusted by -0.5cm and sleeve length shortened for better drape.",
-            initials: "MV",
-            avatarBg: "bg-purple-500",
-            time: "6 hours ago",
-            replies: 2,
-          },
-          {
-            sender: "Tariq Ali",
-            role: "Pattern Maker",
-            text: "Pattern corrections applied. Exporting the updated DXF and grading specs to the factory portal.",
-            initials: "TA",
-            avatarBg: "bg-pink-500",
-            time: "5 hours ago",
-          },
-        ],
-      },
-      {
-        label: "Factory Response",
-        messages: [
-          {
-            sender: "Chen Wei",
-            role: "Factory Manager",
-            text: "DXF received. Loading the corrected marker for the next sample round.",
-            initials: "CW",
-            avatarBg: "bg-teal-500",
-            time: "4 hours ago",
-            replies: 1,
-          },
-        ],
-      },
-    ],
-  },
 ];
 
 export default function CentralizedCollaborationVisual({ onCycleComplete }: { onCycleComplete?: () => void }) {
@@ -418,9 +418,11 @@ export default function CentralizedCollaborationVisual({ onCycleComplete }: { on
               {/* Centered Relative Wrapper for Image */}
               <div className="relative">
                 {/* Center Image (Optimized Size) */}
-                <img
+                <Image
                   src={activeItem.image}
                   alt={activeItem.name}
+                  width={900}
+                  height={700}
                   className="h-[210px] sm:h-[240px] md:h-[270px] lg:h-[310px] w-auto object-contain rounded-xl border border-white/10 bg-black/25 transition-transform duration-700 hover:scale-[1.01]"
                 />
               </div>
@@ -442,11 +444,10 @@ export default function CentralizedCollaborationVisual({ onCycleComplete }: { on
                       className={`flex ${message.align === "right" ? "justify-end" : "justify-start"}`}
                     >
                       <div
-                        className={`max-w-[88%] rounded-lg px-2.5 py-1 ${
-                          message.align === "right"
-                            ? "bg-electric-blue/20 border border-electric-blue/25 text-white"
-                            : "bg-white/[0.06] border border-white/10 text-white/85"
-                        }`}
+                        className={`max-w-[88%] rounded-lg px-2.5 py-1 ${message.align === "right"
+                          ? "bg-electric-blue/20 border border-electric-blue/25 text-white"
+                          : "bg-white/[0.06] border border-white/10 text-white/85"
+                          }`}
                       >
                         <span className="block text-[7.5px] font-bold uppercase tracking-[0.12em] text-white/35">
                           {message.author}

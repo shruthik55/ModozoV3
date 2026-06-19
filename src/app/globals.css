@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  --font-geist-sans: Arial, Helvetica, sans-serif;
+  --font-geist-mono: "Courier New", Courier, monospace;
   --deep-navy: #040b17;
   --rich-blue: #0F62FE;
   --electric-blue: #3B82F6;
@@ -91,6 +93,7 @@
 
 html {
   scroll-behavior: smooth;
+  position: relative;
 }
 
 body {

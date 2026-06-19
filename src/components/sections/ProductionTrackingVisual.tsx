@@ -1,810 +1,590 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
-  Activity,
-  CheckCircle2,
-  AlertTriangle,
-  Package,
-  Scissors,
-  Truck,
-  ShieldCheck,
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import {
   FileText,
-  Zap,
-  TrendingUp,
+  ShieldCheck,
   Layers,
-  RefreshCw,
-  Building2,
+  Scissors,
+  Activity,
+  CheckCircle,
+  Truck,
 } from "lucide-react";
 
-/* ── Scene timing ──────────────────────────────────────────────────── */
-const SCENE_DURATIONS = [4000, 5500, 5500, 5500, 4500, 5500];
-const TOTAL_SCENES = SCENE_DURATIONS.length;
+type LevelId = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-/* ── Pipeline ──────────────────────────────────────────────────────── */
-const PIPELINE = [
-  { short: "TP", label: "Tech Pack", icon: FileText },
-  { short: "Fab", label: "Fabric Sourcing", icon: Layers },
-  { short: "Cut", label: "Cutting", icon: Scissors },
-  { short: "Prt", label: "Printing", icon: Zap },
-  { short: "Sew", label: "Sewing", icon: Activity },
-  { short: "QC", label: "QC", icon: ShieldCheck },
-  { short: "Pak", label: "Packing", icon: Package },
-  { short: "Shp", label: "Shipment", icon: Truck },
-  { short: "Del", label: "Delivered", icon: CheckCircle2 },
-];
-
-/* ── Orders ────────────────────────────────────────────────────────── */
-const ORDERS = [
+/* ─── Data — each level is contextually coherent ─────────────────────── */
+const LEVELS = [
   {
-    po: "PO-2024", name: "Camo Trench Coat", factory: "Factory A",
-    image: "/collab_jacket.png", progress: 55, status: "Sewing",
-    units: "330/600", delay: false,
-    sc: "text-amber-400 border-amber-400/25 bg-amber-400/[0.06]",
+    id: 0 as LevelId,
+    stageName: "Level 01  ·  Technical Design",
+    name: "Tech Pack & BOM Approval",
+    icon: FileText,
+    status: "Approved",
+    statusColor: "text-emerald-400 bg-emerald-400/10 border-emerald-400/25",
+    accentColor: "#10b981",
+    // Center card rows
+    centerRows: [
+      { label: "Style Reference", value: "MDZ-SS26-08" },
+      { label: "Season", value: "SS 2026 — Shirt" },
+      { label: "Spec Version", value: "v3.2  (Final Locked)" },
+      { label: "BOM Status", value: "18 trims · All approved" },
+      { label: "Graded Sizes", value: "XS · S · M · L · XL · XXL" },
+      { label: "Handoff Date", value: "May 12, 2026" },
+    ],
+    // Left side-card
+    leftTitle: "Spec Sheets",
+    leftKpi: "6",
+    leftKpiUnit: "size grades",
+    leftNote: "Patterns graded & released to vendor",
+    // Right side-card
+    rightTitle: "BOM Locked",
+    rightKpi: "100%",
+    rightKpiUnit: "approval rate",
+    rightNote: "18 accessories · 4 fabric components",
   },
   {
-    po: "PO-2025", name: "Baroque Polo Shirt", factory: "Factory B",
-    image: "/collab_polo.png", progress: 38, status: "Printing",
-    units: "304/800", delay: true,
-    sc: "text-amber-400 border-amber-400/25 bg-amber-400/[0.06]",
+    id: 1 as LevelId,
+    stageName: "Level 02  ·  Sample Stage",
+    name: "Fit Sample & Size Sign-off",
+    icon: ShieldCheck,
+    status: "Approved",
+    statusColor: "text-emerald-400 bg-emerald-400/10 border-emerald-400/25",
+    accentColor: "#10b981",
+    centerRows: [
+      { label: "Sample Type", value: "Pre-Production (PP) Sample" },
+      { label: "Fit Model", value: "Size M  ·  Sign-off Confirmed" },
+      { label: "Chest Tolerance", value: "+0.1 cm  ✓ Within spec" },
+      { label: "Inseam Tolerance", value: "−0.2 cm  ✓ Within spec" },
+      { label: "Shrinkage Test", value: "−1.8 %  ✓ Pass" },
+      { label: "Shade Match", value: "Grade 4.5 / 5  ✓ Pass" },
+    ],
+    leftTitle: "Fit Model",
+    leftKpi: "M",
+    leftKpiUnit: "reference size",
+    leftNote: "All 6 measurements within ±0.5 cm",
+    rightTitle: "Sample Result",
+    rightKpi: "Pass",
+    rightKpiUnit: "PP sign-off",
+    rightNote: "Fit specialist · Jun 02, 2026",
   },
   {
-    po: "PO-2026", name: "Leopard Runner Shoes", factory: "Factory C",
-    image: "/collab_shoe.png", progress: 96, status: "Shipment",
-    units: "384/400", delay: false,
-    sc: "text-emerald-400 border-emerald-400/25 bg-emerald-400/[0.06]",
+    id: 2 as LevelId,
+    stageName: "Level 03  ·  Sourcing",
+    name: "Fabric & Material Release",
+    icon: Layers,
+    status: "100% In-House",
+    statusColor: "text-emerald-400 bg-emerald-400/10 border-emerald-400/25",
+    accentColor: "#3b82f6",
+    centerRows: [
+      { label: "Shell Fabric", value: "Indigo Denim 12 oz  — 12,400 yd in-house" },
+      { label: "Pocket Lining", value: "Cotton Twill  — 2,800 yd in-house" },
+      { label: "Zippers", value: "YKK #5  — 5,000 pcs  ✓ Received" },
+      { label: "Eyelets", value: "Gunmetal  — 10,200 pcs  ✓ Received" },
+      { label: "Brand Labels", value: "Woven main label  — 5,200 pcs" },
+      { label: "Shrinkage Pre-test", value: "−2.1 %  ✓ Approved for cutting" },
+    ],
+    leftTitle: "Fabric Stock",
+    leftKpi: "12,400",
+    leftKpiUnit: "yards denim",
+    leftNote: "100% roll inspection passed",
+    rightTitle: "Accessories",
+    rightKpi: "100%",
+    rightKpiUnit: "trims received",
+    rightNote: "5 component types · all cleared",
   },
-];
+  {
+    id: 3 as LevelId,
+    stageName: "Level 04  ·  Cutting Room",
+    name: "Bulk Cutting & Spreading",
+    icon: Scissors,
+    status: "Completed",
+    statusColor: "text-emerald-400 bg-emerald-400/10 border-emerald-400/25",
+    accentColor: "#8b5cf6",
+    centerRows: [
+      { label: "Cut Order Qty", value: "5,000 pcs  (order) + 1% allowance" },
+      { label: "Panels Cut", value: "5,050 pcs  ✓ +50 buffer" },
+      { label: "Marker Efficiency", value: "98.6%  — Optimized lay plan" },
+      { label: "Fabric Consumed", value: "11,980 yd  (vs. 12,400 yd allocated)" },
+      { label: "No. of Plies", value: "80 plies  ·  Straight knife machine" },
+      { label: "Completed On", value: "Jun 14, 2026" },
+    ],
+    leftTitle: "Target Qty",
+    leftKpi: "5,000",
+    leftKpiUnit: "pcs ordered",
+    leftNote: "98.6% marker efficiency",
+    rightTitle: "Actual Output",
+    rightKpi: "5,050",
+    rightKpiUnit: "panels cut",
+    rightNote: "+50 pcs buffer · Jun 14 complete",
+  },
+  {
+    id: 4 as LevelId,
+    stageName: "Level 05  ·  Sewing Floor",
+    name: "Sewing Line Assembly",
+    icon: Activity,
+    status: "73% Active",
+    statusColor: "text-blue-400 bg-blue-400/10 border-blue-400/25",
+    accentColor: "#3b82f6",
+    centerRows: [
+      { label: "Production Line", value: "Line B-3  ·  42 operators" },
+      { label: "Sewn to Date", value: "3,650 pcs  /  5,000 target" },
+      { label: "Hourly Velocity", value: "138 pcs / hr  (target: 150 / hr)" },
+      { label: "OEE Efficiency", value: "87%  — within acceptable range" },
+      { label: "Operations / Pcs", value: "24 sewing operations per garment" },
+      { label: "Est. Completion", value: "Jun 22, 2026  at current pace" },
+    ],
+    leftTitle: "Sewing Done",
+    leftKpi: "3,650",
+    leftKpiUnit: "pcs joined",
+    leftNote: "87% OEE  ·  138 pcs / hr",
+    rightTitle: "Remaining",
+    rightKpi: "1,350",
+    rightKpiUnit: "pcs pending",
+    rightNote: "Est. complete Jun 22, 2026",
+  },
+  {
+    id: 5 as LevelId,
+    stageName: "Level 06  ·  Quality Control",
+    name: "Inline & AQL Audit",
+    icon: CheckCircle,
+    status: "98.8% Pass",
+    statusColor: "text-emerald-400 bg-emerald-400/10 border-emerald-400/25",
+    accentColor: "#10b981",
+    centerRows: [
+      { label: "Inspection Type", value: "Inline  +  AQL 2.5 End-line" },
+      { label: "Units Inspected", value: "3,650 pcs inline  ·  80 pcs AQL sample" },
+      { label: "AQL Result", value: "0 critical  ·  3 minor  → PASS" },
+      { label: "DHU (Defects)", value: "1.2%  — below 2.5% threshold" },
+      { label: "Stitch Density", value: "12 SPI  ✓  (spec: 10–14 SPI)" },
+      { label: "Shade Variation", value: "Grade 4 / 5  ✓ No reject" },
+    ],
+    leftTitle: "AQL Sampling",
+    leftKpi: "80",
+    leftKpiUnit: "pcs checked",
+    leftNote: "0 critical defects · AQL 2.5 Pass",
+    rightTitle: "Quality Score",
+    rightKpi: "98.8%",
+    rightKpiUnit: "pass rate",
+    rightNote: "DHU 1.2%  ·  Inline cleared",
+  },
+  {
+    id: 6 as LevelId,
+    stageName: "Level 07  ·  Packing & Dispatch",
+    name: "Carton Pack & Ex-Factory",
+    icon: Truck,
+    status: "In Progress",
+    statusColor: "text-amber-400 bg-amber-400/10 border-amber-400/25",
+    accentColor: "#f59e0b",
+    centerRows: [
+      { label: "Packing Method", value: "Polybag  →  Master carton (12 pcs)" },
+      { label: "Cartons Packed", value: "42  /  417 total cartons" },
+      { label: "Packed Quantity", value: "504 pcs  /  5,000 pcs ordered" },
+      { label: "Carton Gross Wt.", value: "15.4 kg avg  — verified on scale" },
+      { label: "Ex-factory Date", value: "Jul 03, 2026  — booking confirmed" },
+      { label: "Carrier", value: "MSC Ocean Freight  ·  FCL container" },
+    ],
+    leftTitle: "Cartons Packed",
+    leftKpi: "42",
+    leftKpiUnit: "of 417 cartons",
+    leftNote: "504 pcs sealed · 10% complete",
+    rightTitle: "ETD",
+    rightKpi: "Jul 03",
+    rightKpiUnit: "ex-factory",
+    rightNote: "MSC ocean FCL · booking confirmed",
+  },
+] as const;
 
-/* ── Factories ─────────────────────────────────────────────────────── */
-const FACTORIES = [
-  { name: "Factory Alpha", loc: "Mumbai, IN", pct: 87, units: "1,240/1,420", label: "On Track", stroke: "#10b981", tc: "text-emerald-400", bc: "border-emerald-500/25" },
-  { name: "Factory Beta", loc: "Bangalore, IN", pct: 54, units: "432/800", label: "Delayed", stroke: "#f59e0b", tc: "text-amber-400", bc: "border-amber-500/25" },
-  { name: "Factory Gamma", loc: "Chennai, IN", pct: 96, units: "384/400", label: "Shipping", stroke: "#3b82f6", tc: "text-blue-400", bc: "border-blue-500/25" },
-];
+/* ─── Premium 3D floating card layout ────────────────────────────────── */
+function Layout({
+  center,
+  left,
+  right,
+}: {
+  center: React.ReactNode;
+  left: React.ReactNode;
+  right: React.ReactNode;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
 
-/* ── KPIs ──────────────────────────────────────────────────────────── */
-const KPIS = [
-  { label: "Active Orders", value: 47, suffix: "", color: "#3b82f6", icon: Activity },
-  { label: "In Production", value: 31, suffix: "", color: "#2dd4bf", icon: Building2 },
-  { label: "Delayed", value: 4, suffix: "", color: "#f59e0b", icon: AlertTriangle },
-  { label: "Completed", value: 128, suffix: "", color: "#10b981", icon: CheckCircle2 },
-  { label: "On-Time Rate", value: 94, suffix: "%", color: "#a78bfa", icon: TrendingUp },
-];
+  // Raw mouse position (-1 … +1 on each axis)
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  // Spring-smoothed for organic feel
+  const mouseX = useSpring(rawX, { stiffness: 120, damping: 22 });
+  const mouseY = useSpring(rawY, { stiffness: 120, damping: 22 });
 
-/* ── Modules ───────────────────────────────────────────────────────── */
-const MODULES = [
-  { label: "Tech Packs", icon: FileText, text: "text-teal-accent", border: "border-teal-accent/30", bg: "bg-teal-accent/[0.07]" },
-  { label: "Print Strike-Off", icon: Zap, text: "text-pink-400", border: "border-pink-500/30", bg: "bg-pink-500/[0.07]" },
-  { label: "PP Sample", icon: Layers, text: "text-purple-400", border: "border-purple-500/30", bg: "bg-purple-500/[0.07]" },
-  { label: "Fashion Orders", icon: ShieldCheck, text: "text-amber-400", border: "border-amber-500/30", bg: "bg-amber-500/[0.07]" },
-  { label: "Production\nTracking", icon: Activity, text: "text-electric-blue", border: "border-electric-blue/40", bg: "bg-electric-blue/[0.10]" },
-];
+  // Per-card rotations — different ranges = independent parallax depth
+  // Center: -12° Y base, 3° X base (medium depth)
+  const cRotY = useTransform(mouseX, [-1, 1], [-14, -10]);
+  const cRotX = useTransform(mouseY, [-1, 1], [4.5, 1.5]);
+  // Top-right: -8° Y base, 4° X base (foreground — lighter lean)
+  const rRotY = useTransform(mouseX, [-1, 1], [-11, -5]);
+  const rRotX = useTransform(mouseY, [-1, 1], [6, 2]);
+  // Bottom-left: -10° Y base, 2° X base (foreground — slightly deeper)
+  const lRotY = useTransform(mouseX, [-1, 1], [-13, -7]);
+  const lRotX = useTransform(mouseY, [-1, 1], [3.5, 0.5]);
 
-/* ── Hooks ─────────────────────────────────────────────────────────── */
-function useCountUp(target: number, duration = 1800) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    setVal(0);
-    let cur = 0;
-    const step = target / (duration / 16);
-    const t = setInterval(() => {
-      cur += step;
-      if (cur >= target) { setVal(target); clearInterval(t); }
-      else setVal(Math.floor(cur));
-    }, 16);
-    return () => clearInterval(t);
-  }, [target, duration]);
-  return val;
-}
+  // ── Per-card gradient backgrounds ──────────────────────────────────
+  // Center card: deep navy → indigo (dominant, matches site's dark base)
+  const CENTER_BG = "linear-gradient(145deg, rgba(3, 24, 99, 0.96) 0%, rgba(4, 13, 80, 0.94) 45%, rgba(22,16,60,0.92) 100%)";
+  // Right side card: electric blue → teal (crisp, foreground accent)
+  const RIGHT_BG = "linear-gradient(145deg, rgba(6,18,48,0.94) 0%, rgba(2, 23, 60, 0.92) 50%, rgba(8,45,60,0.90) 100%)";
+  // Left side card: violet → deep purple (warm foreground accent)
+  const LEFT_BG = "linear-gradient(145deg, rgba(14,8,42,0.94) 0%, rgba(28,12,58,0.92) 50%, rgba(40,10,55,0.90) 100%)";
 
-/* ── Sub-components ────────────────────────────────────────────────── */
-function RingProgress({ pct, stroke }: { pct: number; stroke: string }) {
-  const r = 24;
-  const circ = 2 * Math.PI * r;
+  const CARD_BLUR = "blur(24px)";
+
+  // Center border: indigo-blue tint
+  const CENTER_BORDER = "1px solid rgba(94,114,228,0.28)";
+  // Right border: cyan-blue tint
+  const RIGHT_BORDER = "1px solid rgba(56,189,248,0.22)";
+  // Left border: violet-purple tint
+  const LEFT_BORDER = "1px solid rgba(167,139,250,0.22)";
+
+  const CENTER_SHADOW = [
+    "0 32px 80px rgba(0,0,0,0.55)",
+    "14px 24px 64px rgba(0,0,0,0.32)",
+    "0 0 0 1px rgba(255,255,255,0.04)",
+    "inset 0 1px 0 rgba(255,255,255,0.07)",
+    "0 0 80px rgba(94,114,228,0.12)",
+    "0 0 40px rgba(59,130,246,0.08)",
+  ].join(", ");
+  const RIGHT_SHADOW = [
+    "0 24px 60px rgba(0,0,0,0.60)",
+    "10px 18px 44px rgba(0,0,0,0.35)",
+    "0 0 0 1px rgba(255,255,255,0.05)",
+    "inset 0 1px 0 rgba(255,255,255,0.08)",
+    "0 0 50px rgba(56,189,248,0.10)",
+    "0 0 25px rgba(14,165,233,0.08)",
+  ].join(", ");
+  const LEFT_SHADOW = [
+    "0 24px 60px rgba(0,0,0,0.60)",
+    "10px 18px 44px rgba(0,0,0,0.35)",
+    "0 0 0 1px rgba(255,255,255,0.05)",
+    "inset 0 1px 0 rgba(255,255,255,0.08)",
+    "0 0 50px rgba(167,139,250,0.10)",
+    "0 0 25px rgba(139,92,246,0.08)",
+  ].join(", ");
+
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (!containerRef.current) return;
+    const r = containerRef.current.getBoundingClientRect();
+    rawX.set(((e.clientX - r.left) / r.width - 0.5) * 2);
+    rawY.set(((e.clientY - r.top) / r.height - 0.5) * 2);
+  }
+
   return (
-    <svg width="60" height="60" viewBox="0 0 60 60" className="shrink-0">
-      <circle cx="30" cy="30" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="4" />
-      <motion.circle
-        cx="30" cy="30" r={r} fill="none" stroke={stroke}
-        strokeWidth="4" strokeLinecap="round"
-        strokeDasharray={circ}
-        initial={{ strokeDashoffset: circ }}
-        animate={{ strokeDashoffset: circ - (pct / 100) * circ }}
-        transition={{ duration: 1.5, ease: "easeOut", delay: 0.3 }}
-        transform="rotate(-90 30 30)"
-      />
-      <text x="30" y="35" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">{pct}%</text>
-    </svg>
-  );
-}
-
-function KpiCard({ kpi, delay }: { kpi: typeof KPIS[0]; delay: number }) {
-  const count = useCountUp(kpi.value);
-  const Icon = kpi.icon;
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.88, y: 8 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ delay, duration: 0.4, ease: "easeOut" }}
-      className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-2.5 text-center"
+    <div
+      ref={containerRef}
+      className="absolute inset-0"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => { rawX.set(0); rawY.set(0); }}
     >
-      <Icon size={13} className="mx-auto mb-1" style={{ color: kpi.color }} />
-      <div className="text-sm md:text-base font-extrabold leading-none" style={{ color: kpi.color }}>
-        {count}{kpi.suffix}
-      </div>
-      <div className="text-[7px] md:text-[8px] text-white/35 font-bold mt-0.5 leading-tight">{kpi.label}</div>
-    </motion.div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════ */
-/*  SCENE 1 — Logo Reveal                                             */
-/* ═══════════════════════════════════════════════════════════════════ */
-function Scene1() {
-  return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center overflow-hidden">
-      {/* Radial atmosphere */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_55%_at_50%_50%,rgba(59,130,246,0.18),transparent_70%)]" />
-
-      {/* Expanding ring */}
+      {/* ── Center card — navy→indigo gradient ── */}
       <motion.div
-        initial={{ opacity: 0.5, scale: 0.4 }}
-        animate={{ opacity: 0, scale: 2.5 }}
-        transition={{ duration: 3.5, ease: "easeOut" }}
-        className="absolute size-56 rounded-full border border-electric-blue/25 pointer-events-none"
-      />
-      <motion.div
-        initial={{ opacity: 0.3, scale: 0.6 }}
-        animate={{ opacity: 0, scale: 3 }}
-        transition={{ duration: 3.5, ease: "easeOut", delay: 0.3 }}
-        className="absolute size-40 rounded-full border border-electric-blue/15 pointer-events-none"
-      />
-
-      {/* Logo */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.65, y: 16 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-        className="relative"
+        className="absolute overflow-hidden"
+        style={{
+          left: "11%",
+          width: "66%",
+          top: "8%",
+          bottom: "8%",
+          zIndex: 10,
+          background: CENTER_BG,
+          backdropFilter: CARD_BLUR,
+          borderRadius: "22px",
+          border: CENTER_BORDER,
+          boxShadow: CENTER_SHADOW,
+          rotateY: cRotY,
+          rotateX: cRotX,
+          transformPerspective: 1400,
+        }}
+        initial={{ opacity: 0, scale: 0.97 }}
+        animate={{ opacity: 1, scale: 1, y: [0, -5, 0] }}
+        transition={{
+          opacity: { duration: 0.45, ease: "easeOut" },
+          scale: { duration: 0.45, ease: "easeOut" },
+          y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 },
+        }}
       >
-        <div className="absolute -inset-14 bg-electric-blue/[0.12] blur-3xl rounded-full pointer-events-none" />
-        <Image
-          src="/modozo_brand_logo.png"
-          alt="MODOZO"
-          width={136}
-          height={46}
-          priority
-          className="relative object-contain"
-        />
+        {center}
       </motion.div>
 
-      {/* Title block */}
+      {/* ── Top-right card — electric blue→teal gradient ── */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.52, duration: 0.7 }}
-        className="text-center mt-5"
+        className="absolute overflow-hidden"
+        style={{
+          right: "0%",
+          top: "3%",
+          width: "25%",
+          height: "43%",
+          zIndex: 20,
+          background: RIGHT_BG,
+          backdropFilter: CARD_BLUR,
+          borderRadius: "18px",
+          border: RIGHT_BORDER,
+          boxShadow: RIGHT_SHADOW,
+          rotateY: rRotY,
+          rotateX: rRotX,
+          rotateZ: -1.5,
+          transformPerspective: 900,
+        }}
+        initial={{ opacity: 0, x: 16 }}
+        animate={{ opacity: 1, x: 0, y: [0, -7, 0] }}
+        transition={{
+          opacity: { duration: 0.42, delay: 0.08, ease: "easeOut" },
+          x: { duration: 0.42, delay: 0.08, ease: "easeOut" },
+          y: { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.7 },
+        }}
       >
-        <div className="text-[9px] md:text-[10px] uppercase tracking-[0.38em] text-electric-blue font-bold mb-2.5">
-          Module Overview
-        </div>
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
-          Production Tracking
-        </h1>
-        <motion.div
-          initial={{ scaleX: 0, opacity: 0 }}
-          animate={{ scaleX: 1, opacity: 1 }}
-          transition={{ delay: 1.1, duration: 0.85 }}
-          className="h-px mt-3.5 bg-gradient-to-r from-transparent via-electric-blue to-transparent"
-        />
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.55, duration: 0.55 }}
-          className="mt-3 text-xs md:text-sm text-white/35 font-medium tracking-widest"
-        >
-          Plan · Produce · Track · Deliver
-        </motion.p>
+        {right}
+      </motion.div>
+
+      {/* ── Bottom-left card — violet→deep-purple gradient ── */}
+      <motion.div
+        className="absolute overflow-hidden"
+        style={{
+          left: "0%",
+          bottom: "-8%",
+          width: "24%",
+          height: "43%",
+          zIndex: 20,
+          background: LEFT_BG,
+          backdropFilter: CARD_BLUR,
+          borderRadius: "18px",
+          border: LEFT_BORDER,
+          boxShadow: LEFT_SHADOW,
+          rotateY: lRotY,
+          rotateX: lRotX,
+          rotateZ: 2,
+          transformPerspective: 900,
+        }}
+        initial={{ opacity: 0, x: -16 }}
+        animate={{ opacity: 1, x: 0, y: [0, -6, 0] }}
+        transition={{
+          opacity: { duration: 0.42, delay: 0.1, ease: "easeOut" },
+          x: { duration: 0.42, delay: 0.1, ease: "easeOut" },
+          y: { duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 },
+        }}
+      >
+        {left}
       </motion.div>
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════ */
-/*  SCENE 2 — Production Pipeline                                     */
-/* ═══════════════════════════════════════════════════════════════════ */
-function Scene2() {
-  const [activeStage, setActiveStage] = useState(-1);
+/* ═══════════════════════════════════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════════════════════════════════ */
+
+export default function ProductionTrackingVisual({ onCycleComplete }: { onCycleComplete?: () => void }) {
+  const [activeLevel, setActiveLevel] = useState<LevelId>(0);
+  const onCycleCompleteRef = useRef(onCycleComplete);
+  const pendingCycleCompleteRef = useRef(false);
 
   useEffect(() => {
-    const timers = PIPELINE.map((_, i) =>
-      setTimeout(() => setActiveStage(i), 450 + i * 380)
-    );
-    return () => timers.forEach(clearTimeout);
+    onCycleCompleteRef.current = onCycleComplete;
+  }, [onCycleComplete]);
+
+  const advanceLevel = useCallback(() => {
+    setActiveLevel((prev) => {
+      const next = ((prev + 1) % 7) as LevelId;
+      pendingCycleCompleteRef.current = next === 0;
+      return next;
+    });
   }, []);
 
-  return (
-    <div className="absolute inset-0 flex flex-col px-5 md:px-9 justify-center py-8">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_50%_at_18%_50%,rgba(59,130,246,0.08),transparent_70%)]" />
-
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, x: -14 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mb-6 md:mb-8"
-      >
-        <span className="text-[9px] uppercase tracking-[0.32em] text-teal-accent font-bold">
-          Production Workflow
-        </span>
-        <h2 className="text-lg md:text-xl lg:text-2xl font-extrabold text-white mt-1">
-          Tech Pack{" "}
-          <span className="text-white/25">→</span>{" "}
-          <span className="text-electric-blue">Delivered</span>
-        </h2>
-      </motion.div>
-
-      {/* Pipeline track */}
-      <div className="relative">
-        <div className="absolute top-4 left-0 right-0 h-[2px] bg-white/[0.05]" />
-        <motion.div
-          className="absolute top-4 left-0 h-[2px] bg-gradient-to-r from-electric-blue via-teal-accent to-emerald-400"
-          initial={{ width: "0%" }}
-          animate={{
-            width: activeStage >= 0
-              ? `${(activeStage / (PIPELINE.length - 1)) * 100}%`
-              : "0%",
-          }}
-          transition={{ duration: 0.35, ease: "easeInOut" }}
-        />
-
-        <div className="flex justify-between relative">
-          {PIPELINE.map((s, idx) => {
-            const done = idx < activeStage;
-            const active = idx === activeStage;
-            const Icon = s.icon;
-            return (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.08 + idx * 0.07, duration: 0.35 }}
-                className="flex flex-col items-center z-10 flex-1"
-              >
-                <div
-                  className={`size-8 rounded-full border-2 flex items-center justify-center transition-all duration-400 ${
-                    done
-                      ? "bg-emerald-500 border-emerald-400"
-                      : active
-                      ? "bg-[#020c1e] border-electric-blue"
-                      : "bg-[#020c1e] border-white/10"
-                  }`}
-                  style={
-                    done
-                      ? { boxShadow: "0 0 8px rgba(16,185,129,0.45)" }
-                      : active
-                      ? { boxShadow: "0 0 14px rgba(59,130,246,0.55)" }
-                      : undefined
-                  }
-                >
-                  {done ? (
-                    <CheckCircle2 size={12} className="text-white" strokeWidth={3} />
-                  ) : (
-                    <Icon size={11} className={active ? "text-electric-blue" : "text-white/20"} />
-                  )}
-                </div>
-                <span
-                  className={`text-[7px] md:text-[8px] mt-1.5 font-bold text-center ${
-                    done
-                      ? "text-emerald-400/55"
-                      : active
-                      ? "text-electric-blue"
-                      : "text-white/20"
-                  }`}
-                >
-                  {s.short}
-                </span>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Active stage card */}
-      <AnimatePresence mode="wait">
-        {activeStage >= 0 && (
-          <motion.div
-            key={activeStage}
-            initial={{ opacity: 0, y: 12, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -7 }}
-            transition={{ duration: 0.35, ease: "easeOut" }}
-            className="mt-6 flex items-center gap-3 bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 backdrop-blur-sm"
-          >
-            <div className="size-9 shrink-0 rounded-lg bg-electric-blue/[0.12] border border-electric-blue/20 flex items-center justify-center">
-              {(() => {
-                const Icon = PIPELINE[activeStage].icon;
-                return <Icon size={14} className="text-electric-blue" />;
-              })()}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-[8px] text-white/30 font-bold uppercase tracking-wider">
-                Current Stage · PO-2024
-              </div>
-              <div className="text-sm font-bold text-white mt-0.5">
-                {PIPELINE[activeStage].label}
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              <span className="size-1.5 rounded-full bg-electric-blue animate-pulse" />
-              <span className="text-[9px] text-electric-blue font-bold">Active</span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.8, duration: 0.4 }}
-        className="mt-3 text-[8px] text-white/18 font-medium"
-      >
-        Stage {Math.max(0, activeStage + 1)} of {PIPELINE.length} complete
-      </motion.div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════ */
-/*  SCENE 3 — Live Production Tracking                                */
-/* ═══════════════════════════════════════════════════════════════════ */
-function Scene3() {
-  return (
-    <div className="absolute inset-0 flex flex-col px-5 md:px-8 py-5 justify-center gap-3">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_78%_40%,rgba(59,130,246,0.07),transparent_70%)]" />
-
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45 }}
-        className="flex items-center justify-between shrink-0"
-      >
-        <div>
-          <span className="text-[9px] uppercase tracking-[0.32em] text-electric-blue font-bold">
-            Live Tracking
-          </span>
-          <h2 className="text-base md:text-xl font-extrabold text-white mt-0.5">
-            Real-Time Production
-          </h2>
-        </div>
-        <div className="flex items-center gap-1.5 bg-emerald-500/[0.08] border border-emerald-500/20 rounded-full px-2.5 py-1 shrink-0">
-          <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[9px] text-emerald-400 font-bold">Live</span>
-        </div>
-      </motion.div>
-
-      {/* Order cards */}
-      <div className="flex flex-col gap-2">
-        {ORDERS.map((o, i) => (
-          <motion.div
-            key={o.po}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.22 + i * 0.18, duration: 0.5, ease: "easeOut" }}
-            className="flex items-center gap-3 bg-white/[0.04] border border-white/[0.08] rounded-xl p-3 backdrop-blur-sm"
-          >
-            {/* Thumb + scan */}
-            <div className="relative size-11 rounded-lg overflow-hidden bg-white/5 border border-white/10 shrink-0 flex items-center justify-center">
-              <Image src={o.image} alt={o.name} width={40} height={40} className="object-contain" />
-            </div>
-
-            {/* Info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[8px] text-white/35 font-bold">{o.po} · {o.factory}</span>
-                <div className="flex items-center gap-1">
-                  {o.delay && (
-                    <span className="flex items-center gap-0.5 text-[7px] px-1 py-0.5 rounded border text-amber-400 border-amber-400/20 bg-amber-400/5 font-medium">
-                      <AlertTriangle size={6} /> Delay
-                    </span>
-                  )}
-                  <span className={`text-[7px] md:text-[8px] px-1.5 py-0.5 rounded border font-medium ${o.sc}`}>
-                    {o.status}
-                  </span>
-                </div>
-              </div>
-
-              <div className="text-[10px] md:text-[11px] font-bold text-white mb-1.5 truncate">
-                {o.name}
-              </div>
-
-              <div className="flex items-center gap-2">
-                <div className="flex-1 h-1 bg-white/[0.07] rounded-full overflow-hidden">
-                  <motion.div
-                    className={`h-full rounded-full ${
-                      o.delay
-                        ? "bg-gradient-to-r from-amber-500 to-amber-400"
-                        : "bg-gradient-to-r from-electric-blue to-teal-accent"
-                    }`}
-                    initial={{ width: "0%" }}
-                    animate={{ width: `${o.progress}%` }}
-                    transition={{ duration: 1.2, ease: "easeOut", delay: 0.55 + i * 0.2 }}
-                  />
-                </div>
-                <span className="text-[9px] font-bold text-white shrink-0">{o.progress}%</span>
-              </div>
-              <div className="text-[7px] text-white/25 mt-0.5 font-mono">{o.units} pcs</div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════ */
-/*  SCENE 4 — Factory Visibility + Dashboard KPIs                     */
-/* ═══════════════════════════════════════════════════════════════════ */
-function Scene4() {
-  return (
-    <div className="absolute inset-0 flex flex-col px-5 md:px-8 py-5">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_28%,rgba(59,130,246,0.07),transparent_70%)]" />
-
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45 }}
-        className="mb-4 shrink-0"
-      >
-        <span className="text-[9px] uppercase tracking-[0.32em] text-purple-400 font-bold">
-          Factory Visibility
-        </span>
-        <h2 className="text-base md:text-xl font-extrabold text-white mt-0.5">
-          Multi-Factory Dashboard
-        </h2>
-      </motion.div>
-
-      {/* Factory cards */}
-      <div className="grid grid-cols-3 gap-2 mb-3 flex-1">
-        {FACTORIES.map((f, i) => (
-          <motion.div
-            key={f.name}
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.18 + i * 0.18, duration: 0.5, ease: "easeOut" }}
-            className={`bg-white/[0.04] border ${f.bc} rounded-xl p-3 flex flex-col items-center gap-1.5`}
-          >
-            <RingProgress pct={f.pct} stroke={f.stroke} />
-            <div className="text-center">
-              <div className="text-[9px] md:text-[10px] font-bold text-white">{f.name}</div>
-              <div className="text-[7px] md:text-[8px] text-white/35">{f.loc}</div>
-              <div className="text-[7px] text-white/35 font-mono mt-0.5">{f.units} pcs</div>
-              <span className={`text-[7px] md:text-[8px] font-bold ${f.tc} mt-0.5 block`}>{f.label}</span>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* KPI strip */}
-      <div className="grid grid-cols-5 gap-1.5 shrink-0">
-        {KPIS.map((kpi, i) => (
-          <KpiCard key={kpi.label} kpi={kpi} delay={0.72 + i * 0.1} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════ */
-/*  SCENE 5 — Smart Alerts                                            */
-/* ═══════════════════════════════════════════════════════════════════ */
-function Scene5() {
-  return (
-    <div className="absolute inset-0 flex flex-col px-5 md:px-9 py-7 justify-center">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_50%,rgba(245,158,11,0.06),transparent_70%)]" />
-
-      <motion.div
-        initial={{ opacity: 0, x: -14 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.48 }}
-        className="mb-5"
-      >
-        <span className="text-[9px] uppercase tracking-[0.32em] text-amber-400 font-bold">
-          Smart Alerts
-        </span>
-        <h2 className="text-lg md:text-2xl font-extrabold text-white mt-1">
-          Delay Detection & Action
-        </h2>
-      </motion.div>
-
-      {/* Primary alert card */}
-      <motion.div
-        initial={{ opacity: 0, y: 16, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ delay: 0.28, duration: 0.52, ease: [0.16, 1, 0.3, 1] }}
-        className="bg-amber-500/[0.06] border border-amber-500/25 rounded-2xl p-4 md:p-5 mb-3"
-      >
-        <div className="flex items-start gap-3 mb-4">
-          <motion.div
-            animate={{
-              boxShadow: [
-                "0 0 8px rgba(245,158,11,0.25)",
-                "0 0 22px rgba(245,158,11,0.55)",
-                "0 0 8px rgba(245,158,11,0.25)",
-              ],
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="size-10 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center shrink-0"
-          >
-            <AlertTriangle size={18} className="text-amber-400" />
-          </motion.div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[8px] text-amber-400/60 font-bold uppercase tracking-wider">
-              Auto-Detected · PO-2025
-            </div>
-            <div className="text-sm md:text-base font-bold text-white mt-0.5">
-              Printing Delay Detected
-            </div>
-          </div>
-          <div className="text-[8px] text-white/25 font-mono shrink-0">18:10:45</div>
-        </div>
-
-        <div className="space-y-1.5 mb-4">
-          {[
-            { label: "Bottleneck", value: "Print Station 1 — ink calibration failure" },
-            { label: "Impact", value: "+3 day delay · New ETA: Jun 22" },
-            { label: "Action", value: "Redirect batch to Print Station 3" },
-          ].map((row, i) => (
-            <motion.div
-              key={row.label}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.7 + i * 0.16, duration: 0.38 }}
-              className="flex gap-2 text-[9px] md:text-[10px]"
-            >
-              <span className="text-white/35 font-bold shrink-0 w-20">{row.label}:</span>
-              <span className="text-white/65">{row.value}</span>
-            </motion.div>
-          ))}
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.4 }}
-          className="flex flex-wrap gap-2"
-        >
-          <button className="text-[9px] px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-300 font-bold hover:bg-amber-500/30 transition-colors">
-            Notify Factory
-          </button>
-          <button className="text-[9px] px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/55 font-bold hover:bg-white/10 transition-colors">
-            Adjust Timeline
-          </button>
-          <button className="text-[9px] px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/55 font-bold hover:bg-white/10 transition-colors">
-            View Details
-          </button>
-        </motion.div>
-      </motion.div>
-
-      {/* Secondary info row */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.55, duration: 0.4 }}
-        className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.07] rounded-xl p-3"
-      >
-        <div className="size-7 rounded-lg bg-electric-blue/10 border border-electric-blue/20 flex items-center justify-center shrink-0">
-          <Activity size={12} className="text-electric-blue" />
-        </div>
-        <span className="text-[9px] md:text-[10px] text-white/55">
-          Timeline auto-adjusted · Factory notified · ETA recalibrated to Jun 22
-        </span>
-      </motion.div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════ */
-/*  SCENE 6 — End-to-End Visibility + Finale                         */
-/* ═══════════════════════════════════════════════════════════════════ */
-function Scene6() {
-  return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center px-5 py-7 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_65%_at_50%_50%,rgba(59,130,246,0.16),transparent_70%)]" />
-
-      {/* Module chain */}
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex items-center gap-1 md:gap-2 mb-7 flex-wrap justify-center"
-      >
-        {MODULES.map((mod, i) => {
-          const Icon = mod.icon;
-          const isLast = i === MODULES.length - 1;
-          return (
-            <div key={mod.label} className="flex items-center gap-1 md:gap-2">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.82, y: 12 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ delay: 0.15 + i * 0.2, duration: 0.42, ease: "easeOut" }}
-                className={`flex flex-col items-center gap-1 px-2 md:px-3 py-2.5 rounded-xl ${mod.bg} border ${mod.border} backdrop-blur-sm`}
-                style={
-                  isLast
-                    ? { boxShadow: "0 0 18px rgba(59,130,246,0.18)" }
-                    : undefined
-                }
-              >
-                <Icon size={13} className={mod.text} />
-                <span
-                  className={`text-[7px] md:text-[8px] font-bold ${mod.text} text-center leading-tight`}
-                  style={{ maxWidth: 68 }}
-                >
-                  {mod.label}
-                </span>
-              </motion.div>
-
-              {!isLast && (
-                <motion.span
-                  initial={{ opacity: 0, scaleX: 0 }}
-                  animate={{ opacity: 1, scaleX: 1 }}
-                  transition={{ delay: 0.38 + i * 0.2, duration: 0.28 }}
-                  className="text-white/20 text-xs font-bold"
-                >
-                  →
-                </motion.span>
-              )}
-            </div>
-          );
-        })}
-      </motion.div>
-
-      {/* Headline */}
-      <motion.h1
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.35, duration: 0.6, ease: "easeOut" }}
-        className="text-xl md:text-2xl lg:text-3xl font-extrabold text-white text-center tracking-tight leading-tight mb-3"
-      >
-        Fashion Production.{" "}
-        <span className="bg-gradient-to-r from-electric-blue to-teal-accent bg-clip-text text-transparent">
-          Fully Connected.
-        </span>
-      </motion.h1>
-
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.88, duration: 0.5 }}
-        className="text-xs md:text-sm text-white/38 font-medium mb-6 text-center tracking-widest"
-      >
-        Plan · Produce · Track · Deliver
-      </motion.p>
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 2.28, duration: 0.45 }}
-        className="px-4 py-2 rounded-xl bg-electric-blue/[0.09] border border-electric-blue/25 backdrop-blur-sm"
-      >
-        <span className="text-[9px] md:text-[10px] text-electric-blue font-bold uppercase tracking-widest">
-          Production Tracking Available in MODOZO
-        </span>
-      </motion.div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════ */
-/*  Main Component                                                    */
-/* ═══════════════════════════════════════════════════════════════════ */
-const SCENES = [Scene1, Scene2, Scene3, Scene4, Scene5, Scene6];
-
-export default function ProductionTrackingVisual() {
-  const [scene, setScene] = useState(1);
-  const [sceneProgress, setSceneProgress] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  useEffect(() => {
+    if (!pendingCycleCompleteRef.current || activeLevel !== 0) return;
+    pendingCycleCompleteRef.current = false;
+    onCycleCompleteRef.current?.();
+  }, [activeLevel]);
 
   useEffect(() => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    if (progressTimerRef.current) clearInterval(progressTimerRef.current);
+    const id = setInterval(advanceLevel, 3500);
+    return () => clearInterval(id);
+  }, [advanceLevel]);
 
-    setSceneProgress(0);
-    const dur = SCENE_DURATIONS[scene - 1];
-    let elapsed = 0;
-
-    progressTimerRef.current = setInterval(() => {
-      elapsed += 50;
-      setSceneProgress(Math.min((elapsed / dur) * 100, 100));
-    }, 50);
-
-    timerRef.current = setTimeout(() => {
-      setScene((s) => (s >= TOTAL_SCENES ? 1 : s + 1));
-    }, dur);
-
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-      if (progressTimerRef.current) clearInterval(progressTimerRef.current);
-    };
-  }, [scene]);
-
-  const SceneComponent = SCENES[scene - 1];
+  const lvl = LEVELS[activeLevel];
+  const Icon = lvl.icon;
 
   return (
-    <div className="w-full aspect-video bg-[#020812] rounded-2xl overflow-hidden border border-white/10 relative shadow-[0_24px_60px_rgba(0,0,0,0.65)]">
-
-      {/* Ambient grid overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.028] pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      {/* Corner glows */}
-      <div className="absolute top-0 left-0 w-52 h-52 bg-electric-blue/[0.08] blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-44 h-44 bg-teal-accent/[0.06] blur-3xl pointer-events-none" />
-
-      {/* Scene render */}
+    <div className="w-full aspect-[16/9] relative overflow-visible select-none">
       <AnimatePresence mode="wait">
         <motion.div
-          key={scene}
+          key={activeLevel}
+          className="absolute inset-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.42, ease: "easeInOut" }}
-          className="absolute inset-0"
+          transition={{ duration: 0.22 }}
         >
-          <SceneComponent />
+          <Layout
+            /* ── CENTER ───────────────────────────────────── */
+            center={
+              <div className="h-full flex text-slate-200">
+
+                {/* ── Left: data table ── */}
+                <div className="flex flex-col p-5 flex-1 min-w-0">
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0"
+                        style={{
+                          background: lvl.accentColor + "18",
+                          border: `1px solid ${lvl.accentColor}30`,
+                        }}
+                      >
+                        <Icon size={14} style={{ color: lvl.accentColor }} />
+                      </div>
+                      <div>
+                        <p className="text-[7.5px] font-bold uppercase tracking-[0.2em]"
+                          style={{ color: lvl.accentColor }}>
+                          {lvl.stageName}
+                        </p>
+                        <h4 className="text-[13px] font-black text-white leading-tight mt-0.5">
+                          {lvl.name}
+                        </h4>
+                      </div>
+                    </div>
+                    <span className={`text-[7.5px] font-bold px-2 py-0.5 rounded-full border ${lvl.statusColor} shrink-0 ml-2 mt-0.5`}>
+                      {lvl.status}
+                    </span>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="h-px w-full bg-white/[0.05] mb-3" />
+
+                  {/* Row table */}
+                  <div className="flex-1 space-y-2">
+                    {lvl.centerRows.map((row) => (
+                      <div key={row.label} className="flex items-baseline gap-2">
+                        <span className="text-[8.5px] text-slate-500 w-[38%] shrink-0 font-medium">
+                          {row.label}
+                        </span>
+                        <span className="text-[9.5px] text-slate-200 font-semibold leading-snug">
+                          {row.value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Footer dots */}
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/[0.04] text-[7.5px] text-slate-500 font-mono">
+                    <span>MDZ-SS26-08</span>
+                    <div className="flex gap-1">
+                      {LEVELS.map((_, i) => (
+                        <span
+                          key={i}
+                          className="h-1 rounded-full transition-all duration-300"
+                          style={{
+                            width: i === activeLevel ? 12 : 5,
+                            background: i === activeLevel ? lvl.accentColor : "rgba(255,255,255,0.12)",
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Right: product image panel ── */}
+                <div
+                  className="relative flex items-center justify-center shrink-0 overflow-hidden"
+                  style={{
+                    width: "38%",
+                    borderLeft: "1px solid rgba(255,255,255,0.04)",
+                    background: "linear-gradient(135deg, rgba(59,130,246,0.06) 0%, rgba(9,15,34,0.0) 60%)",
+                  }}
+                >
+                  {/* Glow behind image */}
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: `radial-gradient(ellipse at 50% 60%, ${lvl.accentColor}22 0%, transparent 70%)`,
+                    }}
+                  />
+                  {/* Product label */}
+                  <div className="absolute top-3 left-0 right-0 flex justify-center">
+                    <span
+                      className="text-[7px] font-bold uppercase tracking-[0.2em] px-2.5 py-1 rounded-full"
+                      style={{
+                        color: lvl.accentColor,
+                        background: lvl.accentColor + "15",
+                        border: `1px solid ${lvl.accentColor}30`,
+                      }}
+                    >
+                      SS26 Collection
+                    </span>
+                  </div>
+                  {/* Garment image */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/shirt.png"
+                    alt="SS26 Premium Shirt"
+                    style={{
+                      width: "88%",
+                      maxHeight: "80%",
+                      objectFit: "contain",
+                      filter: `drop-shadow(0 10px 28px rgba(0,0,0,0.65)) brightness(1.08) saturate(1.1)`,
+                      marginTop: "4px",
+                      borderRadius: "6px",
+                    }}
+                  />
+                </div>
+
+              </div>
+            }
+
+            /* ── LEFT ─────────────────────────────────────── */
+            left={
+              <div className="h-full flex flex-col justify-between p-4 text-slate-200">
+                <p className="text-[7px] font-bold uppercase tracking-[0.18em] text-slate-500">
+                  {lvl.leftTitle}
+                </p>
+                <div className="flex-1 flex flex-col justify-center gap-0.5">
+                  <p className="text-2xl font-black text-white leading-none">
+                    {lvl.leftKpi}
+                  </p>
+                  <p className="text-[8px] text-slate-500 font-medium">
+                    {lvl.leftKpiUnit}
+                  </p>
+                </div>
+                <p className="text-[7.5px] text-slate-400 leading-snug border-t border-white/[0.04] pt-2">
+                  {lvl.leftNote}
+                </p>
+              </div>
+            }
+
+            /* ── RIGHT ────────────────────────────────────── */
+            right={
+              <div className="h-full flex flex-col justify-between p-4 text-slate-200">
+                <p className="text-[7px] font-bold uppercase tracking-[0.18em] text-slate-500">
+                  {lvl.rightTitle}
+                </p>
+                <div className="flex-1 flex flex-col justify-center gap-0.5">
+                  <p className="text-2xl font-black leading-none" style={{ color: lvl.accentColor }}>
+                    {lvl.rightKpi}
+                  </p>
+                  <p className="text-[8px] text-slate-500 font-medium">
+                    {lvl.rightKpiUnit}
+                  </p>
+                </div>
+                <p className="text-[7.5px] text-slate-400 leading-snug border-t border-white/[0.04] pt-2">
+                  {lvl.rightNote}
+                </p>
+              </div>
+            }
+          />
         </motion.div>
       </AnimatePresence>
-
-      {/* Bottom controls bar */}
-      <div className="absolute bottom-0 left-0 right-0 px-4 pb-3 pt-4 flex items-center gap-3 bg-gradient-to-t from-[#020812]/80 to-transparent pointer-events-none">
-        {/* Scene progress line */}
-        <div className="flex-1 h-[2px] bg-white/[0.07] rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-electric-blue to-teal-accent rounded-full transition-none"
-            style={{ width: `${sceneProgress}%` }}
-          />
-        </div>
-
-        {/* Scene dots */}
-        <div className="flex items-center gap-1.5 pointer-events-auto shrink-0">
-          {Array.from({ length: TOTAL_SCENES }).map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setScene(i + 1)}
-              className={`rounded-full transition-all duration-300 ${
-                i === scene - 1
-                  ? "w-4 h-1.5 bg-electric-blue"
-                  : "size-1.5 bg-white/20 hover:bg-white/40"
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Replay */}
-        <button
-          onClick={() => setScene(1)}
-          className="size-5 flex items-center justify-center text-white/25 hover:text-white/55 transition-colors shrink-0 pointer-events-auto"
-        >
-          <RefreshCw size={11} />
-        </button>
-      </div>
-
-      {/* Scene counter */}
-      <div className="absolute top-3 right-3.5 text-[8px] text-white/18 font-mono font-bold pointer-events-none">
-        {scene} / {TOTAL_SCENES}
-      </div>
     </div>
   );
 }

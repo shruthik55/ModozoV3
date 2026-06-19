@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import Image from "next/image";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function HeroSection() {
   return (

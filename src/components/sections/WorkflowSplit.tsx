@@ -25,7 +25,6 @@ export default function WorkflowSplit({
   image,
   reverse = false,
   id,
-  emoji = "⚡",
   theme = "light",
 }: WorkflowSplitProps) {
   return (

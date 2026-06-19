@@ -87,20 +87,20 @@ const features: FeatureCard[] = [
       "Vendor ratings and factory audit data integration",
     ],
   },
-  {
-    id: "cost-optimization",
-    slug: "cost-optimization",
-    title: "Cost Optimization",
-    icon: BarChart3,
-    image: "/feature_vendor_map.png",
-    boldText: "Optimize sourcing and reduce costs.",
-    description: "Compare vendor quotes side-by-side, track material costs across collections, and uncover savings opportunities with real-time cost breakdowns and logistics tracking.",
-    checklist: [
-      "Compare vendor quotes and raw material costs in real-time",
-      "Track global logistics, routes, and vessel statuses on a live map",
-      "Uncover cost-saving opportunities with automated margin analysis",
-    ],
-  },
+  // {
+  //   id: "cost-optimization",
+  //   slug: "cost-optimization",
+  //   title: "Cost Optimization",
+  //   icon: BarChart3,
+  //   image: "/feature_vendor_map.png",
+  //   boldText: "Optimize sourcing and reduce costs.",
+  //   description: "Compare vendor quotes side-by-side, track material costs across collections, and uncover savings opportunities with real-time cost breakdowns and logistics tracking.",
+  //   checklist: [
+  //     "Compare vendor quotes and raw material costs in real-time",
+  //     "Track global logistics, routes, and vessel statuses on a live map",
+  //     "Uncover cost-saving opportunities with automated margin analysis",
+  //   ],
+  // },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -119,12 +119,18 @@ export default function PlatformShowcaseSection() {
     if (!isAutoPlaying) return;
 
     const feature = features[activeIndex];
-    // Centralized-collaboration advances via onCycleComplete, not a fixed timer
-    if (feature.id === "centralized-collaboration") return;
+    // These features advance via their own subcycle complete callbacks, not a fixed timer
+    if (
+      feature.id === "centralized-collaboration" ||
+      feature.id === "production-tracking" ||
+      feature.id === "sample-manager"
+    ) {
+      return;
+    }
 
     timerRef.current = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % features.length);
-    }, 8500);
+    }, 5000);
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -133,6 +139,18 @@ export default function PlatformShowcaseSection() {
 
   // Called by CentralizedCollaborationVisual after all subcards have been shown once
   const handleCollabCycleComplete = useCallback(() => {
+    if (!isAutoPlaying) return;
+    setActiveIndex((prev) => (prev + 1) % features.length);
+  }, [isAutoPlaying]);
+
+  // Called by ProductionTrackingVisual after all levels have been shown once
+  const handleProductionCycleComplete = useCallback(() => {
+    if (!isAutoPlaying) return;
+    setActiveIndex((prev) => (prev + 1) % features.length);
+  }, [isAutoPlaying]);
+
+  // Called by VendorManagementVisual after all tabs have been shown once
+  const handleVendorCycleComplete = useCallback(() => {
     if (!isAutoPlaying) return;
     setActiveIndex((prev) => (prev + 1) % features.length);
   }, [isAutoPlaying]);
@@ -179,7 +197,7 @@ export default function PlatformShowcaseSection() {
         {/* ---- Horizontal Tabs and Showcase ------------------------- */}
         <div className="space-y-10">
           {/* Tab Selector */}
-          <div className="flex flex-nowrap md:flex-wrap items-center gap-2 md:gap-3 overflow-x-auto pb-4 md:pb-0 scrollbar-none justify-start border-b border-white/[0.06] w-full">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 md:pb-0 border-b border-white/[0.06] w-full">
             {features.map((feat, i) => {
               const isActive = i === activeIndex;
               const Icon = feat.icon;
@@ -317,11 +335,11 @@ export default function PlatformShowcaseSection() {
                     </div>
                   ) : features[activeIndex].id === "production-tracking" ? (
                     <div className="w-full">
-                      <ProductionTrackingVisual />
+                      <ProductionTrackingVisual onCycleComplete={handleProductionCycleComplete} />
                     </div>
                   ) : features[activeIndex].id === "sample-manager" ? (
                     <div className="w-full">
-                      <VendorManagementVisual />
+                      <VendorManagementVisual onCycleComplete={handleVendorCycleComplete} />
                     </div>
                   ) : features[activeIndex].id === "cost-optimization" ? (
                     <div className="w-full relative flex aspect-[858/400] md:aspect-[858/480] justify-center overflow-hidden rounded-xl items-center border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
@@ -380,12 +398,14 @@ function AnimatedApparelPreview({ onVersionChange }: { onVersionChange: (version
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.3 }}
-          className="w-full h-full flex items-center justify-center"
+          className="relative w-full h-full flex items-center justify-center"
         >
-          <img
+          <Image
             src={current.image}
             alt={current.name}
-            className="w-full h-full object-contain"
+            fill
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="object-contain"
           />
         </motion.div>
       </AnimatePresence>

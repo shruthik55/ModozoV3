@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import {
   Calendar,
   CheckCircle2,
@@ -172,28 +173,39 @@ const sourcingOrders: SourcingOrder[] = [
   }
 ];
 
-export default function VendorManagementVisual() {
-  const [activeTab, setActiveTab] = useState<string>("pp_sample");
+export default function VendorManagementVisual({ onCycleComplete }: { onCycleComplete?: () => void }) {
+  const [activeTab, setActiveTab] = useState<string>("pantone_library");
   const [isAutoNavigating, setIsAutoNavigating] = useState<boolean>(true);
+  const onCycleCompleteRef = useRef(onCycleComplete);
+  const pendingCycleCompleteRef = useRef(false);
+
+  useEffect(() => {
+    onCycleCompleteRef.current = onCycleComplete;
+  }, [onCycleComplete]);
+
+  const cycleNext = useCallback(() => {
+    setActiveTab((current) => {
+      const index = tabs.findIndex((t) => t.id === current);
+      const nextIndex = (index + 1) % tabs.length;
+      pendingCycleCompleteRef.current = nextIndex === 0;
+      return tabs[nextIndex].id;
+    });
+  }, []);
 
   // Auto navigation loop
   useEffect(() => {
     if (!isAutoNavigating) return;
 
-    const cycleNext = () => {
-      setActiveTab((current) => {
-        const index = tabs.findIndex(t => t.id === current);
-        const nextIndex = (index + 1) % tabs.length;
-        return tabs[nextIndex].id;
-      });
-    };
-
-    // Cycle every 4 seconds
+    // Cycle every 4.5 seconds
     const interval = setInterval(cycleNext, 4500);
     return () => clearInterval(interval);
-  }, [isAutoNavigating]);
+  }, [isAutoNavigating, cycleNext]);
 
-
+  useEffect(() => {
+    if (!pendingCycleCompleteRef.current || activeTab !== tabs[0].id) return;
+    pendingCycleCompleteRef.current = false;
+    onCycleCompleteRef.current?.();
+  }, [activeTab]);
 
   const handleTabClick = (tabId: string) => {
     setActiveTab(tabId);
@@ -208,7 +220,7 @@ export default function VendorManagementVisual() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <img src="/modozo_brand_logo.png" alt="Modozo Logo" className="h-5 w-auto object-contain" />
+              <Image src="/modozo_brand_logo.png" alt="Modozo Logo" width={112} height={20} className="h-5 w-auto object-contain" />
               <span className="text-[10px] uppercase font-bold tracking-wider text-white/40">
                 Vendor Panel
               </span>
@@ -260,10 +272,12 @@ export default function VendorManagementVisual() {
               className="w-full h-full flex flex-col justify-between overflow-hidden"
             >
               <div className="flex-1 overflow-hidden relative rounded-xl border border-white/[0.08] bg-[#02060f]">
-                <img
+                <Image
                   src="/ppsamppp.png"
                   alt="PP Sample Verification"
-                  className="w-full h-full object-contain block mx-auto"
+                  fill
+                  sizes="(min-width: 768px) 68vw, 100vw"
+                  className="object-contain"
                 />
               </div>
             </motion.div>
@@ -280,10 +294,12 @@ export default function VendorManagementVisual() {
               className="w-full h-full flex flex-col justify-between overflow-hidden"
             >
               <div className="flex-1 overflow-hidden relative rounded-xl border border-white/[0.08] bg-[#02060f]">
-                <img
+                <Image
                   src="/pantone library.png"
                   alt="Pantone Library"
-                  className="w-full h-full object-contain block mx-auto"
+                  fill
+                  sizes="(min-width: 768px) 68vw, 100vw"
+                  className="object-contain"
                 />
               </div>
             </motion.div>
@@ -300,10 +316,12 @@ export default function VendorManagementVisual() {
               className="w-full h-full flex flex-col justify-between overflow-hidden"
             >
               <div className="flex-1 overflow-hidden relative rounded-xl border border-white/[0.08] bg-[#02060f]">
-                <img
+                <Image
                   src="/printsttt.png"
                   alt="Print Strike-off Calibration"
-                  className="w-full h-full object-contain block mx-auto"
+                  fill
+                  sizes="(min-width: 768px) 68vw, 100vw"
+                  className="object-contain"
                 />
               </div>
             </motion.div>
@@ -398,10 +416,12 @@ export default function VendorManagementVisual() {
               className="w-full h-full flex flex-col justify-between overflow-hidden"
             >
               <div className="flex-1 overflow-hidden relative rounded-xl border border-white/[0.08] bg-[#02060f]">
-                <img
+                <Image
                   src="/final_inspecction.png"
                   alt="Final Inspection Call"
-                  className="w-full h-full object-contain block mx-auto"
+                  fill
+                  sizes="(min-width: 768px) 68vw, 100vw"
+                  className="object-contain"
                 />
               </div>
             </motion.div>

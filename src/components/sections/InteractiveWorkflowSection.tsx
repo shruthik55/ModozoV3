@@ -6,12 +6,10 @@ import Image from "next/image";
 import {
   FileSpreadsheet,
   MessageSquare,
-  FolderSearch,
   CalendarClock,
   UsersRound,
   AlertTriangle,
   FileText,
-  Check,
   Search,
   EyeOff,
   CloudLightning
@@ -71,11 +69,18 @@ const cardsData: Card[] = [
   },
 ];
 
+const PROGRESS_MAP = [0.0, 0.28, 0.58, 0.88];
+const AUTOPLAY_DELAY_MS = 5000;
+
 export default function InteractiveWorkflowSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [scrollRange, setScrollRange] = useState(0);
   const [activeCard, setActiveCard] = useState(0);
+
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const autoStartedRef = useRef(false);
+  const isAutoScrollRef = useRef(false);
 
   useEffect(() => {
     const calculateRange = () => {
@@ -83,145 +88,80 @@ export default function InteractiveWorkflowSection() {
         setScrollRange(trackRef.current.scrollWidth - window.innerWidth);
       }
     };
-
-    // Run after components mount
     calculateRange();
-
-    // Add event listener for resizing
     window.addEventListener("resize", calculateRange);
     return () => window.removeEventListener("resize", calculateRange);
   }, []);
 
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const inactivityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { scrollYProgress } = useScroll({ target: containerRef });
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-  });
-
-  const clearAllTimers = () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-    if (inactivityTimeoutRef.current) {
-      clearTimeout(inactivityTimeoutRef.current);
-      inactivityTimeoutRef.current = null;
-    }
+  // scheduleNextRef always points to the latest closure — safe to call from inside timeouts
+  const scheduleNextRef = useRef<(idx: number) => void>(undefined);
+  scheduleNextRef.current = (idx: number) => {
+    if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
+    if (idx > 3 || !containerRef.current) return;
+    timerRef.current = setTimeout(() => {
+      const el = containerRef.current;
+      if (!el) return;
+      // Use getBoundingClientRect + scrollY for absolute position, independent of offsetParent
+      const sectionAbsTop = el.getBoundingClientRect().top + window.scrollY;
+      const targetY = sectionAbsTop + (el.offsetHeight - window.innerHeight) * PROGRESS_MAP[idx];
+      isAutoScrollRef.current = true;
+      window.scrollTo({ top: targetY, behavior: "smooth" });
+      setTimeout(() => { isAutoScrollRef.current = false; }, 1500);
+      scheduleNextRef.current?.(idx + 1);
+    }, AUTOPLAY_DELAY_MS);
   };
 
-  const startAutoplayChain = (startIndex: number) => {
-    clearAllTimers();
-
-    // Start a 4-second timeout for the current card
-    inactivityTimeoutRef.current = setTimeout(() => {
+  // Trigger autoplay exactly when the user scrolls into the section top.
+  // useScroll's default offsets make scrollYProgress=0 when the section is still below
+  // the viewport, so we use a plain scroll listener with absolute Y comparison instead.
+  useEffect(() => {
+    const onScroll = () => {
       if (!containerRef.current) return;
+      const el = containerRef.current;
+      const sectionAbsTop = el.getBoundingClientRect().top + window.scrollY;
 
-      const element = containerRef.current;
-      const startScroll = element.offsetTop;
-      const totalScrollHeight = element.offsetHeight - window.innerHeight;
-
-      let nextCard = startIndex + 1;
-
-      if (nextCard <= 3) {
-        // Scroll to the next card
-        const progressMap = [0.0, 0.28, 0.58, 0.88];
-        const targetProgress = progressMap[nextCard];
-        const targetY = startScroll + totalScrollHeight * targetProgress;
-
-        window.scrollTo({
-          top: targetY,
-          behavior: "smooth",
-        });
-
-        // Start the interval for subsequent cards (every 4 seconds)
-        timerRef.current = setInterval(() => {
-          nextCard += 1;
-
-          if (nextCard <= 3) {
-            const progress = progressMap[nextCard];
-            const targetY = startScroll + totalScrollHeight * progress;
-
-            window.scrollTo({
-              top: targetY,
-              behavior: "smooth",
-            });
-          } else {
-            // Scroll to the next section (PlatformShowcaseSection)
-            const targetY = startScroll + element.offsetHeight;
-            window.scrollTo({
-              top: targetY,
-              behavior: "smooth",
-            });
-            clearAllTimers();
-          }
-        }, 4000);
-      } else {
-        // Already at or past the last card, scroll to the next section
-        const targetY = startScroll + element.offsetHeight;
-        window.scrollTo({
-          top: targetY,
-          behavior: "smooth",
-        });
-        clearAllTimers();
+      if (window.scrollY >= sectionAbsTop && !autoStartedRef.current) {
+        // User just scrolled into the section — start the 5s chain
+        autoStartedRef.current = true;
+        scheduleNextRef.current?.(1);
       }
-    }, 4000);
-  };
 
-  useEffect(() => {
-    const handleUserInteraction = () => {
-      clearAllTimers();
-
-      const progress = scrollYProgress.get();
-      const currentIdx = Math.min(3, Math.floor(progress * 4.1));
-
-      // After 4 seconds of scroll inactivity, restart autoplay from the current card
-      if (progress > 0.02 && progress < 0.95) {
-        inactivityTimeoutRef.current = setTimeout(() => {
-          startAutoplayChain(currentIdx);
-        }, 4000);
+      if (window.scrollY < sectionAbsTop && autoStartedRef.current) {
+        // User scrolled back above the section — reset so it replays on re-entry
+        autoStartedRef.current = false;
+        if (timerRef.current) { clearTimeout(timerRef.current); timerRef.current = null; }
       }
     };
 
-    window.addEventListener("wheel", handleUserInteraction, { passive: true });
-    window.addEventListener("touchmove", handleUserInteraction, { passive: true });
-    window.addEventListener("keydown", handleUserInteraction, { passive: true });
-    window.addEventListener("mousedown", handleUserInteraction, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
+  // Cancel the pending auto-advance when the user scrolls manually within the section
+  useEffect(() => {
+    const onManualScroll = () => {
+      if (!isAutoScrollRef.current && timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+    window.addEventListener("wheel", onManualScroll, { passive: true });
+    window.addEventListener("touchmove", onManualScroll, { passive: true });
     return () => {
-      window.removeEventListener("wheel", handleUserInteraction);
-      window.removeEventListener("touchmove", handleUserInteraction);
-      window.removeEventListener("keydown", handleUserInteraction);
-      window.removeEventListener("mousedown", handleUserInteraction);
-      clearAllTimers();
+      window.removeEventListener("wheel", onManualScroll);
+      window.removeEventListener("touchmove", onManualScroll);
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [scrollYProgress]);
-
-  useEffect(() => {
-    const progress = scrollYProgress.get();
-    if (progress > 0.02 && progress < 0.95) {
-      const currentIdx = Math.min(3, Math.floor(progress * 4.1));
-      startAutoplayChain(currentIdx);
-    }
-  }, [scrollYProgress]);
+  }, []);
 
   // Slide horizontally based on scroll progress
   const x = useTransform(scrollYProgress, [0, 1], [0, -scrollRange]);
 
-  // Sync active card index with scroll position and handle programmatic triggers
+  // Keep active card indicator in sync — no autoplay logic here
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const cardIndex = Math.min(3, Math.floor(latest * 4.1)); // Multiply by 4.1 to buffer the end
-    setActiveCard(cardIndex);
-
-    // Trigger autoplay when entering sticky range via links (no user touch/mouse inputs)
-    if (latest > 0.02 && latest < 0.95) {
-      if (!timerRef.current && !inactivityTimeoutRef.current) {
-        startAutoplayChain(cardIndex);
-      }
-    } else {
-      // Clear timers if scrolled out of the sticky range
-      clearAllTimers();
-    }
+    setActiveCard(Math.min(3, Math.floor(latest * 4.1)));
   });
 
   return (
@@ -425,7 +365,7 @@ export default function InteractiveWorkflowSection() {
 // Visual Mockups for the Supply Chain Pain Points
 // ---------------------------------------------------------
 
-function ExcelMockup() {
+export function ExcelMockup() {
   return (
     <div className="w-full h-full flex flex-col text-left font-mono text-[10px] md:text-xs">
       <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-2">
@@ -479,7 +419,7 @@ function ExcelMockup() {
   );
 }
 
-function ChatMockup() {
+export function ChatMockup() {
   return (
     <div className="w-full h-full flex flex-col justify-between text-left text-[10px] md:text-xs">
       <div className="flex items-center gap-2 border-b border-white/5 pb-2 mb-2">
@@ -498,7 +438,7 @@ function ChatMockup() {
         <div className="flex gap-2 items-start max-w-[85%] ml-auto flex-row-reverse">
           <div className="w-5 h-5 rounded-full bg-teal-accent/20 border border-teal-accent/40 text-teal-300 flex items-center justify-center font-bold text-[8px]">M</div>
           <div className="bg-electric-blue/15 p-2 rounded-xl rounded-tr-none border border-electric-blue/25 text-right">
-            <p className="text-slate-200 leading-tight">Go with organic cotton, standard dye. Let's start production.</p>
+            <p className="text-slate-200 leading-tight">Go with organic cotton, standard dye. Let&apos;s start production.</p>
             <span className="text-[7px] text-slate-400 block mt-1">Sourcing Mgr • 11:32 AM</span>
           </div>
         </div>
@@ -512,13 +452,13 @@ function ChatMockup() {
   );
 }
 
-function FolderMockup() {
+export function FolderMockup() {
   return (
     <div className="w-full h-full flex flex-col text-left text-[10px] md:text-xs">
       <div className="flex items-center justify-between border-b border-white/5 pb-2 mb-2">
         <div className="flex items-center gap-1.5">
           <Search size={12} className="text-slate-400" />
-          <span className="text-white/60 font-semibold font-mono">search: "jacket_spec"</span>
+          <span className="text-white/60 font-semibold font-mono">search: &quot;jacket_spec&quot;</span>
         </div>
         <span className="text-slate-500 text-[9px] font-mono">42 files found</span>
       </div>
@@ -536,7 +476,7 @@ function FolderMockup() {
             <FileText size={12} className="text-amber-500" />
             <span className="truncate">jacket_spec_revised_FINAL.pdf</span>
           </div>
-          <span className="text-red-400/70 font-semibold">Local (Sai's Mac)</span>
+          <span className="text-red-400/70 font-semibold">Local (Sai&apos;s Mac)</span>
         </div>
         <div className="flex items-center justify-between p-1.5 rounded bg-white/[0.02] border border-white/5">
           <div className="flex items-center gap-2 text-slate-300">
@@ -554,7 +494,7 @@ function FolderMockup() {
   );
 }
 
-function TimelineMockup() {
+export function TimelineMockup() {
   return (
     <div className="w-full h-full flex flex-col text-left text-[10px] md:text-xs">
       <div className="flex items-center gap-2 border-b border-white/5 pb-2 mb-2">
@@ -607,7 +547,7 @@ function TimelineMockup() {
   );
 }
 
-function NetworkMockup() {
+export function NetworkMockup() {
   return (
     <div className="w-full h-full flex flex-col justify-between text-left text-[10px] md:text-xs">
       <div className="flex items-center gap-2 border-b border-white/5 pb-2 mb-2">

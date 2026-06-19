@@ -5,6 +5,14 @@ import { motion, useInView } from "framer-motion";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import { FileText, GitBranch, Handshake, Eye, BarChart3 } from "lucide-react";
 
+const previewHeights = {
+  techpack: [58, 82, 46, 68],
+  approval: [42, 76, 55],
+  vendor: [72, 48, 88],
+  sample: [36, 64, 92],
+  production: [52, 74, 39, 86, 61, 96],
+} as const;
+
 const features = [
   { icon: FileText, title: "Structured Techpack Management", desc: "Digital techpacks with measurements, BOMs, artwork specs, and version history.", span: "md:col-span-2", preview: "techpack" },
   { icon: GitBranch, title: "Approval Workflows", desc: "Route reviews to the right stakeholders with tracked comments and sign-offs.", span: "", preview: "approval" },
@@ -14,16 +22,17 @@ const features = [
 ];
 
 function MiniPreview({ type }: { type: string }) {
-  const bars = type === "production" ? 6 : type === "techpack" ? 4 : 3;
+  const heights = previewHeights[type as keyof typeof previewHeights] ?? previewHeights.approval;
+
   return (
     <div className="mt-4 pt-3 border-t border-white/5">
       <div className="flex gap-1.5 items-end h-12">
-        {[...Array(bars)].map((_, i) => (
+        {heights.map((height, i) => (
           <motion.div
             key={i}
             className="flex-1 rounded-sm bg-electric-blue/20"
             initial={{ height: 0 }}
-            whileInView={{ height: `${30 + Math.random() * 70}%` }}
+            whileInView={{ height: `${height}%` }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: i * 0.1 }}
           />
