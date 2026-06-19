@@ -34,14 +34,20 @@ function XMark({ style }: { style?: React.CSSProperties }) {
 // ─── Step left panels ──────────────────────────────────────────
 
 function Step1Left() {
+  const [loaded, setLoaded] = useState(false);
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ 
+      position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center",
+      opacity: loaded ? 1 : 0,
+      transition: "opacity 0.5s ease-out"
+    }}>
       <Image
         src="/scattered_communication_transparent.png"
         alt="Scattered communication before Modozo"
         fill
         style={{ objectFit: "contain" }}
         priority
+        onLoad={() => setLoaded(true)}
       />
     </div>
   );
@@ -359,8 +365,8 @@ function AutomatedWorkflowVideo() {
         maxHeight: "100%",
         borderRadius: 28,
         overflow: "hidden",
-        background: WFC.bg,
-        boxShadow: "0 30px 80px -20px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08)",
+        background: "transparent",
+        boxShadow: "none",
       }}
     >
       <div style={{ position: "absolute", top: 0, left: 0, width: WF_W, height: WF_H, transform: `scale(${scale})`, transformOrigin: "top left" }}>
@@ -379,27 +385,59 @@ function Step2Left() {
 }
 
 function Step3Left() {
+  const [loaded, setLoaded] = useState(false);
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#040b17" }}>
-      <Image
-        src="/centralll.png"
-        alt="Scattered communication before Modozo"
-        fill
-        style={{ objectFit: "contain" }}
-      />
+    <div style={{ 
+      position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center",
+      background: "linear-gradient(180deg, #091a36 0%, #050d1a 50%, #040b17 100%)",
+      opacity: loaded ? 1 : 0,
+      transition: "opacity 0.2s ease-out"
+    }}>
+      <div style={{
+        position: "absolute", inset: 0,
+        mixBlendMode: "screen",
+        filter: "contrast(1.35) brightness(0.85)",
+        WebkitMaskImage: "radial-gradient(60% 60% at 50% 50%, black 60%, transparent 100%)",
+        maskImage: "radial-gradient(60% 60% at 50% 50%, black 60%, transparent 100%)"
+      }}>
+        <Image
+          src="/centralll.png"
+          alt="Scattered communication before Modozo"
+          fill
+          priority
+          onLoad={() => setLoaded(true)}
+          style={{ objectFit: "contain" }}
+        />
+      </div>
     </div>
   );
 }
 
 function Step4Left() {
+  const [loaded, setLoaded] = useState(false);
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#040b17" }}>
-      <Image
-        src="/dashboard.png"
-        alt="No live dashboards. No real visibility."
-        fill
-        style={{ objectFit: "contain" }}
-      />
+    <div style={{ 
+      position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center",
+      background: "linear-gradient(180deg, #091a36 0%, #050d1a 50%, #040b17 100%)",
+      opacity: loaded ? 1 : 0,
+      transition: "opacity 0.2s ease-out"
+    }}>
+      <div style={{
+        position: "absolute", inset: 0,
+        mixBlendMode: "screen",
+        filter: "contrast(1.35) brightness(0.85)",
+        WebkitMaskImage: "radial-gradient(60% 60% at 50% 50%, black 60%, transparent 100%)",
+        maskImage: "radial-gradient(60% 60% at 50% 50%, black 60%, transparent 100%)"
+      }}>
+        <Image
+          src="/dashboard.png"
+          alt="No live dashboards. No real visibility."
+          fill
+          priority
+          onLoad={() => setLoaded(true)}
+          style={{ objectFit: "contain" }}
+        />
+      </div>
     </div>
   );
 }
