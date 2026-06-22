@@ -34,8 +34,13 @@ function XMark({ style }: { style?: React.CSSProperties }) {
 // ─── Step left panels ──────────────────────────────────────────
 
 function Step1Left() {
+  const [loaded, setLoaded] = useState(false);
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ 
+      position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center",
+      opacity: loaded ? 1 : 0,
+      transition: "opacity 0.5s ease-out"
+    }}>
       <Image
         src="/scattered_communication_transparent.png"
         alt="Scattered communication before Modozo"
@@ -43,6 +48,7 @@ function Step1Left() {
         sizes="(max-width: 768px) 100vw, 520px"
         style={{ objectFit: "contain" }}
         priority
+        onLoad={() => setLoaded(true)}
       />
     </div>
   );
@@ -360,8 +366,8 @@ function AutomatedWorkflowVideo() {
         maxHeight: "100%",
         borderRadius: 28,
         overflow: "hidden",
-        background: WFC.bg,
-        boxShadow: "0 30px 80px -20px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.08)",
+        background: "transparent",
+        boxShadow: "none",
       }}
     >
       <div style={{ position: "absolute", top: 0, left: 0, width: WF_W, height: WF_H, transform: `scale(${scale})`, transformOrigin: "top left" }}>
