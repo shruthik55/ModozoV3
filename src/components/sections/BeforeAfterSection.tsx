@@ -40,6 +40,7 @@ function Step1Left() {
         src="/scattered_communication_transparent.png"
         alt="Scattered communication before Modozo"
         fill
+        sizes="(max-width: 768px) 100vw, 520px"
         style={{ objectFit: "contain" }}
         priority
       />
@@ -380,11 +381,12 @@ function Step2Left() {
 
 function Step3Left() {
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#040b17" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <Image
-        src="/centralll.png"
+        src="/centralss_transparent.png"
         alt="Scattered communication before Modozo"
         fill
+        sizes="(max-width: 768px) 100vw, 520px"
         style={{ objectFit: "contain" }}
       />
     </div>
@@ -393,11 +395,12 @@ function Step3Left() {
 
 function Step4Left() {
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#040b17" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <Image
-        src="/dashboard.png"
+        src="/dashboardd_transparent.png"
         alt="No live dashboards. No real visibility."
         fill
+        sizes="(max-width: 768px) 100vw, 520px"
         style={{ objectFit: "contain" }}
       />
     </div>
@@ -496,7 +499,7 @@ export default function BeforeAfterSection() {
             <div style={{ position: "absolute", top: "5%", left: 0, right: 0, display: "flex", justifyContent: "center" }}>
               <span style={{ fontSize: "clamp(15px, 1.3vw, 20px)", fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.04em", textTransform: "uppercase" }}>Before Modozo</span>
             </div>
-            <div style={{ position: "relative", width: "min(100%, 520px)", height: "88vh" }}>
+            <div style={{ position: "relative", width: "min(100%, 520px)", height: "78vh", marginTop: "10vh" }}>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={step.key + "-left"}
