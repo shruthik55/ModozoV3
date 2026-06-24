@@ -382,7 +382,7 @@ function Step2Left() {
   return (
     <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "transparent" }}>
       <Image
-        src="/autoworkflow.png"
+        src="/workflowauto.png"
         alt="Automated workflow before Modozo"
         fill
         sizes="(max-width: 768px) 100vw, 520px"
