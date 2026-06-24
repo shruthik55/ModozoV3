@@ -220,7 +220,7 @@ export default function VendorManagementVisual({ onCycleComplete }: { onCycleCom
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Image src="/modozo_brand_logo.png" alt="Modozo Logo" width={112} height={20} className="h-5 w-auto object-contain" />
+              <Image src="/modozo_brand_logo.png" alt="Modozo Logo" width={112} height={20} className="object-contain" style={{ height: '20px', width: 'auto' }} />
               <span className="text-[10px] uppercase font-bold tracking-wider text-white/40">
                 Vendor Panel
               </span>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion, AnimatePresence, useScroll } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
@@ -36,13 +36,14 @@ function XMark({ style }: { style?: React.CSSProperties }) {
 function Step1Left() {
   const [loaded, setLoaded] = useState(false);
   return (
-    <div style={{ 
+    <div style={{
       position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center",
+      backgroundColor: "transparent",
       opacity: loaded ? 1 : 0,
       transition: "opacity 0.5s ease-out"
     }}>
       <Image
-        src="/scattered_communication_transparent.png"
+        src="/collab2.png"
         alt="Scattered communication before Modozo"
         fill
         sizes="(max-width: 768px) 100vw, 520px"
@@ -379,17 +380,23 @@ function AutomatedWorkflowVideo() {
 
 function Step2Left() {
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <AutomatedWorkflowVideo />
+    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "transparent" }}>
+      <Image
+        src="/autoworkflow.png"
+        alt="Automated workflow before Modozo"
+        fill
+        sizes="(max-width: 768px) 100vw, 520px"
+        style={{ objectFit: "contain" }}
+      />
     </div>
   );
 }
 
 function Step3Left() {
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "transparent" }}>
       <Image
-        src="/centralss_transparent.png"
+        src="/centralieddata.png"
         alt="Scattered communication before Modozo"
         fill
         sizes="(max-width: 768px) 100vw, 520px"
@@ -401,9 +408,9 @@ function Step3Left() {
 
 function Step4Left() {
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "transparent" }}>
       <Image
-        src="/dashboardd_transparent.png"
+        src="/search.png"
         alt="No live dashboards. No real visibility."
         fill
         sizes="(max-width: 768px) 100vw, 520px"

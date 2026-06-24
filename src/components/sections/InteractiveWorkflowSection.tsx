@@ -215,7 +215,7 @@ export default function InteractiveWorkflowSection() {
                   <div className="z-10 w-full flex items-center justify-center overflow-hidden mb-3 md:mb-4">
                     <div className="w-full aspect-[1535/1024] rounded-[2rem] overflow-hidden border border-white/10 bg-[#040a15]/30 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)]">
                       <Image
-                        src="/scattered-communication-2.png"
+                        src="/scattered-communication.png"
                         alt="Scattered Communication"
                         width={1535}
                         height={1024}

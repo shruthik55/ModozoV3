@@ -3,10 +3,9 @@ import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/sections/HeroSection";
 import InteractiveWorkflowSection from "@/components/sections/InteractiveWorkflowSection";
 import PlatformShowcaseSection from "@/components/sections/PlatformShowcaseSection";
-import WorkflowSplit from "@/components/sections/WorkflowSplit";
-import VIPServiceSection from "@/components/sections/VIPServiceSection";
 import BeforeAfterSection from "@/components/sections/BeforeAfterSection";
 import HowModozoWorksSection from "@/components/sections/HowModozoWorksSection";
+import BusinessImpactSection from "@/components/sections/BusinessImpactSection";
 
 export default function Home() {
   return (
@@ -25,44 +24,11 @@ export default function Home() {
       {/* 4. Before vs After MODOZO (Dark) */}
       <BeforeAfterSection />
 
-      {/* 4. How Modozo Works (Dark) */}
+      {/* 5. How Modozo Works (Dark) */}
       <HowModozoWorksSection />
 
-      {/* 5. Workflow Block B: Improve Quality (Dark) */}
-      <WorkflowSplit
-        id="techpacks"
-        reverse
-        tag="AI-Powered Techpacks"
-        theme="dark"
-        // emoji="🪄"
-        title="Turn sketches into specs instantly"
-        subtitle="Stop wasting hours on manual data entry. Generate perfect, factory-ready technical packages in minutes to prevent manufacturing errors."
-        bullets={[
-          "AI extraction of POMs (Points of Measure) from sketches",
-          "Centralized Bill of Materials (BOM) management",
-          "Automated grading rules and measurement generation"
-        ]}
-        image="/photo33.png"
-      />
-
-      {/* 6. Workflow Block C: Better Visibility (Dark) */}
-      <WorkflowSplit
-        id="sourcing"
-        tag="Global Supply Chain Visibility"
-        theme="dark"
-        // emoji="🔎"
-        title="Lower costs and optimize sourcing"
-        subtitle="Modozo gives you complete visibility into your vendor network, resource allocation, and material costing across all collections."
-        bullets={[
-          "Compare vendor quotes and track material costs",
-          "Streamlined digital sample approvals and QC checks",
-          "Scale seamlessly across global manufacturing partners"
-        ]}
-        image="/phtot34.png"
-      />
-
-      {/* 8. VIP Service Section (Dark) */}
-      <VIPServiceSection />
+      {/* 6. Business Impact */}
+      <BusinessImpactSection />
 
       <Footer />
     </main>

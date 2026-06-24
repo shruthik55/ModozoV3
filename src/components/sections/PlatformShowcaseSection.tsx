@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import CentralizedCollaborationVisual from "./CentralizedCollaborationVisual";
 import VendorManagementVisual from "./VendorManagementVisual";
-import ProductionTrackingVisual from "./ProductionTrackingVisual";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                               */
@@ -122,7 +121,6 @@ export default function PlatformShowcaseSection() {
     // These features advance via their own subcycle complete callbacks, not a fixed timer
     if (
       feature.id === "centralized-collaboration" ||
-      feature.id === "production-tracking" ||
       feature.id === "sample-manager"
     ) {
       return;
@@ -143,11 +141,6 @@ export default function PlatformShowcaseSection() {
     setActiveIndex((prev) => (prev + 1) % features.length);
   }, [isAutoPlaying]);
 
-  // Called by ProductionTrackingVisual after all levels have been shown once
-  const handleProductionCycleComplete = useCallback(() => {
-    if (!isAutoPlaying) return;
-    setActiveIndex((prev) => (prev + 1) % features.length);
-  }, [isAutoPlaying]);
 
   // Called by VendorManagementVisual after all tabs have been shown once
   const handleVendorCycleComplete = useCallback(() => {
@@ -334,8 +327,15 @@ export default function PlatformShowcaseSection() {
                       <CentralizedCollaborationVisual onCycleComplete={handleCollabCycleComplete} />
                     </div>
                   ) : features[activeIndex].id === "production-tracking" ? (
-                    <div className="w-full">
-                      <ProductionTrackingVisual onCycleComplete={handleProductionCycleComplete} />
+                    <div className="w-full relative overflow-hidden rounded-2xl border border-white/10 bg-[#040a15]/40 backdrop-blur-md shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] h-auto md:h-[450px]">
+                      <Image
+                        alt="Real-time Production Tracking"
+                        src="/real2.png"
+                        fill
+                        className="object-contain rounded-2xl"
+                        unoptimized
+                        priority
+                      />
                     </div>
                   ) : features[activeIndex].id === "sample-manager" ? (
                     <div className="w-full">
