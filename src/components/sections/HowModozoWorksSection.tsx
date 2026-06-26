@@ -173,11 +173,11 @@ function ChapterNav({ activeStep }: { activeStep: number }) {
 /* ═══════════════════════════════════════════════════════
    SLIDESHOW CANVAS
    Continuously loops through the 5 garment-journey images.
-   Fade + slight scale transition per slide.
+   Fade + slight scale transition, 1 s per slide.
 ═══════════════════════════════════════════════════════ */
 function SlideshowCanvas({ activeStep }: { activeStep: number }) {
-  const stage = STAGES[activeStep - 1];
   const [currentIndex, setCurrentIndex] = useState(0);
+  const stage = STAGES[activeStep - 1];
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -189,13 +189,8 @@ function SlideshowCanvas({ activeStep }: { activeStep: number }) {
   const slide = SLIDESHOW_IMAGES[currentIndex];
 
   return (
-    <div
-      className="relative w-full h-full overflow-hidden rounded-2xl flex items-center justify-center"
-      style={{
-        background: "#040b17",
-        border: `1px solid ${stage.color}25`,
-      }}
-    >
+    <div className="relative w-full h-full overflow-hidden rounded-2xl" style={{ background: "#ede8df" }}>
+
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
@@ -224,6 +219,8 @@ function SlideshowCanvas({ activeStep }: { activeStep: number }) {
         MDZ-CJ-SS26
       </div>
 
+
+
       {/* Slide label — bottom left */}
       <motion.div
         key={`label-${currentIndex}`}
@@ -231,7 +228,7 @@ function SlideshowCanvas({ activeStep }: { activeStep: number }) {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.15 }}
         className="absolute bottom-4 left-4 z-20 font-mono text-[8px] font-bold uppercase tracking-[0.2em]"
-        style={{ color: "rgba(255,255,255,0.32)" }}
+        style={{ color: "rgba(0,0,0,0.32)" }}
       >
         {slide.label}
       </motion.div>
@@ -243,7 +240,7 @@ function SlideshowCanvas({ activeStep }: { activeStep: number }) {
             key={i}
             animate={{
               width: i === currentIndex ? 14 : 4,
-              backgroundColor: i === currentIndex ? stage.color : "rgba(255,255,255,0.18)",
+              backgroundColor: i === currentIndex ? stage.color : "rgba(0,0,0,0.18)",
             }}
             transition={{ duration: 0.3 }}
             className="h-[4px] rounded-full"

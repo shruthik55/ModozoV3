@@ -42,6 +42,10 @@ function Step1Left() {
       overflow: "hidden",
       opacity: loaded ? 1 : 0,
       transition: "opacity 0.5s ease-out",
+      maskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent), linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)",
+      WebkitMaskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent), linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)",
+      maskComposite: "intersect",
+      WebkitMaskComposite: "source-in",
     }}>
       <Image
         src="/coll.png"
@@ -52,8 +56,6 @@ function Step1Left() {
         priority
         onLoad={() => setLoaded(true)}
       />
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 10, background: "linear-gradient(to right, #091a36 0%, transparent 30%, transparent 70%, #091a36 100%)" }} />
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 10, background: "linear-gradient(to bottom, #091a36 0%, transparent 12%, transparent 88%, #091a36 100%)" }} />
     </div>
   );
 }
@@ -383,7 +385,7 @@ function AutomatedWorkflowVideo() {
 
 function Step2Left() {
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "transparent", overflow: "hidden" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "transparent", overflow: "hidden", maskImage: "linear-gradient(to right, transparent, black 22%, black 78%, transparent), linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)", WebkitMaskImage: "linear-gradient(to right, transparent, black 22%, black 78%, transparent), linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)", maskComposite: "intersect", WebkitMaskComposite: "source-in" }}>
       <Image
         src="/floww.png"
         alt="Automated workflow before Modozo"
@@ -391,15 +393,13 @@ function Step2Left() {
         sizes="(max-width: 768px) 100vw, 520px"
         style={{ objectFit: "contain" }}
       />
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 10, background: "linear-gradient(to right, #091a36 0%, transparent 30%, transparent 70%, #091a36 100%)" }} />
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 10, background: "linear-gradient(to bottom, #091a36 0%, transparent 12%, transparent 88%, #091a36 100%)" }} />
     </div>
   );
 }
 
 function Step3Left() {
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "transparent", overflow: "hidden" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "transparent", overflow: "hidden", maskImage: "linear-gradient(to right, transparent, black 22%, black 78%, transparent), linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)", WebkitMaskImage: "linear-gradient(to right, transparent, black 22%, black 78%, transparent), linear-gradient(to bottom, transparent, black 8%, black 92%, transparent)", maskComposite: "intersect", WebkitMaskComposite: "source-in" }}>
       <Image
         src="/cente.png"
         alt="Scattered communication before Modozo"
@@ -407,8 +407,6 @@ function Step3Left() {
         sizes="(max-width: 768px) 100vw, 520px"
         style={{ objectFit: "contain" }}
       />
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 10, background: "linear-gradient(to right, #091a36 0%, transparent 30%, transparent 70%, #091a36 100%)" }} />
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 10, background: "linear-gradient(to bottom, #091a36 0%, transparent 12%, transparent 88%, #091a36 100%)" }} />
     </div>
   );
 }
