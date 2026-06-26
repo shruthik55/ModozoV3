@@ -180,12 +180,16 @@ function ChapterNav({ activeStep }: { activeStep: number }) {
 
 /* ═══════════════════════════════════════════════════════
    GARMENT WIPE CANVAS
-   Sketch is the always-visible base layer (full width).
-   Photo clips in FROM THE RIGHT — the divider line starts
-   on the right side of the canvas and travels LEFT with a
-   spring animation as the production journey advances.
-   Right → Left = Design → Produced.
+   Loops through the 5 images for continuous visual evolution.
 ═══════════════════════════════════════════════════════ */
+const SLIDESHOW_IMAGES = [
+  "/linesheet.png",
+  "/pantone_color.png",
+  "/printstrike.png",
+  "/techpack.png",
+  "/sketch.png",
+];
+
 function GarmentCanvas({
   smoothClip,
   activeStep,
@@ -194,90 +198,51 @@ function GarmentCanvas({
   activeStep: number;
 }) {
   const stage = STAGES[activeStep - 1];
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  /*
-    smoothClip = % clipped from the LEFT of the photo layer.
-    High value (92) = photo shows only a sliver on the right  → Step 1
-    Low value  (4)  = photo fills almost everything           → Step 4
-    Divider sits at `smoothClip`% from the left edge.
-  */
-  const photoClipPath = useTransform(smoothClip, (v) => `inset(0 0 0 ${v}%)`);
-  const dividerLeft   = useTransform(smoothClip, (v) => `${v}%`);
-
-  /* "Design" label fades out as sketch loses dominance */
-  const designOpacity  = useTransform(smoothClip, [4, 70], [0.1, 0.55]);
-  /* "Produced" label fades in as photo takes over */
-  const producedOpacity = useTransform(smoothClip, [4, 50], [0.55, 0.05]);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % SLIDESHOW_IMAGES.length);
+    }, 1200); // 40% faster interval
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <div className="relative w-full h-full overflow-hidden rounded-2xl" style={{ background: "#ede8df" }}>
+    <div 
+      className="relative w-full h-full overflow-hidden rounded-2xl flex items-center justify-center" 
+      style={{ 
+        background: "#040b17", 
+        border: `1px solid ${stage.color}25`,
+      }}
+    >
+      {/* ── Slideshow Images (Pre-mounted to avoid loading flicker) ── */}
+      {SLIDESHOW_IMAGES.map((src, index) => {
+        const isActive = index === currentIndex;
 
-      {/* ── Sketch layer — always full width, base ── */}
-      <div className="absolute inset-0">
-        <Image
-          src="/showcase_sketch_coat.png"
-          alt="Coat — Design Sketch"
-          fill
-          className="object-contain"
-          style={{ padding: "8% 10%", mixBlendMode: "multiply" }}
-          priority
-        />
-      </div>
-
-      {/* ── Photo layer — clips from left, reveals RIGHT→LEFT as steps advance ── */}
-      <motion.div className="absolute inset-0" style={{ clipPath: photoClipPath }}>
-        {/* Inner div carries the parchment bg so photo padding areas match canvas */}
-        <div className="absolute inset-0" style={{ background: "#ede8df" }}>
-          <Image
-            src="/showcase_photo_coat.png"
-            alt="Coat — Produced"
-            fill
-            className="object-contain"
-            style={{ padding: "8% 10%" }}
-            priority
-          />
-        </div>
-      </motion.div>
-
-      {/* ── Spring-animated divider line ── */}
-      <motion.div
-        className="absolute top-0 bottom-0 pointer-events-none z-20"
-        style={{
-          left: dividerLeft,
-          width: "1.5px",
-          background: `linear-gradient(180deg, transparent 4%, ${stage.color}cc 16%, ${stage.color} 50%, ${stage.color}cc 84%, transparent 96%)`,
-        }}
-      >
-        {/* Arrow-handle at midpoint */}
-        <div
-          className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-[22px] h-[22px] rounded-full flex items-center justify-center shadow-lg"
-          style={{ background: "white", border: `2px solid ${stage.color}` }}
-        >
-          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-            <path d="M1 4H9M9 4L6.5 1.5M9 4L6.5 6.5" stroke={stage.color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
-      </motion.div>
-
-      {/* ── "Design" label — left zone ── */}
-      <motion.div
-        className="absolute bottom-4 left-4 pointer-events-none z-10"
-        style={{ opacity: designOpacity }}
-      >
-        <span className="font-mono text-[8px] font-bold text-slate-500 uppercase tracking-[0.22em]">
-          Design
-        </span>
-      </motion.div>
-
-      {/* ── "Produced" label — right zone ── */}
-      <motion.div
-        className="absolute bottom-4 right-4 pointer-events-none z-10"
-        style={{ opacity: producedOpacity }}
-      >
-        <span className="font-mono text-[8px] font-bold text-slate-500 uppercase tracking-[0.22em]">
-          Produced
-        </span>
-      </motion.div>
+        return (
+          <motion.div
+            key={src}
+            initial={false}
+            animate={{
+              opacity: isActive ? 1 : 0,
+              scale: isActive ? 1 : 0.98,
+              zIndex: isActive ? 10 : 0
+            }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ pointerEvents: isActive ? "auto" : "none" }}
+          >
+            <Image
+              src={src}
+              alt={`Slide ${index}`}
+              fill
+              className="object-contain"
+              style={{ padding: "8% 10%" }}
+              priority
+            />
+          </motion.div>
+        );
+      })}
 
       {/* ── Style ID chip ── */}
       <div
@@ -289,8 +254,8 @@ function GarmentCanvas({
 
       {/* ── Step indicator chip — top right ── */}
       <div
-        className="absolute top-4 right-4 z-20 font-mono text-[8px] font-bold px-2 py-0.5 rounded"
-        style={{ background: "rgba(0,0,0,0.1)", color: "rgba(0,0,0,0.38)" }}
+        className="absolute top-4 right-4 z-20 font-mono text-[8px] font-bold px-2 py-0.5 rounded backdrop-blur-md"
+        style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.08)" }}
       >
         STEP {STAGES[activeStep - 1].step}
       </div>
