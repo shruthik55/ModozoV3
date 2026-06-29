@@ -78,12 +78,12 @@ const STAGES = [
 
 /* ─── Slideshow images — garment journey in sequence ─── */
 const SLIDESHOW_IMAGES = [
-  { src: "/linesheets-1.png", label: "Line Sheet" },
-  { src: "/pantone-1.png", label: "Pantone Selection" },
-  { src: "/printtstrikee-1.png", label: "Print Strike" },
-  { src: "/techpack-1.png", label: "Tech Pack" },
-  { src: "/finalgarment-1.png", label: "Final Garment" },
-] as const;
+  { src: "/linesheet_4.png", label: "Line Sheet" },
+  { src: "/pantone_4.png", label: "Pantone Specs" },
+  { src: "/printstrike_4.png", label: "Print Strike-off" },
+  { src: "/techpack_4.png", label: "Tech Pack" },
+  { src: "/sketch_4.png", label: "Concept Sketch" },
+];
 
 /* ═══════════════════════════════════════════════════════
    CHAPTER NAV — thin horizontal step rail above content
@@ -175,26 +175,9 @@ function ChapterNav({ activeStep }: { activeStep: number }) {
    Continuously loops through the 5 garment-journey images.
    Fade + slight scale transition, 1 s per slide.
 ═══════════════════════════════════════════════════════ */
-<<<<<<< HEAD
-const SLIDESHOW_IMAGES = [
-  "/linesheet_4.png",
-  "/pantone_4.png",
-  "/printstrike_4.png",
-  "/techpack_4.png",
-  "/sketch_4.png",
-];
 
-function GarmentCanvas({
-  smoothClip,
-  activeStep,
-}: {
-  smoothClip: MotionValue<number>;
-  activeStep: number;
-}) {
-  const stage = STAGES[activeStep - 1];
-=======
+
 function SlideshowCanvas({ activeStep }: { activeStep: number }) {
->>>>>>> 4e2e0fdc8b57b730a306bcb2829eb3ada8882730
   const [currentIndex, setCurrentIndex] = useState(0);
   const stage = STAGES[activeStep - 1];
 
@@ -210,35 +193,6 @@ function SlideshowCanvas({ activeStep }: { activeStep: number }) {
   return (
     <div className="relative w-full h-full overflow-hidden rounded-2xl" style={{ background: "#ede8df" }}>
 
-<<<<<<< HEAD
-        return (
-          <motion.div
-            key={src}
-            initial={false}
-            animate={{
-              opacity: isActive ? 1 : 0,
-              scale: isActive ? 1 : 0.98,
-              zIndex: isActive ? 10 : 0
-            }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="absolute inset-0 flex items-center justify-center"
-            style={{ pointerEvents: isActive ? "auto" : "none" }}
-          >
-            <Image
-              src={src}
-              alt={`Slide ${index}`}
-              fill
-              className="object-contain"
-              quality={100}
-              unoptimized={true}
-              priority
-            />
-          </motion.div>
-        );
-      })}
-
-
-=======
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
@@ -253,22 +207,20 @@ function SlideshowCanvas({ activeStep }: { activeStep: number }) {
             alt={slide.label}
             fill
             className="object-contain"
-            style={{ padding: "6% 8%" }}
+            quality={100}
+            unoptimized={true}
             priority
           />
         </motion.div>
       </AnimatePresence>
 
-      {/* Style ID chip — top left */}
+      {/* ── Step indicator chip — top right ── */}
       <div
-        className="absolute top-4 left-4 z-20 font-mono text-[8px] font-bold px-2 py-0.5 rounded"
-        style={{ background: stage.color, color: "white" }}
+        className="absolute top-4 right-4 z-20 font-mono text-[8px] font-bold px-2 py-0.5 rounded backdrop-blur-md"
+        style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.08)" }}
       >
-        MDZ-CJ-SS26
+        STEP 0{currentIndex + 1}
       </div>
->>>>>>> 4e2e0fdc8b57b730a306bcb2829eb3ada8882730
-
-
 
       {/* Slide label — bottom left */}
       <motion.div
@@ -279,9 +231,6 @@ function SlideshowCanvas({ activeStep }: { activeStep: number }) {
         className="absolute bottom-4 left-4 z-20 font-mono text-[8px] font-bold uppercase tracking-[0.2em]"
         style={{ color: "rgba(0,0,0,0.32)" }}
       >
-<<<<<<< HEAD
-        STEP 0{currentIndex + 1}
-=======
         {slide.label}
       </motion.div>
 
@@ -298,7 +247,6 @@ function SlideshowCanvas({ activeStep }: { activeStep: number }) {
             className="h-[4px] rounded-full"
           />
         ))}
->>>>>>> 4e2e0fdc8b57b730a306bcb2829eb3ada8882730
       </div>
     </div>
   );
