@@ -183,11 +183,11 @@ function ChapterNav({ activeStep }: { activeStep: number }) {
    Loops through the 5 images for continuous visual evolution.
 ═══════════════════════════════════════════════════════ */
 const SLIDESHOW_IMAGES = [
-  "/linesheet.png",
-  "/pantone_color.png",
-  "/printstrike.png",
-  "/techpack.png",
-  "/sketch.png",
+  "/linesheet_4.png",
+  "/pantone_4.png",
+  "/printstrike_4.png",
+  "/techpack_4.png",
+  "/sketch_4.png",
 ];
 
 function GarmentCanvas({
@@ -237,27 +237,22 @@ function GarmentCanvas({
               alt={`Slide ${index}`}
               fill
               className="object-contain"
-              style={{ padding: "8% 10%" }}
+              quality={100}
+              unoptimized={true}
               priority
             />
           </motion.div>
         );
       })}
 
-      {/* ── Style ID chip ── */}
-      <div
-        className="absolute top-4 left-4 z-20 font-mono text-[8px] font-bold px-2 py-0.5 rounded"
-        style={{ background: stage.color, color: "white" }}
-      >
-        MDZ-CJ-SS26
-      </div>
+
 
       {/* ── Step indicator chip — top right ── */}
       <div
         className="absolute top-4 right-4 z-20 font-mono text-[8px] font-bold px-2 py-0.5 rounded backdrop-blur-md"
         style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.08)" }}
       >
-        STEP {STAGES[activeStep - 1].step}
+        STEP 0{currentIndex + 1}
       </div>
     </div>
   );
