@@ -5,11 +5,7 @@ import {
   motion,
   useScroll,
   useMotionValueEvent,
-  useSpring,
-  useMotionValue,
-  useTransform,
   AnimatePresence,
-  type MotionValue,
 } from "framer-motion";
 import Image from "next/image";
 import {
@@ -80,18 +76,14 @@ const STAGES = [
   },
 ] as const;
 
-/*
-  Wipe position = % clipped from the RIGHT of the sketch layer.
-  Step 1 → sketch covers ~88% (barely any photo visible — we're in design)
-  Step 4 → sketch covers ~4%  (almost entirely real product — dispatched)
-*/
-/*
-  WIPE_CLIP = % of the photo layer clipped from the LEFT.
-  Step 1 → 92% clipped from left  → photo visible only in right 8%  (almost all sketch)
-  Step 4 →  4% clipped from left  → photo visible in right 96%      (almost all photo)
-  The divider line sits at `value`% from the left, moving RIGHT → LEFT as steps advance.
-*/
-const WIPE_CLIP = [92, 58, 22, 4] as const;
+/* ─── Slideshow images — garment journey in sequence ─── */
+const SLIDESHOW_IMAGES = [
+  { src: "/linesheets-1.png", label: "Line Sheet" },
+  { src: "/pantone-1.png", label: "Pantone Selection" },
+  { src: "/printtstrikee-1.png", label: "Print Strike" },
+  { src: "/techpack-1.png", label: "Tech Pack" },
+  { src: "/finalgarment-1.png", label: "Final Garment" },
+] as const;
 
 /* ═══════════════════════════════════════════════════════
    CHAPTER NAV — thin horizontal step rail above content
@@ -113,8 +105,8 @@ function ChapterNav({ activeStep }: { activeStep: number }) {
                   backgroundColor: isActive
                     ? `${s.color}20`
                     : isDone
-                    ? "rgba(16,185,129,0.1)"
-                    : "rgba(255,255,255,0.04)",
+                      ? "rgba(16,185,129,0.1)"
+                      : "rgba(255,255,255,0.04)",
                   border: `1px solid ${isActive ? `${s.color}30` : isDone ? "rgba(16,185,129,0.2)" : "rgba(255,255,255,0.06)"}`,
                 }}
               >
@@ -179,9 +171,11 @@ function ChapterNav({ activeStep }: { activeStep: number }) {
 }
 
 /* ═══════════════════════════════════════════════════════
-   GARMENT WIPE CANVAS
-   Loops through the 5 images for continuous visual evolution.
+   SLIDESHOW CANVAS
+   Continuously loops through the 5 garment-journey images.
+   Fade + slight scale transition, 1 s per slide.
 ═══════════════════════════════════════════════════════ */
+<<<<<<< HEAD
 const SLIDESHOW_IMAGES = [
   "/linesheet_4.png",
   "/pantone_4.png",
@@ -198,27 +192,25 @@ function GarmentCanvas({
   activeStep: number;
 }) {
   const stage = STAGES[activeStep - 1];
+=======
+function SlideshowCanvas({ activeStep }: { activeStep: number }) {
+>>>>>>> 4e2e0fdc8b57b730a306bcb2829eb3ada8882730
   const [currentIndex, setCurrentIndex] = useState(0);
+  const stage = STAGES[activeStep - 1];
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    const id = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % SLIDESHOW_IMAGES.length);
-    }, 1200); // 40% faster interval
-    return () => clearInterval(timer);
+    }, 2650);
+    return () => clearInterval(id);
   }, []);
 
-  return (
-    <div 
-      className="relative w-full h-full overflow-hidden rounded-2xl flex items-center justify-center" 
-      style={{ 
-        background: "#040b17", 
-        border: `1px solid ${stage.color}25`,
-      }}
-    >
-      {/* ── Slideshow Images (Pre-mounted to avoid loading flicker) ── */}
-      {SLIDESHOW_IMAGES.map((src, index) => {
-        const isActive = index === currentIndex;
+  const slide = SLIDESHOW_IMAGES[currentIndex];
 
+  return (
+    <div className="relative w-full h-full overflow-hidden rounded-2xl" style={{ background: "#ede8df" }}>
+
+<<<<<<< HEAD
         return (
           <motion.div
             key={src}
@@ -246,13 +238,67 @@ function GarmentCanvas({
       })}
 
 
+=======
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0, scale: 1.04 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.96 }}
+          transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+          className="absolute inset-0"
+        >
+          <Image
+            src={slide.src}
+            alt={slide.label}
+            fill
+            className="object-contain"
+            style={{ padding: "6% 8%" }}
+            priority
+          />
+        </motion.div>
+      </AnimatePresence>
 
-      {/* ── Step indicator chip — top right ── */}
+      {/* Style ID chip — top left */}
       <div
-        className="absolute top-4 right-4 z-20 font-mono text-[8px] font-bold px-2 py-0.5 rounded backdrop-blur-md"
-        style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.08)" }}
+        className="absolute top-4 left-4 z-20 font-mono text-[8px] font-bold px-2 py-0.5 rounded"
+        style={{ background: stage.color, color: "white" }}
       >
+        MDZ-CJ-SS26
+      </div>
+>>>>>>> 4e2e0fdc8b57b730a306bcb2829eb3ada8882730
+
+
+
+      {/* Slide label — bottom left */}
+      <motion.div
+        key={`label-${currentIndex}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.15 }}
+        className="absolute bottom-4 left-4 z-20 font-mono text-[8px] font-bold uppercase tracking-[0.2em]"
+        style={{ color: "rgba(0,0,0,0.32)" }}
+      >
+<<<<<<< HEAD
         STEP 0{currentIndex + 1}
+=======
+        {slide.label}
+      </motion.div>
+
+      {/* Progress dots — bottom right */}
+      <div className="absolute bottom-4 right-4 z-20 flex items-center gap-1">
+        {SLIDESHOW_IMAGES.map((_, i) => (
+          <motion.div
+            key={i}
+            animate={{
+              width: i === currentIndex ? 14 : 4,
+              backgroundColor: i === currentIndex ? stage.color : "rgba(0,0,0,0.18)",
+            }}
+            transition={{ duration: 0.3 }}
+            className="h-[4px] rounded-full"
+          />
+        ))}
+>>>>>>> 4e2e0fdc8b57b730a306bcb2829eb3ada8882730
       </div>
     </div>
   );
@@ -263,7 +309,7 @@ function GarmentCanvas({
 ═══════════════════════════════════════════════════════ */
 const staggerItem = (i: number) => ({
   hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.38, delay: i * 0.07, ease: [0.4, 0, 0.2, 1] as [number,number,number,number] } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.38, delay: i * 0.07, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] } },
 });
 
 function StepDetailPanel({ stage }: { stage: (typeof STAGES)[number] }) {
@@ -335,11 +381,11 @@ function StepDetailPanel({ stage }: { stage: (typeof STAGES)[number] }) {
               <span>Measurement</span><span className="text-center">Value</span><span className="text-right">Tolerance</span>
             </div>
             {[
-              ["Chest Width","52.0 cm","±0.5 cm"],
-              ["Body Length","68.0 cm","±1.0 cm"],
-              ["Sleeve Length","63.0 cm","±0.5 cm"],
-              ["Shoulder Width","42.0 cm","±0.5 cm"],
-            ].map(([l,v,t]) => (
+              ["Chest Width", "52.0 cm", "±0.5 cm"],
+              ["Body Length", "68.0 cm", "±1.0 cm"],
+              ["Sleeve Length", "63.0 cm", "±0.5 cm"],
+              ["Shoulder Width", "42.0 cm", "±0.5 cm"],
+            ].map(([l, v, t]) => (
               <div key={l} className="grid grid-cols-3 py-1 border-b text-[10px]" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
                 <span className="text-slate-400">{l}</span>
                 <span className="text-center text-white font-bold">{v}</span>
@@ -403,7 +449,7 @@ function StepDetailPanel({ stage }: { stage: (typeof STAGES)[number] }) {
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: "60%" }}
-                transition={{ duration: 1, delay: 0.4, ease: [0.4,0,0.2,1] }}
+                transition={{ duration: 1, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
                 className="h-full rounded-full"
                 style={{ backgroundColor: stage.color }}
               />
@@ -482,7 +528,7 @@ function StepDetailPanel({ stage }: { stage: (typeof STAGES)[number] }) {
               ))}
             </div>
             <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-              {[{ l: "Dispatch", v: "On Track", c: "#10B981" },{ l: "Cycle Time", v: "4 days", c: "white" }].map((k) => (
+              {[{ l: "Dispatch", v: "On Track", c: "#10B981" }, { l: "Cycle Time", v: "4 days", c: "white" }].map((k) => (
                 <div key={k.l} className="rounded-lg p-1.5 text-center" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}>
                   <div className="font-mono text-[6.5px] text-slate-600 uppercase tracking-wider">{k.l}</div>
                   <div className="font-bold text-[10px] font-mono" style={{ color: k.c }}>{k.v}</div>
@@ -505,10 +551,6 @@ export default function HowModozoWorksSection() {
   const [activeStep, setActiveStep] = useState(1);
   const prevStepRef = useRef(1);
 
-  /* Spring-animated wipe position */
-  const rawClip = useMotionValue<number>(WIPE_CLIP[0]);
-  const smoothClip = useSpring(rawClip, { stiffness: 42, damping: 18 });
-
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
@@ -526,11 +568,6 @@ export default function HowModozoWorksSection() {
       setActiveStep(next);
     }
   });
-
-  /* Sync spring target whenever step changes */
-  useEffect(() => {
-    rawClip.set(WIPE_CLIP[activeStep - 1]);
-  }, [activeStep, rawClip]);
 
   const stage = STAGES[activeStep - 1];
 
@@ -589,9 +626,9 @@ export default function HowModozoWorksSection() {
         {/* ══ Main content: garment canvas (left) + step detail (right) ══ */}
         <div className="flex-1 flex gap-4 min-h-0 overflow-hidden">
 
-          {/* Garment wipe canvas */}
+          {/* Garment journey slideshow */}
           <div className="w-[42%] min-w-[280px] shrink-0">
-            <GarmentCanvas smoothClip={smoothClip} activeStep={activeStep} />
+            <SlideshowCanvas activeStep={activeStep} />
           </div>
 
           {/* Step detail panel with clip-reveal transition */}
@@ -631,8 +668,8 @@ export default function HowModozoWorksSection() {
                     activeStep === s.id
                       ? s.color
                       : activeStep > s.id
-                      ? "#10B981"
-                      : "rgba(255,255,255,0.1)",
+                        ? "#10B981"
+                        : "rgba(255,255,255,0.1)",
                 }}
                 transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
               />
@@ -641,7 +678,7 @@ export default function HowModozoWorksSection() {
 
           {/* Sketch/Produced label */}
           <div className="flex items-center gap-1.5 font-mono text-[8px] text-white/15 tracking-widest uppercase">
-            <span>Sketch → Produced</span>
+            <span>Concept → Garment</span>
             <span style={{ color: `${stage.color}50` }}>{stage.step} / 04</span>
           </div>
         </div>
