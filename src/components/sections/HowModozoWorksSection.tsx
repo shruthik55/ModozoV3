@@ -14,6 +14,10 @@ import {
   ClipboardCheck,
   BarChart3,
   Check,
+  CheckCircle2,
+  UserPlus,
+  Image as ImageIcon,
+  LayoutDashboard,
 } from "lucide-react";
 
 /* ─── Stage definitions ─── */
@@ -80,8 +84,8 @@ const STAGES = [
 const SLIDESHOW_IMAGES = [
   { src: "/linesheet_4.png", label: "Line Sheet" },
   { src: "/pantone_4.png", label: "Pantone Specs" },
-  { src: "/printstrike_4.png", label: "Print Strike-off" },
   { src: "/techpack_4.png", label: "Tech Pack" },
+  { src: "/print_strike_4.png", label: "Print Strike-off" },
   { src: "/sketch_4.png", label: "Concept Sketch" },
 ];
 
@@ -119,7 +123,7 @@ function ChapterNav({ activeStep }: { activeStep: number }) {
               {/* Step number */}
               <span
                 className="font-mono text-[10px] font-black"
-                style={{ color: isActive ? s.color : isDone ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.1)" }}
+                style={{ color: isActive ? s.color : isDone ? "#475569" : "#334155" }}
               >
                 {s.step}
               </span>
@@ -207,7 +211,6 @@ function SlideshowCanvas({ activeStep }: { activeStep: number }) {
             alt={slide.label}
             fill
             className="object-contain"
-            quality={100}
             unoptimized={true}
             priority
           />
@@ -217,7 +220,7 @@ function SlideshowCanvas({ activeStep }: { activeStep: number }) {
       {/* ── Step indicator chip — top right ── */}
       <div
         className="absolute top-4 right-4 z-20 font-mono text-[8px] font-bold px-2 py-0.5 rounded backdrop-blur-md"
-        style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.08)" }}
+        style={{ background: "rgba(255,255,255,0.06)", color: "#334155", border: "1px solid rgba(255,255,255,0.08)" }}
       >
         STEP 0{currentIndex + 1}
       </div>
@@ -253,8 +256,1124 @@ function SlideshowCanvas({ activeStep }: { activeStep: number }) {
 }
 
 /* ═══════════════════════════════════════════════════════
+   COLLABORATION CANVAS — Step 2 Animation
+═══════════════════════════════════════════════════════ */
+const COLLAB_STAKEHOLDERS = [
+  {
+    role: "Designer",
+    avatar: "/avatars/design.png",
+    msg: "Tech Pack ready for review.",
+    icon: <FileText size={12} className="text-[#0F62FE]" />,
+  },
+  {
+    role: "Brand Manager",
+    avatar: "/avatars/brand.png",
+    msg: "Approved. Please proceed with sourcing.",
+    icon: <CheckCircle2 size={12} className="text-[#10B981]" />,
+  },
+  {
+    role: "Sourcing Manager",
+    avatar: "/avatars/sourcing.png",
+    msg: "Vendor assigned. Sample request sent.",
+    icon: <UserPlus size={12} className="text-[#F59E0B]" />,
+  },
+  {
+    role: "Vendor",
+    avatar: "/avatars/vendor.png",
+    msg: "Sample uploaded.",
+    icon: <ImageIcon size={12} className="text-[#8B5CF6]" />,
+    progress: true,
+  },
+  {
+    role: "Tech Team",
+    avatar: "/avatars/qa.png",
+    msg: "QA Approved.",
+    icon: <LayoutDashboard size={12} className="text-[#10B981]" />,
+  }
+];
+
+function CollaborationCanvas() {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
+  const [workflowDone, setWorkflowDone] = useState(false);
+
+  useEffect(() => {
+    if (workflowDone) {
+      const t = setTimeout(() => {
+        setWorkflowDone(false);
+        setActiveIdx(0);
+        setIsTyping(true);
+      }, 1000);
+      return () => clearTimeout(t);
+    }
+
+    if (isTyping) {
+      const t = setTimeout(() => setIsTyping(false), 600);
+      return () => clearTimeout(t);
+    } else {
+      const t = setTimeout(() => {
+        if (activeIdx === COLLAB_STAKEHOLDERS.length - 1) {
+          setWorkflowDone(true);
+        } else {
+          setActiveIdx(s => s + 1);
+          setIsTyping(true);
+        }
+      }, 1400);
+      return () => clearTimeout(t);
+    }
+  }, [activeIdx, isTyping, workflowDone]);
+
+  return (
+    <div className="relative w-full h-full overflow-hidden rounded-2xl flex flex-col justify-center px-6 py-6" style={{ background: "#0a1120", border: "1px solid rgba(255,255,255,0.05)" }}>
+      {/* Workflow glowing background effect when done */}
+      <AnimatePresence>
+        {workflowDone && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 z-0 pointer-events-none"
+            style={{
+              background: "radial-gradient(circle at 50% 50%, rgba(16,185,129,0.15), transparent 70%)"
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      <div className="relative z-10 flex flex-col gap-3">
+        {COLLAB_STAKEHOLDERS.map((s, i) => {
+          const isActive = activeIdx === i && !workflowDone;
+          const isDone = activeIdx > i || workflowDone;
+          const isCurrentTyping = isActive && isTyping;
+          const isCurrentMsg = isActive && !isTyping;
+
+          return (
+            <div key={s.role} className="relative">
+              {/* Connection Line */}
+              {i < COLLAB_STAKEHOLDERS.length - 1 && (
+                <div className="absolute left-5 top-10 bottom-[-12px] w-[2px] z-0" style={{ background: "rgba(255,255,255,0.05)" }}>
+                  <motion.div
+                    className="w-full origin-top"
+                    initial={{ scaleY: 0 }}
+                    animate={{ scaleY: isDone ? 1 : 0 }}
+                    transition={{ duration: 0.5 }}
+                    style={{ height: "100%", background: "#10B981" }}
+                  />
+                </div>
+              )}
+
+              <motion.div
+                animate={{
+                  opacity: isActive || isDone ? 1 : 0.4,
+                  scale: isActive ? 1.02 : 1,
+                  y: isActive ? -2 : 0,
+                }}
+                transition={{ duration: 0.3 }}
+                className="relative z-10 flex items-start gap-3 p-2.5 rounded-xl backdrop-blur-md"
+                style={{
+                  background: isActive ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.02)",
+                  border: isActive ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(255,255,255,0.04)",
+                  boxShadow: isActive ? "0 4px 20px rgba(0,0,0,0.2)" : "none",
+                }}
+              >
+                {/* Avatar */}
+                <div className="relative shrink-0">
+                  <img src={s.avatar} alt={s.role} className="w-10 h-10 rounded-full object-cover border border-white/10" />
+                  {/* Status Indicator */}
+                  <div
+                    className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-[#0a1120]"
+                    style={{ background: isActive || isDone ? "#10B981" : "#475569" }}
+                  />
+                  {isActive && (
+                    <motion.div
+                      className="absolute inset-0 rounded-full border border-white/20"
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    />
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0 pt-0.5">
+                  <div className="flex justify-between items-center mb-0.5">
+                    <h4 className="text-[11px] font-bold text-white tracking-wide">{s.role}</h4>
+                    {(isActive || isDone) && (
+                      <span className="text-[8px] text-emerald-400 font-mono tracking-wider uppercase">Online</span>
+                    )}
+                  </div>
+
+                  <div className="h-[16px] flex items-center">
+                    <AnimatePresence mode="wait">
+                      {isCurrentTyping ? (
+                        <motion.div
+                          key="typing"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="flex gap-1 items-center"
+                        >
+                          <motion.div animate={{ y: [0, -2, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0 }} className="w-1 h-1 bg-slate-400 rounded-full" />
+                          <motion.div animate={{ y: [0, -2, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }} className="w-1 h-1 bg-slate-400 rounded-full" />
+                          <motion.div animate={{ y: [0, -2, 0] }} transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }} className="w-1 h-1 bg-slate-400 rounded-full" />
+                        </motion.div>
+                      ) : (isCurrentMsg || isDone) ? (
+                        <motion.div
+                          key="msg"
+                          initial={{ opacity: 0, y: 4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="flex items-center gap-1.5"
+                        >
+                          <span className="text-[10px] text-slate-300 leading-tight">{s.msg}</span>
+                          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2 }}>
+                            {s.icon}
+                          </motion.div>
+                        </motion.div>
+                      ) : null}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Progress Bar for Vendor */}
+                  {s.progress && (
+                    <div className="mt-2 h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                      {(isCurrentMsg || isDone) && (
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: "100%" }}
+                          transition={{ duration: isDone ? 0 : 0.8 }}
+                          className="h-full bg-emerald-400"
+                        />
+                      )}
+                    </div>
+                  )}
+
+                </div>
+              </motion.div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
    STEP DETAIL PANEL — right side, unique per step
 ═══════════════════════════════════════════════════════ */
+function ProductionJourneyPanel({ stage }: { stage: any }) {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [notification, setNotification] = useState<string | null>(null);
+  const [progressVal, setProgressVal] = useState(0);
+
+  const STAGES_LIST = [
+    "Sample Development",
+    "Sample Approval",
+    "Production Started",
+    "Inspection",
+    "Final Dispatch"
+  ];
+
+  const NOTIFS = [
+    "Fabric Cut",
+    "✓ Sample Approved",
+    "Production Started",
+    "Inspection Scheduled",
+    "Dispatch Ready"
+  ];
+
+  useEffect(() => {
+    let currentIdx = 0;
+    const interval = setInterval(() => {
+      currentIdx = (currentIdx + 1) % STAGES_LIST.length;
+      setActiveIdx(currentIdx);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const targetProgress = Math.round((activeIdx / (STAGES_LIST.length - 1)) * 100);
+    const prevTarget = activeIdx === 0 ? 0 : Math.round(((activeIdx - 1) / (STAGES_LIST.length - 1)) * 100);
+    const diff = targetProgress - prevTarget;
+
+    if (diff === 0) {
+      setProgressVal(targetProgress);
+    } else {
+      const steps = 20;
+      const stepTime = 1000 / steps;
+      let currentStep = 0;
+
+      const t = setInterval(() => {
+        currentStep++;
+        setProgressVal(Math.round(prevTarget + (diff * (currentStep / steps))));
+        if (currentStep >= steps) {
+          clearInterval(t);
+          setProgressVal(targetProgress);
+        }
+      }, stepTime);
+      return () => clearInterval(t);
+    }
+  }, [activeIdx]);
+
+  useEffect(() => {
+    setNotification(NOTIFS[activeIdx]);
+    const nt = setTimeout(() => setNotification(null), 2500);
+    return () => clearTimeout(nt);
+  }, [activeIdx]);
+
+  return (
+    <div className="rounded-xl border bg-white/[0.03] p-3.5 h-full flex flex-col relative overflow-hidden" style={{ borderColor: `${stage.color}18` }}>
+
+      {/* Jacket Hero Area */}
+      <div className="relative z-10 w-full flex justify-center mb-3 h-[20%] shrink-0">
+        <motion.div
+          animate={{ rotateY: 360 }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+          className="h-full relative"
+          style={{ aspectRatio: "1/1", transformStyle: "preserve-3d" }}
+        >
+          <img
+            src="/blue_jacket.png"
+            alt="Hero Garment"
+            className="h-full w-full object-contain"
+            style={{
+              filter: activeIdx === 0 ? "grayscale(80%) drop-shadow(0 0 4px rgba(255,255,255,0.2))" :
+                activeIdx === 4 ? "drop-shadow(0 0 12px rgba(16,185,129,0.5))" :
+                  "drop-shadow(0 8px 12px rgba(0,0,0,0.5))"
+            }}
+          />
+          {/* Inspection scanning line */}
+          {activeIdx === 3 && (
+            <motion.div
+              initial={{ top: "0%" }}
+              animate={{ top: "100%" }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+              className="absolute left-0 right-0 h-[2px] bg-emerald-400 shadow-[0_0_8px_#10B981] z-20"
+            />
+          )}
+          {/* Shipping tag */}
+          <AnimatePresence>
+            {activeIdx === 4 && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute top-2 right-2 w-3 h-5 bg-amber-100 rounded-sm shadow-md border border-amber-300 z-20 origin-top flex items-center justify-center"
+              >
+                <div className="w-1 h-1 rounded-full bg-amber-600/50 absolute top-0.5" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Floating Notifications */}
+        <AnimatePresence>
+          {notification && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-md px-2 py-1 rounded text-[8px] text-white border border-white/20 whitespace-nowrap z-30 shadow-xl"
+            >
+              {notification}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="flex items-center justify-between pb-2 mb-2 border-b" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+        <span className="font-mono text-[9px] font-bold text-white">TNA Milestones</span>
+        <span className="font-mono text-[9px] font-bold px-2 py-0.5 rounded" style={{ color: stage.color, backgroundColor: `${stage.color}15`, border: `1px solid ${stage.color}25` }}>
+          {progressVal}% Complete
+        </span>
+      </div>
+
+      {/* Vertical Timeline */}
+      <div className="relative flex-1 min-h-0 flex flex-col justify-around pl-1 pb-1">
+        {/* Glowing connected line track */}
+        <div className="absolute left-[13px] top-4 bottom-4 w-[2px] bg-white/5 z-0 overflow-hidden rounded-full">
+          <motion.div
+            className="w-full shadow-[0_0_8px_#10B981]"
+            initial={{ height: "0%", top: "0%" }}
+            animate={{ height: "20%", top: `${(activeIdx / 4) * 80}%` }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            style={{ position: "absolute", backgroundColor: stage.color }}
+          />
+        </div>
+
+        {STAGES_LIST.map((s, i) => {
+          const isDone = i < activeIdx;
+          const isCur = i === activeIdx;
+
+          return (
+            <div key={s} className="relative z-10 flex items-center gap-3">
+              <div
+                className="w-5 h-5 rounded-full border flex items-center justify-center shrink-0"
+                style={{
+                  backgroundColor: isDone ? "#10B981" : isCur ? "rgba(239,68,68,0.2)" : "rgba(255,255,255,0.04)",
+                  borderColor: isDone ? "#10B981" : isCur ? "#EF4444" : "rgba(255,255,255,0.1)",
+                  boxShadow: isCur ? "0 0 10px rgba(239,68,68,0.3)" : "none",
+                  zIndex: 20
+                }}
+              >
+                {isDone && <Check size={10} className="text-white" />}
+                {isCur && <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.5, repeat: Infinity }} className="w-1.5 h-1.5 rounded-full bg-red-500" />}
+              </div>
+              <span
+                className="flex-1 text-[11px]"
+                style={{
+                  color: isDone ? "rgba(255,255,255,0.6)" : isCur ? "white" : "rgba(100,116,139,0.5)",
+                  fontWeight: isCur ? 700 : 400
+                }}
+              >
+                {s}
+              </span>
+              {isCur && (
+                <motion.span
+                  animate={{ opacity: [0.6, 1, 0.6] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="font-mono text-[7px] font-bold px-1.5 py-0.5 rounded uppercase text-red-400 bg-red-400/10 border border-red-400/20"
+                >
+                  ACTIVE
+                </motion.span>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  );
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   JACKET SVG — vector illustration with 3-D shading
+   Built from layered paths + gradients; no photograph.
+═══════════════════════════════════════════════════════ */
+function JacketSVG({ activeIdx }: { activeIdx: number }) {
+  const isEarly = activeIdx === 0;
+  const isDispatching = activeIdx === 4;
+
+  /* Stage-sensitive colour palette */
+  const c = {
+    litFace:   isEarly ? "#243a7c" : "#1e48bc",
+    litMid:    isEarly ? "#182e62" : "#153498",
+    shadowFace:isEarly ? "#0e1f4a" : "#0f2470",
+    shadowDeep:isEarly ? "#07102a" : "#080f44",
+    lapelLit:  isEarly ? "#2c4490" : "#2c5cd8",
+    lapelShad: isEarly ? "#0f1e50" : "#102472",
+    collar:    isEarly ? "#233886" : "#2050c8",
+    sleeveLit: isEarly ? "#1c3268" : "#1a42a8",
+    sleeveShad:isEarly ? "#0a1840" : "#0a1c5c",
+  };
+
+  return (
+    <svg
+      viewBox="0 0 200 252"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ width: "100%", height: "100%", display: "block", overflow: "visible" }}
+    >
+      <defs>
+        {/* Left body — lit from top-left */}
+        <linearGradient id="jlp" x1="5%" y1="0%" x2="95%" y2="100%">
+          <stop offset="0%"   stopColor={c.litFace} />
+          <stop offset="55%"  stopColor={c.litMid} />
+          <stop offset="100%" stopColor={c.shadowFace} />
+        </linearGradient>
+        {/* Right body — shadow side */}
+        <linearGradient id="jrp" x1="95%" y1="0%" x2="5%" y2="100%">
+          <stop offset="0%"   stopColor={c.shadowFace} />
+          <stop offset="100%" stopColor={c.shadowDeep} />
+        </linearGradient>
+        {/* Left sleeve */}
+        <linearGradient id="jls" x1="0%" y1="0%" x2="90%" y2="100%">
+          <stop offset="0%"   stopColor={c.sleeveLit} />
+          <stop offset="100%" stopColor={c.shadowFace} />
+        </linearGradient>
+        {/* Right sleeve */}
+        <linearGradient id="jrs" x1="100%" y1="0%" x2="10%" y2="100%">
+          <stop offset="0%"   stopColor={c.shadowFace} />
+          <stop offset="100%" stopColor={c.sleeveShad} />
+        </linearGradient>
+        {/* Left lapel (brightest — faces viewer + light) */}
+        <linearGradient id="jll" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stopColor={c.lapelLit} />
+          <stop offset="100%" stopColor={c.litMid} />
+        </linearGradient>
+        {/* Right lapel */}
+        <linearGradient id="jrl" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   stopColor={c.lapelShad} />
+          <stop offset="100%" stopColor={c.shadowDeep} />
+        </linearGradient>
+        {/* Collar */}
+        <linearGradient id="jco" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stopColor={c.collar} />
+          <stop offset="100%" stopColor={c.litMid} />
+        </linearGradient>
+        {/* Fabric sheen — vertical fade overlay on lit panel */}
+        <linearGradient id="jsh" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   stopColor="rgba(255,255,255,0.13)" />
+          <stop offset="42%"  stopColor="rgba(255,255,255,0.04)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+        </linearGradient>
+        {/* Drop shadow filter */}
+        <filter id="jsf" x="-25%" y="-15%" width="150%" height="150%">
+          <feDropShadow dx="0" dy="10" stdDeviation="9" floodColor="rgba(0,0,0,0.80)" />
+        </filter>
+
+        {/* Dispatch green glow */}
+        {isDispatching && (
+          <filter id="jglow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="5" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        )}
+      </defs>
+
+      {/* ── LAYER 1: shadow group ── */}
+      <g filter="url(#jsf)">
+
+        {/* LEFT SLEEVE */}
+        <path
+          d="M73,66 L27,76 L7,156 L23,168 L39,162 L55,104 L73,82 Z"
+          fill="url(#jls)"
+          stroke="rgba(255,255,255,0.06)" strokeWidth="0.5"
+        />
+        {/* left cuff band */}
+        <path d="M7,156 L23,168 L39,162" fill="none"
+          stroke="rgba(255,255,255,0.18)" strokeWidth="1.6" />
+        {/* left sleeve highlight seam */}
+        <path d="M27,76 L55,104" fill="none"
+          stroke="rgba(255,255,255,0.09)" strokeWidth="0.7" />
+
+        {/* RIGHT SLEEVE */}
+        <path
+          d="M127,66 L173,76 L193,156 L177,168 L161,162 L145,104 L127,82 Z"
+          fill="url(#jrs)"
+          stroke="rgba(0,0,0,0.28)" strokeWidth="0.5"
+        />
+        {/* right cuff band */}
+        <path d="M193,156 L177,168 L161,162" fill="none"
+          stroke="rgba(255,255,255,0.08)" strokeWidth="1.6" />
+
+        {/* LEFT BODY PANEL */}
+        <path
+          d="M100,66 L73,66 L55,104 L46,240 L100,240 Z"
+          fill="url(#jlp)"
+          stroke="rgba(255,255,255,0.07)" strokeWidth="0.5"
+        />
+
+        {/* RIGHT BODY PANEL */}
+        <path
+          d="M100,66 L127,66 L145,104 L154,240 L100,240 Z"
+          fill="url(#jrp)"
+          stroke="rgba(0,0,0,0.28)" strokeWidth="0.5"
+        />
+
+        {/* LEFT LAPEL */}
+        <path
+          d="M73,66 L82,56 L98,48 L100,64 L100,66 Z"
+          fill="url(#jll)"
+          stroke="rgba(255,255,255,0.11)" strokeWidth="0.5"
+        />
+
+        {/* RIGHT LAPEL */}
+        <path
+          d="M127,66 L118,56 L102,48 L100,64 L100,66 Z"
+          fill="url(#jrl)"
+          stroke="rgba(0,0,0,0.22)" strokeWidth="0.5"
+        />
+
+        {/* COLLAR */}
+        <path
+          d="M82,56 L100,46 L118,56 L100,66 Z"
+          fill="url(#jco)"
+          stroke="rgba(255,255,255,0.14)" strokeWidth="0.6"
+        />
+      </g>
+
+      {/* ── LAYER 2: surface details ── */}
+
+      {/* Gorge notch lines (where collar meets lapel) */}
+      <line x1="82" y1="56" x2="73" y2="66"
+        stroke="rgba(255,255,255,0.20)" strokeWidth="0.8" />
+      <line x1="118" y1="56" x2="127" y2="66"
+        stroke="rgba(0,0,0,0.45)" strokeWidth="0.8" />
+
+      {/* Shoulder seams */}
+      <path d="M27,76 L73,66" fill="none"
+        stroke="rgba(255,255,255,0.12)" strokeWidth="0.7" />
+      <path d="M173,76 L127,66" fill="none"
+        stroke="rgba(0,0,0,0.38)" strokeWidth="0.7" />
+
+      {/* Centre-front crease / shadow */}
+      <line x1="100" y1="66" x2="100" y2="240"
+        stroke="rgba(0,0,0,0.42)" strokeWidth="1.2" />
+
+      {/* Left side-seam highlight */}
+      <path d="M55,104 L46,240" fill="none"
+        stroke="rgba(255,255,255,0.08)" strokeWidth="0.7" />
+
+      {/* Chest welt pocket */}
+      <rect x="60" y="116" width="21" height="12" rx="2"
+        fill="none" stroke="rgba(255,255,255,0.20)" strokeWidth="0.9" />
+      <line x1="60" y1="120" x2="81" y2="120"
+        stroke="rgba(255,255,255,0.10)" strokeWidth="0.6" />
+
+      {/* Buttons */}
+      {[142, 166, 190, 214].map((y) => (
+        <g key={y}>
+          <circle cx="100" cy={y} r="3.5"
+            fill={c.litMid} stroke="rgba(255,255,255,0.26)" strokeWidth="0.9" />
+          <circle cx="100" cy={y} r="1.2"
+            fill="rgba(255,255,255,0.10)" />
+        </g>
+      ))}
+
+      {/* Right hip welt pocket */}
+      <rect x="122" y="178" width="26" height="6" rx="2"
+        fill="none" stroke="rgba(255,255,255,0.11)" strokeWidth="0.7" />
+
+      {/* Fabric sheen overlay on lit panel */}
+      <path
+        d="M73,66 L55,104 L46,240 L100,240 L100,66 Z"
+        fill="url(#jsh)"
+      />
+
+      {/* ── STAGE EFFECTS ── */}
+
+      {/* Dispatch glow tint */}
+      {isDispatching && (
+        <path
+          d="M73,66 L55,104 L46,240 L100,240 L100,66 Z"
+          fill="rgba(16,185,129,0.07)"
+        />
+      )}
+
+      {/* Shipping tag */}
+      {isDispatching && (
+        <g>
+          <rect x="120" y="48" width="14" height="20" rx="2"
+            fill="#fef3c7" stroke="#fbbf24" strokeWidth="0.9" />
+          <circle cx="127" cy="52" r="2" fill="rgba(146,64,14,0.45)" />
+          <line x1="127" y1="50" x2="127" y2="46"
+            stroke="#92400e" strokeWidth="0.9" opacity="0.7" />
+          <line x1="122" y1="59" x2="134" y2="59"
+            stroke="#92400e" strokeWidth="0.5" opacity="0.4" />
+          <line x1="122" y1="63" x2="132" y2="63"
+            stroke="#92400e" strokeWidth="0.5" opacity="0.3" />
+        </g>
+      )}
+    </svg>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   GARMENT STAGE CANVAS — Step 3 Left-Panel Animation
+   Concept: the jacket itself transforms at each production
+   stage — grayscale sample → colour approval → batch
+   production → QC scan → dispatch. No lists, no grids.
+   The garment IS the story.
+═══════════════════════════════════════════════════════ */
+const GARMENT_STAGES = [
+  {
+    id: 0,
+    label: "Sample Created",
+    sub:   "Vendor stitched the first sample",
+    badge: "SAMPLE #1",
+    accent:"#94a3b8",
+  },
+  {
+    id: 1,
+    label: "Sample Approved",
+    sub:   "Buyer reviewed & signed off",
+    badge: "APPROVED",
+    accent:"#10B981",
+  },
+  {
+    id: 2,
+    label: "Production Started",
+    sub:   "500 units now on the factory floor",
+    badge: "IN PRODUCTION",
+    accent:"#EF4444",
+  },
+  {
+    id: 3,
+    label: "Quality Check",
+    sub:   "Inspector scanning the full batch",
+    badge: "QC ACTIVE",
+    accent:"#3B82F6",
+  },
+  {
+    id: 4,
+    label: "Ready to Ship",
+    sub:   "Packed & cleared for dispatch",
+    badge: "DISPATCHED",
+    accent:"#F59E0B",
+  },
+] as const;
+
+function TNATrackerCanvas({ stage: _stage }: { stage: any }) {
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setIdx((p) => (p + 1) % GARMENT_STAGES.length), 2800);
+    return () => clearInterval(id);
+  }, []);
+
+  const cur = GARMENT_STAGES[idx];
+
+  return (
+    <div
+      className="relative w-full h-full overflow-hidden rounded-2xl flex flex-col"
+      style={{ background: "transparent" }}
+    >
+      {/* Ambient glow — shifts with stage accent colour */}
+      <AnimatePresence>
+        <motion.div
+          key={cur.accent}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.7 }}
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `radial-gradient(ellipse 70% 60% at 50% 70%, ${cur.accent}18, transparent)`,
+          }}
+        />
+      </AnimatePresence>
+
+      {/* ── Top strip: style meta ── */}
+      <div className="relative z-10 flex items-center justify-between px-5 pt-4 pb-2 shrink-0">
+        <div>
+          <p className="font-mono text-[8px] text-slate-600 uppercase tracking-widest">
+            MDZ-SS26-001
+          </p>
+          <p className="text-[13px] font-black text-white leading-tight">Signature Jacket</p>
+          <p className="text-[10px] text-slate-500 mt-0.5">Vertex Apparel</p>
+        </div>
+
+        {/* Stage badge */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={cur.badge}
+            initial={{ opacity: 0, y: 6, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.9 }}
+            transition={{ duration: 0.3 }}
+            className="font-mono text-[8px] font-black uppercase px-2.5 py-1.5 rounded-lg text-right"
+            style={{
+              color: cur.accent,
+              background: `${cur.accent}18`,
+              border: `1px solid ${cur.accent}40`,
+            }}
+          >
+            {cur.badge}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* ── Garment hero — fills the middle ── */}
+      <div className="relative z-10 flex-1 min-h-0 flex items-center justify-center px-2">
+        <div className="relative flex items-center justify-center w-full h-full">
+          {/* Jacket photo — stage-sensitive filter, overlays positioned on top */}
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0.4, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+            className="relative flex items-center justify-center w-full h-full"
+          >
+            <motion.img
+              src="/jacket-nobg.png"
+              alt="Signature Jacket"
+              animate={{
+                filter:
+                  idx === 0
+                    ? "grayscale(75%) brightness(0.65)"
+                    : "grayscale(0%) brightness(1)",
+              }}
+              transition={{ duration: 0.6 }}
+              className="select-none pointer-events-none"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                display: "block",
+              }}
+            />
+
+            {/* ── Stage-specific overlays ── */}
+
+            {/* Stage 0 — SAMPLE: paper tag hanging off collar */}
+            {idx === 0 && (
+              <motion.div
+                initial={{ opacity: 0, rotate: -20, y: -10 }}
+                animate={{ opacity: 1, rotate: 10, y: 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 14 }}
+                className="absolute -top-1 right-[18%] z-30"
+              >
+                <div
+                  className="px-2 py-1 rounded-sm text-[8px] font-black text-amber-900 shadow-lg leading-tight"
+                  style={{
+                    background: "#fef3c7",
+                    border: "1px solid #fbbf24",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
+                  }}
+                >
+                  SAMPLE<br />#01
+                </div>
+                {/* tag string */}
+                <div className="w-px h-3 bg-amber-400/60 mx-auto" />
+              </motion.div>
+            )}
+
+            {/* Stage 1 — APPROVED: rubber stamp presses in */}
+            {idx === 1 && (
+              <motion.div
+                initial={{ scale: 2.5, opacity: 0, rotate: -20 }}
+                animate={{ scale: 1, opacity: 1, rotate: -15 }}
+                transition={{ type: "spring", stiffness: 280, damping: 20, delay: 0.1 }}
+                className="absolute top-[10%] right-[8%] z-30 w-16 h-16 rounded-full flex items-center justify-center"
+                style={{
+                  border: "3px solid #10B981",
+                  background: "rgba(16,185,129,0.12)",
+                  boxShadow: "0 0 20px rgba(16,185,129,0.35)",
+                }}
+              >
+                <div className="text-center">
+                  <Check size={18} className="text-emerald-400 mx-auto" strokeWidth={3} />
+                  <p className="font-mono text-[6px] font-black text-emerald-400 uppercase mt-0.5">
+                    Approved
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Stage 2 — PRODUCTION: ghost jacket silhouettes (simplified, no SVG ID conflict) */}
+            {idx === 2 && (
+              <>
+                {[-36, 36].map((tx, gi) => (
+                  <motion.div
+                    key={gi}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.14 }}
+                    transition={{ delay: gi * 0.18, duration: 0.5 }}
+                    className="absolute inset-0 pointer-events-none rounded-sm"
+                    style={{
+                      transform: `translateX(${tx}px) scale(0.86)`,
+                      background: "rgba(30,72,188,0.35)",
+                      clipPath:
+                        "polygon(30% 0%, 70% 0%, 100% 15%, 90% 100%, 10% 100%, 0% 15%)",
+                    }}
+                  />
+                ))}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="absolute bottom-[4%] left-1/2 -translate-x-1/2 font-mono text-[12px] font-black z-30 whitespace-nowrap"
+                  style={{ color: "#EF4444", textShadow: "0 0 12px rgba(239,68,68,0.6)" }}
+                >
+                  × 500 units
+                </motion.div>
+              </>
+            )}
+
+            {/* Stage 3 — QC SCAN: blue laser sweeps the garment */}
+            {idx === 3 && (
+              <>
+                <motion.div
+                  initial={{ top: "8%" }}
+                  animate={{ top: "88%" }}
+                  transition={{ duration: 1.8, repeat: Infinity, ease: "linear" }}
+                  className="absolute left-[5%] right-[5%] h-[3px] z-30 pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, transparent, #3B82F6, transparent)",
+                    boxShadow: "0 0 14px 2px rgba(59,130,246,0.7)",
+                  }}
+                />
+                {/* QC tick marks appearing on the jacket body */}
+                {[
+                  { top: "28%", left: "38%" },
+                  { top: "28%", left: "56%" },
+                  { top: "52%", left: "47%" },
+                ].map((pos, qi) => (
+                  <motion.div
+                    key={qi}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: qi * 0.6 + 0.4, type: "spring", stiffness: 400 }}
+                    className="absolute z-30 w-4 h-4 rounded-full flex items-center justify-center"
+                    style={{
+                      top: pos.top,
+                      left: pos.left,
+                      background: "rgba(59,130,246,0.25)",
+                      border: "1.5px solid #3B82F6",
+                    }}
+                  >
+                    <Check size={7} className="text-blue-400" strokeWidth={3} />
+                  </motion.div>
+                ))}
+              </>
+            )}
+
+            {/* Stage 4 — DISPATCHED: amber shipping tag */}
+            {idx === 4 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.6, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.15 }}
+                className="absolute bottom-[4%] left-1/2 -translate-x-1/2 z-30"
+              >
+                <div
+                  className="px-3 py-1.5 rounded-full font-black text-[9px] uppercase tracking-wider whitespace-nowrap"
+                  style={{
+                    background: "#F59E0B",
+                    color: "#78350f",
+                    boxShadow: "0 0 18px rgba(245,158,11,0.55)",
+                  }}
+                >
+                  Shipped ✦
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+        </div>
+      </div>
+
+      {/* ── Stage name + subtitle ── */}
+      <div className="relative z-10 px-5 pt-2 pb-2 shrink-0 text-center">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <h3
+              className="text-[19px] font-black leading-tight"
+              style={{ color: cur.accent }}
+            >
+              {cur.label}
+            </h3>
+            <p className="text-[11px] text-slate-400 mt-1">{cur.sub}</p>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* ── Progress dots ── */}
+      <div className="relative z-10 flex items-center justify-center gap-2 pb-4 shrink-0">
+        {GARMENT_STAGES.map((s, i) => (
+          <motion.div
+            key={i}
+            animate={{
+              width: i === idx ? 22 : 6,
+              backgroundColor:
+                i < idx
+                  ? "#10B981"
+                  : i === idx
+                  ? cur.accent
+                  : "rgba(255,255,255,0.12)",
+            }}
+            transition={{ duration: 0.35 }}
+            className="h-1.5 rounded-full"
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   PRODUCTION JOURNEY CANVAS — Step 3 Animation
+═══════════════════════════════════════════════════════ */
+function ProductionJourneyCanvas({ stage }: { stage: any }) {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [notification, setNotification] = useState<string | null>(null);
+  const [progressVal, setProgressVal] = useState(0);
+
+  const STAGES_LIST = [
+    "Sample Development",
+    "Sample Approval",
+    "Production Started",
+    "Inspection",
+    "Final Dispatch"
+  ];
+  
+  const NOTIFS = [
+    "Vendor Uploaded PPS",
+    "✓ Sample Approved",
+    "Production Started",
+    "QC Inspection Started",
+    "Dispatch Ready"
+  ];
+
+  useEffect(() => {
+    let currentIdx = 0;
+    const interval = setInterval(() => {
+      currentIdx = (currentIdx + 1) % STAGES_LIST.length;
+      setActiveIdx(currentIdx);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const targetProgress = Math.round((activeIdx / (STAGES_LIST.length - 1)) * 100);
+    const prevTarget = activeIdx === 0 ? 0 : Math.round(((activeIdx - 1) / (STAGES_LIST.length - 1)) * 100);
+    const diff = targetProgress - prevTarget;
+    
+    if (diff === 0) {
+      setProgressVal(targetProgress);
+    } else {
+      const steps = 20;
+      const stepTime = 1000 / steps;
+      let currentStep = 0;
+      
+      const t = setInterval(() => {
+        currentStep++;
+        setProgressVal(Math.round(prevTarget + (diff * (currentStep / steps))));
+        if (currentStep >= steps) {
+          clearInterval(t);
+          setProgressVal(targetProgress);
+        }
+      }, stepTime);
+      return () => clearInterval(t);
+    }
+  }, [activeIdx]);
+
+  useEffect(() => {
+    setNotification(NOTIFS[activeIdx]);
+    const nt = setTimeout(() => setNotification(null), 2500);
+    return () => clearTimeout(nt);
+  }, [activeIdx]);
+
+  return (
+    <div className="relative w-full h-full overflow-hidden rounded-2xl flex flex-col px-8 py-8" style={{ background: "#0a1120", border: "1px solid rgba(255,255,255,0.05)" }}>
+      
+      {/* Jacket Hero Area */}
+      <div
+        className="relative z-10 w-full flex justify-center items-end shrink-0 mb-4 mt-2"
+        style={{ perspective: "700px", height: "38%" }}
+      >
+        {/* Floor glow */}
+        <motion.div
+          animate={{ opacity: [0.45, 0.85, 0.45], scaleX: [1, 1.18, 1] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
+          style={{
+            width: "50%", height: 16, borderRadius: "50%",
+            background: activeIdx === 4
+              ? "radial-gradient(ellipse, rgba(16,185,129,0.5) 0%, transparent 70%)"
+              : "radial-gradient(ellipse, rgba(239,68,68,0.32) 0%, transparent 70%)",
+            filter: "blur(7px)",
+          }}
+        />
+
+        {/* Jacket wrapper — sway + float, perspective from parent */}
+        <motion.div
+          animate={{ rotateY: [-16, 16, -16], y: [0, -7, 0] }}
+          transition={{
+            rotateY: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+            y:       { duration: 3, repeat: Infinity, ease: "easeInOut" },
+          }}
+          className="relative h-full"
+          style={{ aspectRatio: "200/252", transformStyle: "preserve-3d" }}
+        >
+          {/* SVG jacket illustration */}
+          <JacketSVG activeIdx={activeIdx} />
+
+          {/* Inspection scanning line — sits on top of SVG */}
+          {activeIdx === 3 && (
+            <motion.div
+              initial={{ top: "8%" }}
+              animate={{ top: "90%" }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "linear" }}
+              className="absolute left-[10%] right-[10%] h-[2px] bg-emerald-400 shadow-[0_0_10px_#10B981] z-20 pointer-events-none"
+            />
+          )}
+        </motion.div>
+
+        {/* Floating Notifications */}
+        <AnimatePresence>
+          {notification && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded text-[10px] font-bold text-white border border-white/20 whitespace-nowrap z-30 shadow-xl"
+            >
+              {notification}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="flex items-center justify-between pb-3 mb-4 border-b" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+        <span className="font-mono text-[11px] font-bold text-white tracking-widest uppercase">Production Status</span>
+        <span className="font-mono text-[11px] font-bold px-2 py-0.5 rounded" style={{ color: stage.color, backgroundColor: `${stage.color}15`, border: `1px solid ${stage.color}25` }}>
+          {progressVal}% Complete
+        </span>
+      </div>
+
+      {/* Vertical Timeline */}
+      <div className="relative flex-1 min-h-0 flex flex-col justify-around pl-2 pb-2">
+        {/* Glowing connected line track */}
+        <div className="absolute left-[15px] top-6 bottom-6 w-[2px] bg-white/5 z-0 overflow-hidden rounded-full">
+           <motion.div 
+             className="w-full shadow-[0_0_12px_#10B981]"
+             initial={{ height: "0%", top: "0%" }}
+             animate={{ height: "20%", top: `${(activeIdx / 4) * 80}%` }}
+             transition={{ duration: 1.5, ease: "easeInOut" }}
+             style={{ position: "absolute", backgroundColor: stage.color }}
+           />
+        </div>
+
+        {STAGES_LIST.map((s, i) => {
+          const isDone = i < activeIdx;
+          const isCur = i === activeIdx;
+
+          return (
+            <div key={s} className="relative z-10 flex items-center gap-4">
+              <div 
+                className="w-6 h-6 rounded-full border flex items-center justify-center shrink-0"
+                style={{
+                  backgroundColor: isDone ? "#10B981" : isCur ? "rgba(239,68,68,0.2)" : "rgba(255,255,255,0.04)",
+                  borderColor: isDone ? "#10B981" : isCur ? "#EF4444" : "rgba(255,255,255,0.1)",
+                  boxShadow: isCur ? "0 0 15px rgba(239,68,68,0.4)" : "none",
+                  zIndex: 20
+                }}
+              >
+                 {isDone && <Check size={12} className="text-white" />}
+                 {isCur && <motion.div animate={{ scale: [1, 1.4, 1] }} transition={{ duration: 1.5, repeat: Infinity }} className="w-2 h-2 rounded-full bg-red-500" />}
+              </div>
+              <span 
+                className="flex-1 text-[13px]"
+                style={{
+                  color: isDone ? "rgba(255,255,255,0.7)" : isCur ? "white" : "rgba(100,116,139,0.5)",
+                  fontWeight: isCur ? 800 : 500
+                }}
+              >
+                {s}
+              </span>
+              {isCur && (
+                <motion.span 
+                  animate={{ opacity: [0.6, 1, 0.6] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="font-mono text-[9px] font-bold px-2 py-1 rounded uppercase text-red-400 bg-red-400/10 border border-red-400/20 shadow-[0_0_10px_rgba(239,68,68,0.2)]"
+                >
+                  ACTIVE
+                </motion.span>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  );
+}
+
 const staggerItem = (i: number) => ({
   hidden: { opacity: 0, y: 14 },
   show: { opacity: 1, y: 0, transition: { duration: 0.38, delay: i * 0.07, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] } },
@@ -275,7 +1394,7 @@ function StepDetailPanel({ stage }: { stage: (typeof STAGES)[number] }) {
         className="font-mono font-black select-none leading-none"
         style={{
           fontSize: "clamp(48px, 6vw, 72px)",
-          color: `${stage.color}18`,
+          color: "#334155",
           letterSpacing: "-0.02em",
         }}
       >
@@ -383,58 +1502,85 @@ function StepDetailPanel({ stage }: { stage: (typeof STAGES)[number] }) {
           </div>
         )}
 
-        {/* Step 3: TNA production tracker */}
+        {/* Step 3: TNA schedule — planned vs actual */}
         {stage.id === 3 && (
           <div className="rounded-xl border bg-white/[0.03] p-3.5" style={{ borderColor: `${stage.color}18` }}>
-            <div className="flex items-center justify-between pb-2 mb-3 border-b" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
-              <span className="font-mono text-[9px] font-bold text-white">TNA Milestones</span>
-              <span className="font-mono text-[9px] font-bold px-2 py-0.5 rounded" style={{ color: stage.color, backgroundColor: `${stage.color}15`, border: `1px solid ${stage.color}25` }}>
-                60% Complete
+            {/* Header */}
+            <div className="flex items-center justify-between pb-2 mb-2 border-b" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+              <span className="font-mono text-[9px] font-bold text-white">MDZ-SS26-001 · TNA Schedule</span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+                <span className="font-mono text-[8px] text-emerald-400 font-bold">Live</span>
               </span>
             </div>
-            {/* Progress bar */}
-            <div className="w-full h-1.5 rounded-full overflow-hidden mb-4" style={{ background: "rgba(255,255,255,0.06)" }}>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: "60%" }}
-                transition={{ duration: 1, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
-                className="h-full rounded-full"
-                style={{ backgroundColor: stage.color }}
-              />
+
+            {/* Column headers */}
+            <div className="grid grid-cols-[1fr_auto_auto_auto] gap-x-3 pb-1.5 mb-1" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+              <span className="font-mono text-[7px] text-slate-600 uppercase tracking-wider">Milestone</span>
+              <span className="font-mono text-[7px] text-slate-600 uppercase tracking-wider">Planned</span>
+              <span className="font-mono text-[7px] text-slate-600 uppercase tracking-wider">Actual</span>
+              <span className="font-mono text-[7px] text-slate-600 uppercase tracking-wider text-center">St.</span>
             </div>
+
+            {/* Rows */}
             {[
-              { label: "Sample Development", done: true, cur: false },
-              { label: "Sample Approval", done: true, cur: false },
-              { label: "Production Started", done: false, cur: true },
-              { label: "Inspection", done: false, cur: false },
-              { label: "Final Dispatch", done: false, cur: false },
-            ].map((s) => (
-              <div key={s.label} className="flex items-center gap-2.5 py-1.5 border-b last:border-0" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
-                <div
-                  className="w-4 h-4 rounded-full border flex items-center justify-center shrink-0"
-                  style={{
-                    backgroundColor: s.done ? "#10B981" : s.cur ? `${stage.color}20` : "rgba(255,255,255,0.04)",
-                    borderColor: s.done ? "#10B981" : s.cur ? stage.color : "rgba(255,255,255,0.1)",
-                  }}
-                >
-                  {s.done && <Check size={8} className="text-white" />}
-                  {s.cur && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stage.color }} />}
-                </div>
+              { label: "Sample Development", planned: "Jun 05", actual: "Jun 05", s: "done"    },
+              { label: "Sample Approval",    planned: "Jun 14", actual: "Jun 13", s: "done"    },
+              { label: "Production Started", planned: "Jun 20", actual: "Jun 20", s: "active"  },
+              { label: "Inspection",         planned: "Jul 08", actual: "—",      s: "pending" },
+              { label: "Final Dispatch",     planned: "Jul 15", actual: "—",      s: "pending" },
+            ].map((row) => (
+              <div
+                key={row.label}
+                className="grid grid-cols-[1fr_auto_auto_auto] gap-x-3 items-center py-1.5 border-b last:border-0"
+                style={{ borderColor: "rgba(255,255,255,0.04)" }}
+              >
                 <span
-                  className="flex-1 text-[11px]"
+                  className="text-[10px] leading-snug"
                   style={{
-                    color: s.done ? "rgba(148,163,184,0.35)" : s.cur ? "white" : "rgba(100,116,139,0.45)",
-                    fontWeight: s.cur ? 700 : 400,
-                    textDecoration: s.done ? "line-through" : "none",
+                    color:
+                      row.s === "active"  ? "white" :
+                      row.s === "done"    ? "rgba(148,163,184,0.42)" :
+                                            "rgba(100,116,139,0.38)",
+                    fontWeight: row.s === "active" ? 700 : 400,
+                    textDecoration: row.s === "done" ? "line-through" : "none",
                   }}
                 >
-                  {s.label}
+                  {row.label}
                 </span>
-                {s.cur && (
-                  <span className="font-mono text-[8px] font-bold px-1.5 py-0.5 rounded uppercase" style={{ color: stage.color, backgroundColor: `${stage.color}15` }}>
-                    Active
-                  </span>
-                )}
+                <span className="font-mono text-[7.5px] text-slate-600 tabular-nums">{row.planned}</span>
+                <span
+                  className="font-mono text-[7.5px] tabular-nums"
+                  style={{ color: row.actual === "—" ? "rgba(100,116,139,0.28)" : "#10B981" }}
+                >
+                  {row.actual}
+                </span>
+                <div className="flex justify-center">
+                  <div
+                    className="w-4 h-4 rounded-full flex items-center justify-center"
+                    style={{
+                      background:
+                        row.s === "done"   ? "rgba(16,185,129,0.18)" :
+                        row.s === "active" ? `${stage.color}20`      :
+                                             "rgba(255,255,255,0.03)",
+                      border: `1px solid ${
+                        row.s === "done"   ? "rgba(16,185,129,0.45)" :
+                        row.s === "active" ? `${stage.color}55`      :
+                                             "rgba(255,255,255,0.07)"
+                      }`,
+                    }}
+                  >
+                    {row.s === "done" && <Check size={7} className="text-emerald-400" />}
+                    {row.s === "active" && (
+                      <motion.div
+                        animate={{ scale: [1, 1.35, 1] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{ backgroundColor: stage.color }}
+                      />
+                    )}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -574,9 +1720,44 @@ export default function HowModozoWorksSection() {
         {/* ══ Main content: garment canvas (left) + step detail (right) ══ */}
         <div className="flex-1 flex gap-4 min-h-0 overflow-hidden">
 
-          {/* Garment journey slideshow */}
-          <div className="w-[42%] min-w-[280px] shrink-0">
-            <SlideshowCanvas activeStep={activeStep} />
+          {/* Garment journey slideshow / Collab animation / Production tracking */}
+          <div className="w-[42%] min-w-[280px] shrink-0 relative rounded-2xl overflow-hidden">
+            <AnimatePresence mode="wait">
+              {activeStep === 2 ? (
+                <motion.div
+                  key="collab"
+                  initial={{ opacity: 0, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, filter: "blur(4px)" }}
+                  transition={{ duration: 0.4 }}
+                  className="absolute inset-0"
+                >
+                  <CollaborationCanvas />
+                </motion.div>
+              ) : activeStep === 3 ? (
+                <motion.div
+                  key="tna"
+                  initial={{ opacity: 0, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, filter: "blur(4px)" }}
+                  transition={{ duration: 0.4 }}
+                  className="absolute inset-0"
+                >
+                  <TNATrackerCanvas stage={STAGES[2]} />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="slideshow"
+                  initial={{ opacity: 0, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, filter: "blur(4px)" }}
+                  transition={{ duration: 0.4 }}
+                  className="absolute inset-0"
+                >
+                  <SlideshowCanvas activeStep={activeStep} />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Step detail panel with clip-reveal transition */}
